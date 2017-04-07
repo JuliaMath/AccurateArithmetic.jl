@@ -1,7 +1,7 @@
 module AccurateArithmetic
 
 
-export eeftSum2inOrder, eftSum3inOrder, eftSum2, eftSum3, 
+export eftSum2inOrder, eftSum3inOrder, eftSum2, eftSum3, 
        eftDiff2inOrder, eftDiff2, 
        eftSquare, eftCube,
        eftProd2, eftProd3,
