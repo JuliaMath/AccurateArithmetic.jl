@@ -19,8 +19,8 @@ Faithful adjacents yield values in the span:
 Roughy accurates yield values in the span:    
 - `ideal - eps(ideal)*2` .. `ideal` .. `ideal + eps(ideal)*2`
 
-
-~~~~~~~
+------------
+&nbsp;
 
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
