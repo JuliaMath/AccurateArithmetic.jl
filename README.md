@@ -23,7 +23,8 @@ Roughy accurates yield values in the span:
 ------------
 &nbsp;
 
-each function has two names: `func_acc` and `func₊` ("func\_+<tab>")
+&nbsp; &nbsp; &nbsp; each function has two names:&nbsp; 
+`func_acc` and `func₊` ("func\_+<tab>")
 &nbsp;
            
            
@@ -49,12 +50,14 @@ each function has two names: `func_acc` and `func₊` ("func\_+<tab>")
 &nbsp;
 &nbsp;
 
-> `function` is the op name: name₊ and name_acc are synonyms
-
-> `in` is the number of arguments given to the function    
-> `out` is the number of values returned by the function
-
-> `preconditions` are **unchecked**
+| legend |
+|---------|
+| `function` is the op name: name₊ and name_acc are synonyms |
+| |
+| `in` is the number of arguments given to the function    |
+| `out` is the number of values returned by the function   |
+| |
+| `preconditions` are **unchecked** |
 
 &nbsp;
 --------
