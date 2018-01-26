@@ -32,9 +32,9 @@ Roughy accurates yield values in the span:
 
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
-| add₊      |     | none           | error-free     | 2   | 2   |
-| add_hilo₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
-| sub₊      |     | none           | error-free     | 2   | 2   |
+| add₊      | add_acc    | none           | error-free     | 2   | 2   |
+| add_hilo₊ | add_hilo_acc    | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sub₊      | sub_acc    | none           | error-free     | 2   | 2   |
 | sub_hilo₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
 | sub_lohi₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
 | sqr₊      |     | none           | error-free     | 1   | 2   |
@@ -43,7 +43,7 @@ Roughy accurates yield values in the span:
 | inv₊      |     | none           | faithful       | 1   | 2   |
 | sqrt₊     |     | none           | faithful       | 1   | 2   |
 |           |     |                |                |     |     |
-| div₊      |     | none           | faithful       | 2   | 2   |
+| div₊      | div_acc    | none           | faithful       | 2   | 2   |
 |           |     |                |                |     |     |
 | hypot₊    |     | none           | near-faithful  | 2   | 2   |
 
