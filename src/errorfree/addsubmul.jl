@@ -161,3 +161,18 @@ Computes `p = fl(a*b)` and `e = err(a*b)`.
     p, e
 end
 
+
+"""
+    cub_acc(a)
+
+Computes `p = fl(a*a*a)` and `e = err(a*a*a)`.
+"""
+@inline function cub_acc(a::T) where {T<:AbstractFloat}
+    hi, lo = sqr_acc(a)
+    hihi, hilo = mul_acc(hi, a)
+    lohi, lolo = mul_acc(lo, a)
+    hilo, lohi = add_hilo_acc(hilo, lohi)
+    hi, lo = add_hilo_acc(hihi, hilo)
+    lo += lohi + lolo
+    return hi, lo
+end
