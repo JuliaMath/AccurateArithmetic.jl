@@ -3,7 +3,34 @@
 
 ## Introduction
 
-This package exports state of the art implementations of errorfree transformations, faithfully compensating constructs, and other error minimizing arithmetic functions.
+This package provides state of the art implementations of error-reducing arithmetic transformations.  Some are error-free (ideal ± ½bit), some faithful (ideal ± 1bit),
+and for some the error-minimized calc is faithful-adjacent (ideal ± 2bits).
+
+> `function` is the exported name
+> `in` is the number of arguments given to the function    
+> `out` is the number of values returned by the function
+
+> `preconditions` are **unchecked**
+
+| function | ... | preconditions  | transformation | in  | out |
+|----------|:---:|:--------------:|:--------------:|:---:|:---:|
+| add      |     | none           | error-free     | 2   | 2   |
+| add_hilo |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sub      |     | none           | error-free     | 2   | 2   |
+| sub_hilo |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sub_lohi |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sqr      |     | none           | error-free     | 1   | 2   |
+| mul      |     | none           | error-free     | 2   | 2   |
+|          |     |                |                |     |     |
+| inv      |     | none           | faithful       | 1   | 2   |
+| sqrt     |     | none           | faithful       | 1   | 2   |
+|          |     |                |                |     |     |
+| div      |     | none           | faithful       | 2   | 2   |
+|          |     |                |                |     |     |
+| hypot    |     | none           | near-faithful  | 2   | 2   |
+
+
+
 
 The error-free transformations (add_acc, sub_acc, sqr_acc, mul_acc), and error-faithful tranformations (inv_acc, sqrt_acc), and error-minimal transformations (div_acc). Each function retursn a tuple containing the usual floating point result (`hi`, others use `s`) and an additive correction to the usual result (`lo`, others use `err`).    
 * They are such that `hi + lo == hi` i.e. `abs(lo) <= eps(hi)/4`. 
