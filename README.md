@@ -11,16 +11,16 @@ or roughly-accurate (ideal ± 3bits).
 If the ideal Float64 result is `ideal`, error-free calcs yield `ideal`.
 
 Faithful calcs yield these:    
-> `prevfloat(ideal)`, `ideal`, `nextfloat(ideal)`.     
+- `prevfloat(ideal)`, `ideal`, `nextfloat(ideal)`.     
 
 Faithful adjacents yield values in the span:    
-> `ideal - eps(ideal)/2` .. `ideal` .. `ideal + eps(ideal)/2`
+- `ideal - eps(ideal)/2` .. `ideal` .. `ideal + eps(ideal)/2`
 
 Roughy accurates yield values in the span:    
-> `ideal - eps(ideal)*2` .. `ideal` .. `ideal + eps(ideal)*2`
+- `ideal - eps(ideal)*2` .. `ideal` .. `ideal + eps(ideal)*2`
 
 
-============
+~~~~~~~
 
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
