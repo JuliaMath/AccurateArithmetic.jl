@@ -5,7 +5,8 @@
 
 This package exports state of the art implementations of errorfree transformations, faithfully compensating constructs, and other error minimizing arithmetic functions.
 
-The error-free transformations (add_acc, sub_acc, sqr_acc, mul_acc), and error-faithful tranformations (inv_acc, sqrt_acc), and error-minimal transformations (div_acc) each return a tuple containing the usual floating point result `hi` and an additive correction to the usual result `lo`.  They are such that `hi + lo == hi` i.e. `abs(lo) < eps(hi)/4`. 
+The error-free transformations (add_acc, sub_acc, sqr_acc, mul_acc), and error-faithful tranformations (inv_acc, sqrt_acc), and error-minimal transformations (div_acc). Each function retursn a tuple containing the usual floating point result (`hi`, others use `s`) and an additive correction to the usual result (`lo`, others use `err`).    
+* They are such that `hi + lo == hi` i.e. `abs(lo) < eps(hi)/4`. 
 
 Here is how we multiply two floating point values with greater accuracy.    
 `xy_result` and `xy_adjust` are free of error, by construction.
