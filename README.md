@@ -19,8 +19,13 @@ Faithful adjacents yield values in the span:
 Roughy accurates yield values in the span:    
 - `ideal - eps(ideal)*2` .. `ideal` .. `ideal + eps(ideal)*2`
 
+&nbsp;
 ------------
 &nbsp;
+
+each function has two names: `func_acc` and `func₊` ("func\_+<tab>")
+           
+           
 
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
@@ -41,7 +46,7 @@ Roughy accurates yield values in the span:
 
 
 
-> `function` is the op name: name₊ and name_acc are synonyms, both exported
+> `function` is the op name: name₊ and name_acc are synonyms
 
 > `in` is the number of arguments given to the function    
 > `out` is the number of values returned by the function
