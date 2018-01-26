@@ -26,7 +26,7 @@ and for some the error-minimized calc is faithful-adjacent (ideal ± 2bits).
 
 
 
-> `function` is the op name (<name>ᵩ and <name>_acc are synonyms, both exported)
+> `function` is the op name: nameᵩ and name_acc are synonyms, both exported
 
 > `in` is the number of arguments given to the function    
 > `out` is the number of values returned by the function
