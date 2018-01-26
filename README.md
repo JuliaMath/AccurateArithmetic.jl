@@ -20,6 +20,8 @@ Roughy accurates yield values in the span:
 > `ideal - eps(ideal)*2` .. `ideal` .. `ideal + eps(ideal)*2`
 
 
+============
+
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
 | add₊      |     | none           | error-free     | 2   | 2   |
