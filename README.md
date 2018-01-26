@@ -7,6 +7,7 @@ This package provides state of the art implementations of error-reducing arithme
 and for some the error-minimized calc is faithful-adjacent (ideal ± 2bits).
 
 > `function` is the exported name
+
 > `in` is the number of arguments given to the function    
 > `out` is the number of values returned by the function
 
