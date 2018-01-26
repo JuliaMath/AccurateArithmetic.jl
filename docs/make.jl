@@ -5,7 +5,7 @@ makedocs(
     clean = false,
     format = :html,
     sitename = "AccurateArithmetic.jl",
-    authors = "Jeffrey Sarnoff, Simon Byrne, Sascha Timme, and other contributors",
+    authors = "Jeffrey Sarnoff, Simon Byrne, and other contributors",
     pages = [
         "Home" => "index.md",
         "Refs" => "references.md"
