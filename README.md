@@ -30,8 +30,8 @@ Roughy accurates yield values in the span:
            
 &nbsp;
 
-| function  | ascii | preconditions  | transformation | in  | out |
-|-----------|:------|:--------------:|:--------------:|:---:|:---:|
+| function  | ASCII name | preconditions  | transformation | in  | out |
+|-----------|:----------|:--------------:|:--------------:|:---:|:---:|
 | add₊      | add_acc    | none           | error-free     | 2   | 2   |
 | add_hilo₊ | add_hilo_acc    | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
 | sub₊      | sub_acc    | none           | error-free     | 2   | 2   |
