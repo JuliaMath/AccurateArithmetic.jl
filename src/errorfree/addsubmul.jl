@@ -136,3 +136,28 @@ function add_acc(a::T,b::T,c::T,d::T) where T<: AbstractFloat
 
     return a, b, c, d
 end
+
+
+
+"""
+    sqr_acc(a)
+
+Computes `p = fl(a*a)` and `e = err(a*a)`.
+"""
+@inline function sqr_acc(a::T) where {T<:AbstractFloat}
+    p = a * a
+    e = fma(a, a, -p)
+    p, e
+end
+
+"""
+    mul_acc(a, b)
+
+Computes `p = fl(a*b)` and `e = err(a*b)`.
+"""
+@inline function mul_acc(a::T, b::T) where {T<:AbstractFloat}
+    p = a * b
+    e = fma(a, b, -p)
+    p, e
+end
+
