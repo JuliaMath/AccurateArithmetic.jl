@@ -3,7 +3,7 @@
 
 ```
 [Building Blocks]
-M. Joldes, V. Popescu, and J.M. Muller.
+M. Joldes, V. Popescu, and J.-M. Muller.
 Tight and rigourous error bounds for basic building blocks of double-word arithmetic
 2016, working paper.
 ```
@@ -22,5 +22,12 @@ M. Lange and S.M. Rump.
 Faithfully Rounded Floating-point Computations
 2017, preprint.
 ```
-&nbsp; &nbsp; &rarr;  http://www.ti3.tu-harburg.de/paper/rump/LaRu2017b.pdf      
+&nbsp; &nbsp; &rarr;  http://www.ti3.tu-harburg.de/paper/rump/LaRu2017b.pdf
 
+```
+J.-M. Muller, N. Brisebarre, F. de Dinechin, C.-P. Jeannerod, V. Lefevre,
+    G. Melquiond, N. Revol, D. Stehle, and S. Torres.
+Handbook of Floating-Point Arithmetic
+Birkhauser Boston, 2010, book
+```
+&nbsp;
