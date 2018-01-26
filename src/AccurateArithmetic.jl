@@ -9,7 +9,7 @@ export add_acc, add_hilo_acc, add₊, add_hilo₊,
 import Base.IEEEFloat # Union{Float64, Float32, Float16}
 
 
-include("errorfree/addsub.jl")
+include("errorfree/addsubmul.jl")
 
 
 for (A, F) in ( (:add_acc, :(add₊)),  (:add_hilo_acc, :(add_hilo₊)),
