@@ -52,12 +52,14 @@ Roughy accurates yield values in the span:
 
 | legend |
 |---------|
+| |
 | `function` is the op name: name₊ and name_acc are synonyms |
 | |
-| `in` is the number of arguments given to the function    |
-| `out` is the number of values returned by the function   |
-| |
 | `preconditions` are **unchecked** |
+| |
+| `in` is the number of arguments given to the function    |
+| |
+| `out` is the number of values returned by the function   |
 
 &nbsp;
 --------
