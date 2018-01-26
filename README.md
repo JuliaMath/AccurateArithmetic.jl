@@ -9,31 +9,32 @@ and for some the error-minimized calc is faithful-adjacent (ideal ± 2bits).
 
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
-| addᵩ      |     | none           | error-free     | 2   | 2   |
-| add_hiloᵩ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
-| subᵩ      |     | none           | error-free     | 2   | 2   |
-| sub_hiloᵩ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
-| sub_lohiᵩ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
-| sqrᵩ      |     | none           | error-free     | 1   | 2   |
-| mulᵩ      |     | none           | error-free     | 2   | 2   |
+| add₊      |     | none           | error-free     | 2   | 2   |
+| add_hilo₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sub₊      |     | none           | error-free     | 2   | 2   |
+| sub_hilo₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sub_lohi₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sqr₊      |     | none           | error-free     | 1   | 2   |
+| mul₊      |     | none           | error-free     | 2   | 2   |
 |           |     |                |                |     |     |
-| invᵩ      |     | none           | faithful       | 1   | 2   |
-| sqrtᵩ     |     | none           | faithful       | 1   | 2   |
+| inv₊      |     | none           | faithful       | 1   | 2   |
+| sqrt₊     |     | none           | faithful       | 1   | 2   |
 |           |     |                |                |     |     |
-| divᵩ      |     | none           | faithful       | 2   | 2   |
+| div₊      |     | none           | faithful       | 2   | 2   |
 |           |     |                |                |     |     |
-| hypotᵩ    |     | none           | near-faithful  | 2   | 2   |
+| hypot₊    |     | none           | near-faithful  | 2   | 2   |
 
 
 
-> `function` is the op name: nameᵩ and name_acc are synonyms, both exported
+> `function` is the op name: name₊ and name_acc are synonyms, both exported
 
 > `in` is the number of arguments given to the function    
 > `out` is the number of values returned by the function
 
 > `preconditions` are **unchecked**
 
-The error-free transformations (add_acc, sub_acc, sqr_acc, mul_acc), and error-faithful tranformations (inv_acc, sqrt_acc), and error-minimal transformations (div_acc). Each function retursn a tuple containing the usual floating point result (`hi`, others use `s`) and an additive correction to the usual result (`lo`, others use `err`).    
+The error-free transformations (add_acc, sub_acc, sqr_acc, mul_acc), and error-faithful tranformations (inv_acc, sqrt_acc), and error-minimal transformations (div_acc). Each function retursn a tuple containing the usual floating point result (`hi`, others use `s`) and an additive correction to the usual result (`lo`, others use `err`). 
+
 * They are such that `hi + lo == hi` i.e. `abs(lo) <= eps(hi)/4`. 
 
 Here is how we multiply two floating point values with greater accuracy.    
