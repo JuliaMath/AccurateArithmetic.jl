@@ -5,9 +5,7 @@ Computes `q = fl(inv(a))` and `e = err(inv(a))`.
 """
 function inv_acc(b::T) where {T<:AbstractFloat}
     x = one(T) / b
-    v = x * b
-    w = fma(x, b, -v)
-    y = (one(T) - v - w) / b
+    y = fma(-x, b, one(T))
     return x, y
 end
 
@@ -18,9 +16,7 @@ Computes `q = fl(a/b)` and `e = err(a/b)`.
 """
 function div_acc(a::T, b::T) where {T<:AbstractFloat}
     x = a / b
-    v = x * b
-    w = fma(x, b, -v)
-    y = (a - v - w) / b
+    y = fma(-x, b, a) / a
     return x, y
 end
 
@@ -32,8 +28,7 @@ Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
 function sqrt_acc(a::T) where {T<:AbstractFloat}
     x = sqrt(a)
-    t = fma(x, -x, a)
-    y = t / (x+x)
+    y = fma(-x, x, a) / (x + x)
     return x, y
 end
 
