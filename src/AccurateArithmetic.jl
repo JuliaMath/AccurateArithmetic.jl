@@ -10,6 +10,7 @@ import Base.IEEEFloat # Union{Float64, Float32, Float16}
 
 
 include("errorfree/addsubmul.jl")
+include("faithful/divsqrt.jl")
 
 
 for (A, F) in ( (:add_acc, :(add₊)),  (:add_hilo_acc, :(add_hilo₊)),
