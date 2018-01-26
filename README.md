@@ -24,8 +24,10 @@ Roughy accurates yield values in the span:
 &nbsp;
 
 each function has two names: `func_acc` and `func₊` ("func\_+<tab>")
+&nbsp;
            
            
+&nbsp;
 
 | function  | ... | preconditions  | transformation | in  | out |
 |-----------|:---:|:--------------:|:--------------:|:---:|:---:|
