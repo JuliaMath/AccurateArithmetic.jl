@@ -30,22 +30,22 @@ Roughy accurates yield values in the span:
            
 &nbsp;
 
-| function  | ... | preconditions  | transformation | in  | out |
-|-----------|:---:|:--------------:|:--------------:|:---:|:---:|
+| function  | ascii | preconditions  | transformation | in  | out |
+|-----------|:------|:--------------:|:--------------:|:---:|:---:|
 | add₊      | add_acc    | none           | error-free     | 2   | 2   |
 | add_hilo₊ | add_hilo_acc    | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
 | sub₊      | sub_acc    | none           | error-free     | 2   | 2   |
-| sub_hilo₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
-| sub_lohi₊ |     | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
-| sqr₊      |     | none           | error-free     | 1   | 2   |
-| mul₊      |     | none           | error-free     | 2   | 2   |
+| sub_hilo₊ | sub_hilo_acc    | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sub_lohi₊ | sub_lohi_acc    | ` \|x\|≥\|y\|` | error-free     | 2   | 2   |
+| sqr₊      | sqr_acc    | none           | error-free     | 1   | 2   |
+| mul₊      | mul_acc    | none           | error-free     | 2   | 2   |
 |           |     |                |                |     |     |
-| inv₊      |     | none           | faithful       | 1   | 2   |
-| sqrt₊     |     | none           | faithful       | 1   | 2   |
+| inv₊      | inv_acc     | none           | faithful       | 1   | 2   |
+| sqrt₊     | sqrt_acc    | none           | faithful       | 1   | 2   |
 |           |     |                |                |     |     |
 | div₊      | div_acc    | none           | faithful       | 2   | 2   |
 |           |     |                |                |     |     |
-| hypot₊    |     | none           | near-faithful  | 2   | 2   |
+| hypot₊    | hypot_acc  | none           | near-faithful  | 2   | 2   |
 
 &nbsp;
 &nbsp;
