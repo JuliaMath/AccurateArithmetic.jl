@@ -1,5 +1,7 @@
 # AccurateArithmetic.jl
-### These arithmetic functions that provide the usual higher order result and the lower order value that extends its accuracy and increases the computational precision.
+
+
+#### These arithmetic functions provide the usual higher order result and additionally provide the lower order value extending the accuracy and precison of the calculation.
 
 -----
     
