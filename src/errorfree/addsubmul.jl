@@ -176,3 +176,25 @@ Computes `p = fl(a*a*a)` and `e = err(a*a*a)`.
     lo += lohi + lolo
     return hi, lo
 end
+
+#=
+   fma_acc algorithm from
+
+   Sylvie Boldo and Jean-Michel Muller
+   Some Functions Computable with a Fused-mac
+=#
+
+"""
+    fma_acc(a, b, c)
+
+Computes `x = fl(fma(a, b, c))` and `y, z = fl(err(fma(a, b, c)))`.
+"""
+function fma_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+    x = fma(a, b, c)
+    u1, u2 = mul_hilo_acc(a, b)
+    a1, z  = add_acc(b, u2)
+    b1, b2 = add_acc(u1, a1)
+    y = (b1 - x) + b2
+    y, z = add_hilo_acc(y, z)
+    return x, y, z
+end
