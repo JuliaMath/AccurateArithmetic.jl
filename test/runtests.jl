@@ -1,5 +1,6 @@
 using Compat
 using Compat.Test
+using Random
 using AccurateArithmetic
 
 srand(1602)
