@@ -8,7 +8,11 @@ export add_acc, add₊, sub_acc, sub₊,
        fma_acc, fma₊, sum_acc, sum₊
 
 
-import Base.IEEEFloat # Union{Float64, Float32, Float16}
+if VERSION >= v"0.7.0-"
+    import Base.IEEEFloat
+else
+    const IEEEFloat = Union{Float64, Float32, Float16}
+end
 
 
 include("errorfree/addsubmul.jl")
