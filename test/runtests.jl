@@ -22,9 +22,16 @@ hi32, lo32 = Floats2(Float32, bflts[2])
 
 hi64, lo64 = Floats2(Float64, bflts[3])
 hi32, lo32 = Floats2(Float32, bflts[4])
+hi, md, lo = Floats3(Float64, bflts[5])
+
+@test sqr_acc(hi64) == Floats2(Float64, BigFloat(hi64)^2)
+@test cub_acc(hi32) == Floats2(Float32, BigFloat(hi32)^3)
 
 @test mul_acc(hi64, lo64) == Floats2(Float64, BigFloat(hi64)*BigFloat(lo64))
 @test div_acc(hi32, lo32) == Floats2(Float32, BigFloat(hi32)/BigFloat(lo32))
 
 @test sqrt_acc(hi64) == Floats2(Float64, sqrt(BigFloat(hi64)))
 @test inv_acc(hi32)  == Floats2(Float32, inv(BigFloat(hi32)))
+
+@test fma_acc(hi, lo, md) == Floats3(BigFloat(hi) * BigFloat(lo) + BigFloat(md))
+@test fms_acc(md, lo, hi) == Floats3(BigFloat(md) * BigFloat(lo) + BigFloat(hi))
