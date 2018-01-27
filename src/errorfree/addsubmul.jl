@@ -136,7 +136,7 @@ Computes `x = fl(fma(a, b, c))` and `y, z = fl(err(fma(a, b, c)))`.
 """
 function fma_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
     x = fma(a, b, c)
-    u1, u2 = mul_hilo_acc(a, b)
+    u1, u2 = mul_acc(a, b)
     a1, z  = add_acc(b, u2)
     b1, b2 = add_acc(u1, a1)
     y = (b1 - x) + b2
