@@ -10,19 +10,19 @@ srand(1602)
 include("bigfloats.jl")
 
 const nrands = 16
-const bflts = randbf(nrands)
+const flbig = randbf(nrands)
 const fl64s = randfl(Float64, nrands)
 const fl32s = randfl(Float32, nrands)
 
-hi64, lo64 = Floats2(Float64, bflts[1])
-hi32, lo32 = Floats2(Float32, bflts[2])
+hi64, lo64 = Floats2(Float64, flbig[1])
+hi32, lo32 = Floats2(Float32, flbig[2])
 
 @test add_acc(hi64, lo64) == (hi64, lo64)
 @test add_hilo_acc(hi32, lo32) == (hi32, lo32)
 
-hi64, lo64 = Floats2(Float64, bflts[3])
-hi32, lo32 = Floats2(Float32, bflts[4])
-hi, md, lo = Floats3(Float64, bflts[5])
+hi64, lo64 = Floats2(Float64, flbig[3])
+hi32, lo32 = Floats2(Float32, flbig[4])
+hi, md, lo = Floats3(Float64, flbig[5])
 
 @test sqr_acc(hi64) == Floats2(Float64, BigFloat(hi64)^2)
 @test cub_acc(hi32) == Floats2(Float32, BigFloat(hi32)^3)
@@ -35,3 +35,5 @@ hi, md, lo = Floats3(Float64, bflts[5])
 
 @test fma_acc(hi, lo, md) == Floats3(BigFloat(hi) * BigFloat(lo) + BigFloat(md))
 @test fms_acc(md, lo, hi) == Floats3(BigFloat(md) * BigFloat(lo) + BigFloat(hi))
+
+@test sum_acc(fl64s) == Floats2(sum(flbig))
