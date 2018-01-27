@@ -21,7 +21,7 @@ hi32, lo32 = Floats2(Float32, flbig[2])
 @test add_hilo_acc(hi32, lo32) == (hi32, lo32)
 
 @test sub_acc(lo64, hi64) == Floats2(Float64, BigFloat(lo64) - BigFloat(hi64))
-@test sub_hilo_acc(hi32, lo32) == Floats2(Float64, BigFloat(hi32) - BigFloat(lo32))
+@test sub_hilo_acc(hi32, lo32) == Floats2(Float32, BigFloat(hi32) - BigFloat(lo32))
 
 hi64, lo64 = Floats2(Float64, flbig[3])
 hi32, lo32 = Floats2(Float32, flbig[4])
