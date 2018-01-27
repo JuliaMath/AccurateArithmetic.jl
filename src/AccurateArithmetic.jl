@@ -23,7 +23,7 @@ for (A, F) in ( (:add_acc, :(add₊)),  (:add_hilo_acc, :(add_hilo₊)),
                 (:sqrt_acc, :(sqrt₊)), (:fma_acc, :(fma₊)),
                 (:sum_acc, :(sum₊)), )
    @eval begin
-       const $A = $F
+       const $F = $A
    end
 end
 
