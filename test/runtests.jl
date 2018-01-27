@@ -1,7 +1,10 @@
 using Compat
 using Compat.Test
-using Random
 using AccurateArithmetic
+
+if VERSION >= v"0.7.0-"
+  using Random
+end
 
 srand(1602)
 include("bigfloats.jl")
