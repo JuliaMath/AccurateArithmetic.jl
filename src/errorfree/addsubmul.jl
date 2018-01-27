@@ -67,22 +67,16 @@ function sub_hilo_acc(a::T,b::T,c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
-
-
 """
-    sub_lohi_acc(a, b)
-    
-*unchecked* requirement `|b| ≥ |a|`
+    mul_acc(a, b)
 
-Computes `s = fl(a-b)` and `e = err(a-b)`.
+Computes `p = fl(a*b)` and `e = err(a*b)`.
 """
-@inline function sub_lohi_acc(a::T, b::T) where {T<:AbstractFloat}
-    s = a - b
-    e = (s - b) + a
-    s, e
+@inline function mul_acc(a::T, b::T) where {T<:AbstractFloat}
+    p = a * b
+    e = fma(a, b, -p)
+    p, e
 end
-
-
 
 """
     sqr_acc(a)
@@ -92,17 +86,6 @@ Computes `p = fl(a*a)` and `e = err(a*a)`.
 @inline function sqr_acc(a::T) where {T<:AbstractFloat}
     p = a * a
     e = fma(a, a, -p)
-    p, e
-end
-
-"""
-    mul_acc(a, b)
-
-Computes `p = fl(a*b)` and `e = err(a*b)`.
-"""
-@inline function mul_acc(a::T, b::T) where {T<:AbstractFloat}
-    p = a * b
-    e = fma(a, b, -p)
     p, e
 end
 
@@ -130,12 +113,27 @@ end
 =#
 
 """
-    fma_acc(a, b, c)
+    fma_acc(a, b, c) => (x, y, z)
 
 Computes `x = fl(fma(a, b, c))` and `y, z = fl(err(fma(a, b, c)))`.
 """
 function fma_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
     x = fma(a, b, c)
+    u1, u2 = mul_acc(a, b)
+    a1, z  = add_acc(b, u2)
+    b1, b2 = add_acc(u1, a1)
+    y = (b1 - x) + b2
+    y, z = add_hilo_acc(y, z)
+    return x, y, z
+end
+
+"""
+    fms_acc(a, b, c) => (x, y, z)
+
+Computes `x = fl(fms(a, b, c))` and `y, z = fl(err(fms(a, b, c)))`.
+"""
+function fms_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+    x = fma(a, b, -c)
     u1, u2 = mul_acc(a, b)
     a1, z  = add_acc(b, u2)
     b1, b2 = add_acc(u1, a1)
