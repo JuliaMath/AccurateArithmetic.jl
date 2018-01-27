@@ -11,7 +11,7 @@ function randbf(n::Int, minpow2::Int=-30, maxpow2::Int=30)
 end
 
 randfl(::Type{T}, n::Int, minpow2::Int=-30, maxpow2::Int=30)  where {T<:AbstractFloat} =
-    map(T, randbf(n, minpow, maxpow2))   
+    map(T, randbf(n, minpow2, maxpow2))   
 
 
 const Floats1 = NTuple{1,T} where {T<:AbstractFloat}
