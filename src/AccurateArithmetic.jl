@@ -1,11 +1,12 @@
 module AccurateArithmetic
 
-export add_acc, add₊, sub_acc, sub₊,
-       add_hilo_acc, add_hilo₊, 
-       sub_hilo_acc, sub_hilo₊, sub_lohi_acc, sub_lohi₊,
-       sqr_acc, sqr₊, mul_acc, mul₊, cub_acc, cub₊,
-       inv_acc, inv₊, div_acc, div₊, sqrt_acc, sqrt₊,
-       fma_acc, fma₊, sum_acc, sum₊
+export add_acc, add₊, add_hilo_acc, add_hilo₊,
+       sub_acc, sub₊, sub_hilo_acc, sub_hilo₊,
+       sqr_acc, sqr₊, cub_acc, cub₊, 
+       mul_acc, mul₊, sqrt_acc, sqrt₊,
+       inv_acc, inv₊, div_acc, div₊, 
+       fma_acc, fma₊, fms_acc, fms₊, 
+       sum_acc, sum₊
 
 
 if VERSION >= v"0.7.0-"
@@ -20,11 +21,12 @@ include("faithful/divsqrt.jl")
 include("compensated/sum.jl")
 
 
-for (A, F) in ( (:add_acc, :(add₊)),  (:add_hilo_acc, :(add_hilo₊)),
-                (:sub_acc, :(sub₊)),  (:sub_hilo_acc, :(sub_hilo₊)), (:sub_lohi_acc, :(sub_lohi₊)),
-                (:sqr_acc, :(sqr₊)),  (:mul_acc, :(mul₊)), (:cub_acc, :(cub₊)),
-                (:inv_acc, :(inv₊)),  (:div_acc, :(div₊)),
-                (:sqrt_acc, :(sqrt₊)), (:fma_acc, :(fma₊)),
+for (A, F) in ( (:add_acc, :(add₊)), (:add_hilo_acc, :(add_hilo₊)),
+                (:sub_acc, :(sub₊)), (:sub_hilo_acc, :(sub_hilo₊)),
+                (:sqr_acc, :(sqr₊)), (:cub_acc, :(cub₊)),
+                (:mul_acc, :(mul₊)), (:sqrt_acc, :(sqrt₊)), 
+                (:inv_acc, :(inv₊)), (:div_acc, :(div₊)),
+                (:fma_acc, :(fma₊)), (:fms_acc, :(fms₊)),
                 (:sum_acc, :(sum₊)), )
    @eval begin
        const $F = $A
