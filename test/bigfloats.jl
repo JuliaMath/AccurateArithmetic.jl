@@ -13,10 +13,6 @@ end
 randfl(::Type{T}, n::Int, minpow2::Int=-30, maxpow2::Int=30)  where {T<:AbstractFloat} =
     map(T, randbf(n, minpow, maxpow2))   
 
-srand(1602)
-const nrands = 16
-const fl64s = randfl(Float64, nrands)
-const fl32s = randfl(Float32, nrands)
 
 const Floats1 = NTuple{1,T} where {T<:AbstractFloat}
 const Floats2 = NTuple{2,T} where {T<:AbstractFloat}
