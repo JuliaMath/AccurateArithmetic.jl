@@ -1,6 +1,22 @@
 # use BigFloats to determine the correct multipart significand values
 
-setprecison(BigFloat, 1024-32)
+setprecision(BigFloat, 1024-32)
+
+
+function randbf(n::Int, minpow2::Int=-30, maxpow2::Int=30)
+    pow2s = rand(minpow2:maxpow2, n)
+    bfs = rand(BigFloat, n)
+    bfls = [ldexp(frexp(bfs[i])[1], pow2s[i]) for i=1:n]
+    return bfls
+end
+
+randfl(::Type{T}, n::Int, minpow2::Int=-30, maxpow2::Int=30)  where {T<:AbstractFloat} =
+    map(T, randbf(n, minpow, maxpow2))   
+
+srand(1602)
+const nrands = 16
+const fl64s = randfl(Float64, nrands)
+const fl32s = randfl(Float32, nrands)
 
 const Floats1 = NTuple{1,T} where {T<:AbstractFloat}
 const Floats2 = NTuple{2,T} where {T<:AbstractFloat}
@@ -93,7 +109,3 @@ function Floats9(::Type{T}, bf::BigFloat) where {T<:AbstractFloat}
    fl9 = T(bf - fl1 - fl2 - fl3 - fl4 - fl5 - fl6 - fl7 - fl8)
    return fl1, fl2, fl3, fl4, fl5, fl6, fl7, fl8, fl9
 end
-
-
-
-Base.convert(::Type{T}, bf::BigFloat) where T<:AbstractFloat
