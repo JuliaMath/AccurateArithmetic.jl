@@ -41,4 +41,4 @@ hi32, md32, lo32 = Floats3(Float32, flbig[5])
 @test fma_acc(hi64, lo64, md64) == Floats3(Float64, BigFloat(hi64) * BigFloat(lo64) + BigFloat(md64))
 @test fms_acc(md32, lo32, hi32) == Floats3(Float32, BigFloat(md32) * BigFloat(lo32) - BigFloat(hi32))
 
-@test sum_acc(fl64s) == Floats2(sum(flbig))
+@test sum_acc(fl64s) == Floats2(Float64, sum(flbig))
