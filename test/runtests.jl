@@ -38,6 +38,9 @@ hi32, lo32 = Floats2(Float32, flbig[4])
 hi64, md64, lo64 = Floats3(Float64, flbig[5])
 hi32, md32, lo32 = Floats3(Float32, flbig[5])
 
+@test mul_acc(hi64, lo64, md64) == Floats4(Float64, BigFloat(hi64) * BigFloat(lo64) * BigFloat(md64))
+@test mul3acc(hi64, lo64, md64) == Floats3(Float64, BigFloat(hi64) * BigFloat(lo64) * BigFloat(md64))
+
 @test fma_acc(hi64, lo64, md64) == Floats3(Float64, BigFloat(hi64) * BigFloat(lo64) + BigFloat(md64))
 @test fms_acc(md32, lo32, hi32) == Floats3(Float32, BigFloat(md32) * BigFloat(lo32) - BigFloat(hi32))
 
