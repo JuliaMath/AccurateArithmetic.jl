@@ -118,13 +118,13 @@ end
 Computes `x = fl(fma(a, b, c))` and `y, z = fl(err(fma(a, b, c)))`.
 """
 function fma_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
-    x = fma(a, b, c)
-    u1, u2 = mul_acc(a, b)
-    a1, z  = add_acc(b, u2)
-    b1, b2 = add_acc(u1, a1)
-    y = (b1 - x) + b2
-    y, z = add_hilo_acc(y, z)
-    return x, y, z
+     x = fma(a, b, c)
+     y, z = mul_acc(a, b)
+     t, z = add_acc(c, z)
+     t, u = add_acc(y, t)
+     y = ((t - x) + u)
+     y, z = add_hilo_acc(y, z)
+     return x, y, z
 end
 
 """
@@ -133,13 +133,14 @@ end
 Computes `x = fl(fms(a, b, c))` and `y, z = fl(err(fms(a, b, c)))`.
 """
 function fms_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
-    x = fma(a, b, -c)
-    u1, u2 = mul_acc(a, b)
-    a1, z  = add_acc(b, u2)
-    b1, b2 = add_acc(u1, a1)
-    y = (b1 - x) + b2
-    y, z = add_hilo_acc(y, z)
-    return x, y, z
+     c = -c
+     x = fma(a, b, c)
+     y, z = mul_acc(a, b)
+     t, z = add_acc(c, z)
+     t, u = add_acc(y, t)
+     y = ((t - x) + u)
+     y, z = add_hilo_acc(y, z)
+     return x, y, z
 end
 
 """
