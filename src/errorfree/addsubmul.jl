@@ -132,16 +132,9 @@ end
 
 Computes `x = fl(fms(a, b, c))` and `y, z = fl(err(fms(a, b, c)))`.
 """
-function fms_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
-     c = -c
-     x = fma(a, b, c)
-     y, z = mul_acc(a, b)
-     t, z = add_acc(c, z)
-     t, u = add_acc(y, t)
-     y = ((t - x) + u)
-     y, z = add_hilo_acc(y, z)
-     return x, y, z
-end
+@inline function fms_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+     return fma_acc(a, b, -c)
+end    
 
 """
     add_acc(a, b, { c, { d }})
