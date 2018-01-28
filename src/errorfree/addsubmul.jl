@@ -68,7 +68,7 @@ function sub_hilo_acc(a::T,b::T,c::T) where {T<:AbstractFloat}
 end
 
 """
-    mul_acc(a, b)
+    mul_acc(a, b, { c })
 
 Computes `p = fl(a*b)` and `e = err(a*b)`.
 """
@@ -77,6 +77,14 @@ Computes `p = fl(a*b)` and `e = err(a*b)`.
     e = fma(a, b, -p)
     p, e
 end
+
+function mul_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+    p, e = mul_acc(a, b)
+    x, y = mul_acc(p, c)
+    z, t = mul_acc(e, c)
+    return x, y, z, t
+end
+
 
 """
     sqr_acc(a)
