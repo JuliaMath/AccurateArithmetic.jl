@@ -22,7 +22,7 @@ The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order 
 | add_acc | 3,4   |          |
 | sub_acc | 2     | two_diff |
 | sub_acc | 3     |          |
-| mul_acc | 2     | two_prod |
+| mul_acc | 2     | two_prod (FMA) |
 | div_acc | 2     |          |
 
 &nbsp;
