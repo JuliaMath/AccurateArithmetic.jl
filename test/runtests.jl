@@ -11,8 +11,8 @@ include("bigfloats.jl")
 
 const nrands = 16
 const flbig = randbf(nrands)
-const fl64s = randfl(Float64, nrands)
-const fl32s = randfl(Float32, nrands)
+const fl64s = map(Float64, flbig)
+const fl32s = map(Float32, flbig)
 
 hi64, lo64 = Floats2(Float64, flbig[1])
 hi32, lo32 = Floats2(Float32, flbig[2])
