@@ -79,10 +79,16 @@ Computes `p = fl(a*b)` and `e = err(a*b)`.
 end
 
 function mul_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+#=
     p, e = mul_acc(a, b)
     x, y = mul_acc(p, c)
     z, t = mul_acc(e, c)
     return x, y, z, t
+=#    
+    y, z = mul_acc(a, b)
+    x, y = mul_acc(y, c)
+    z    *= c
+    return x, y, z
 end
 
 
