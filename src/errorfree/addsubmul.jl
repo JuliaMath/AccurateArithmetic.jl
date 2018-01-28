@@ -78,19 +78,27 @@ Computes `p = fl(a*b)` and `e = err(a*b)`.
     p, e
 end
 
+
 function mul_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
-#=
-    p, e = mul_acc(a, b)
-    x, y = mul_acc(p, c)
-    z, t = mul_acc(e, c)
+    y, z = mul_acc(a, b)
+    x, y = mul_acc(y, c)
+    z, t = mul_acc(z, c)
     return x, y, z, t
-=#    
+end
+
+"""
+    mul_acc3(a, b, c)
+
+similar to mul_acc(a, b, c)
+
+returns a three tuple
+"""
+function mul_acc3(a::T, b::T, c::T) where {T<:AbstractFloat}
     y, z = mul_acc(a, b)
     x, y = mul_acc(y, c)
     z    *= c
     return x, y, z
 end
-
 
 """
     sqr_acc(a)
@@ -195,3 +203,12 @@ returns the same number of floats,
 transformed to separate significands
 as a tuple of decreasing magnitudes
 """ sub_hilo_acc
+
+"""
+    mul_acc(a, b)    --> (x, y)
+    mul_acc(a, b, c) --> (x, y, z, t)
+    mul3acc(a, b, c) --> (x, y, z)
+
+`a * b == x + y`
+`a * b * c == x + y + z + t`
+"""
