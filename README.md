@@ -15,4 +15,4 @@ These arithmetic functions provide the usual floating point arithmetic result it
 | this package is under development |
 |-----------------------------------|
 | repository created on 2018-01-26  |
-| tests pass using v0.6.2, v0.7.0-  |
+| tests pass on 2018-01-27          |
