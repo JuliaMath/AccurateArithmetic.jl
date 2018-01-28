@@ -6,14 +6,17 @@
 &nbsp;
 
 These arithmetic functions calculate results with extended precision significands.
+They are used as building blocks for extended precision floating point types.
 
 ## Exports
 
-Each exported function is named with the postfix "\_acc" (accurate).  The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments to be given in order of decreasing magnitude.  This precondition is _Unchecked_ to preserve performance.
+Each exported function is named with the postfix "\_acc" (accurate).
+
+The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order of decreasing magnitude.  This is an __unchecked__ precondition.
 
 
 
-| function | nargs |
+| function | args |
 |---------|-------|
 | add_acc | 2,3,4 |
 | sub_acc | 2,3   |
@@ -28,7 +31,7 @@ Each exported function is named with the postfix "\_acc" (accurate).  The functi
 | fma_acc |  3    |
 | fms_acc |  3    |
 |         |       |
-| sum_acc | 1 Vec or Array |
+| sum_acc | 1     | 
 
 &nbsp;
 
