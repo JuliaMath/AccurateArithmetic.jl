@@ -16,22 +16,29 @@ The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order 
 
 
 
-| function | args |
-|---------|-------|
-| add_acc | 2,3,4 |
-| sub_acc | 2,3   |
-| mul_acc | 2     |
-| div_acc | 2     |
-|         |       |
-| sqr_acc | 1     |
-| cub_acc | 1     |
-| inv_acc | 1     |
-| sqrt_acc | 1    |
-|         |       |
-| fma_acc |  3    |
-| fms_acc |  3    |
-|         |       |
-| sum_acc | 1     | 
+| function | args | implements |
+|---------|-------|----------|
+| add_acc | 2     | two_sum  |
+| add_acc | 3,4   |          |
+| sub_acc | 2     | two_diff |
+| sub_acc | 3     |          |
+| mul_acc | 2     | two_prod |
+| div_acc | 2     |          |
+
+&nbsp;
+
+| function | args | implements |
+|---------|-------|----------|
+|         |       |          |
+| sqr_acc | 1     |          |
+| cub_acc | 1     |          |
+| inv_acc | 1     |          |
+| sqrt_acc | 1    |          |
+|         |       |          |
+| fma_acc |  3    |          |
+| fms_acc |  3    |          |
+|         |       |          |
+| sum_acc | 1     |           |
 
 &nbsp;
 
