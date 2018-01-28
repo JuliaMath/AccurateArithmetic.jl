@@ -1,11 +1,34 @@
 # AccurateArithmetic.jl
 
-### Calculate with error-free, faithful, and compensated transforms and extended signficands. 
+### Floating point math with error-free, faithful, and compensated transforms. 
 
 -------
 &nbsp;
 
-These arithmetic functions provide the usual floating point arithmetic result itself and additionally provide the lower order part from the calculation as if performed using an extended precision type. These more accurate forms of addition, subtraction, square, multiplication, reciprocation, division, and square-root accept the same two arguments as the usual arithmetic floating point ops.  They return a 2-tuple with the usual result first and the value of the precision extended significand second.
+These arithmetic functions calculate results with extended precision significands.
+
+## Exports
+
+Each exported function is named with the postfix "\_acc" (accurate).  The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments to be given in order of decreasing magnitude.  This precondition is _Unchecked_ to preserve performance.
+
+
+
+| function | nargs |
+|---------|-------|
+| add_acc | 2,3,4 |
+| sub_acc | 2,3   |
+| mul_acc | 2     |
+| div_acc | 2     |
+|         |       |
+| sqr_acc | 1     |
+| cub_acc | 1     |
+| inv_acc | 1     |
+| sqrt_acc | 1    |
+|         |       |
+| fma_acc |  3    |
+| fms_acc |  3    |
+|         |       |
+| sum_acc | 1 Vec or Array |
 
 &nbsp;
 
