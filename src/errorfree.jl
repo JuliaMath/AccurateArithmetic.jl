@@ -6,21 +6,23 @@
     return s, e
 end
 
+# ThreeSum
 function add_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_hilo(b, c)
     x, u = add_hilo(a, s)
     y, z = add_hilo(u, t)
-    x, y = add_hilo_hilo(x, y)
+    x, y = add_maxmin_hilo(x, y)
     return x, y, z
 end
 
+# FourSum
 function add_hilo(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     t0, t1 = add_hilo(a ,  b)
     t0, t2 = add_hilo(t0,  c)
     a,  t3 = add_hilo(t0,  d)
     t0, t1 = add_hilo(t1, t2)
     b,  t2 = add_hilo(t0, t3)
-    c,  d  = add_hilo(t1, t2)
+    c,  d  = add_maxmin_hilo(t1, t2)
     return a, b, c, d
 end
 
@@ -32,7 +34,7 @@ end
     return s, e
 end
 
-function sub_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
+function sub_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
     s, t = sub_hilo(-b, c)
     x, u = add_hilo(a, s)
     y, z = add_hilo(u, t)
