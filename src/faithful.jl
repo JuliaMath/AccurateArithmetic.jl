@@ -1,39 +1,39 @@
 """
-    inv_(a)
+    inv_err(a)
     
 Computes `q = fl(inv(a))` and `e = err(inv(a))`.
 """
-function inv_(b::T) where {T<:AbstractFloat}
-    x = one(T) / b
-    v = x * b
-    w = fma(x, b, -v)
-    y = (one(T) - v - w) / b
-    return x, y
+function inv_hilo(b::T) where {T<:AbstractFloat}
+    hi = inv(b)
+    v = hi * b
+    w = fma(hi, b, -v)
+    lo = (one(T) - v - w) / b
+    return hi, lo
 end
 
 """
-    div_(a, b)
+    div_hilo(a, b)
 
 Computes `q = fl(a/b)` and `e = err(a/b)`.
 """
-function div_(a::T, b::T) where {T<:AbstractFloat}
-    x = a / b
-    v = x * b
-    w = fma(x, b, -v)
-    y = (a - v - w) / b
-    return x, y
+function div_hilo(a::T, b::T) where {T<:AbstractFloat}
+    hi = a / b
+    v = hi * b
+    w = fma(hi, b, -v)
+    lo = (a - v - w) / b
+    return hi, lo
 end
 
 
 """
-    sqrt_(a)
+    sqrt_hilo(a)
     
 Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
-function sqrt_(a::T) where {T<:AbstractFloat}
-    x = sqrt(a)
-    y = fma(-x, x, a) / (x + x)
-    return x, y
+function sqrt_hilo(a::T) where {T<:AbstractFloat}
+    hi = sqrt(a)
+    lo = fma(-hi, hi, a) / (hi + hi)
+    return hi, lo
 end
 
 
