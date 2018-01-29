@@ -1,5 +1,4 @@
-
-
+# this is "TwoSum"
 @inline function add_hilo(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
     v = s - a
@@ -25,7 +24,7 @@ function add_hilo(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     return a, b, c, d
 end
 
-
+# this is TwoDiff
 @inline function sub_hilo(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
     v = s - a
@@ -41,6 +40,7 @@ function sub_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+# this is QuickTwoSum, requires abs(a) >= abs(b)
 @inline function add_maxmin_hilo(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
     e = b - (s - a)
@@ -55,6 +55,7 @@ function add_maxmin_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+# this is QuickTwoDiff, requires abs(a) >= abs(b)
 @inline function sub_maxmin_hilo(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
     e = (a - s) - b
@@ -69,16 +70,12 @@ function sub_maxmin_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
-"""
-    mul_hilo(a, b, { c })
-Computes `p = fl(a*b)` and `e = err(a*b)`.
-"""
+# this is TwoProdFMA
 @inline function mul_hilo(a::T, b::T) where {T<:AbstractFloat}
     p = a * b
     e = fma(a, b, -p)
     p, e
 end
-
 
 function mul_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
     y, z = mul_hilo(a, b)
@@ -88,31 +85,26 @@ function mul_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
 end
 
 """
-    mul3_hilo(a, b, c)
+    mul_hilo3(a, b, c)
 
 similar to mul_hilo(a, b, c)
 returns a three tuple
 """
-function mul_hilow3(a::T, b::T, c::T) where {T<:AbstractFloat}
+function mul_hilo3(a::T, b::T, c::T) where {T<:AbstractFloat}
     y, z = mul_hilo(a, b)
     x, y = mul_hilo(y, c)
     z    *= c
     return x, y, z
 end
 
+# a squared 
 @inline function sqr_hilo(a::T) where {T<:AbstractFloat}
     p = a * a
     e = fma(a, a, -p)
     p, e
 end
 
-Etiddddit's sed notes
-
-"""
-    cub_hilo(a)
-
-Computes `p = fl(a*a*a)` and `e = err(a*a*a)`.
-"""
+# a cubed
 @inline function cub_hilo(a::T) where {T<:AbstractFloat}
     hi, lo = sqr_hilo(a)
     hihi, _hilo = mul_hilo(hi, a)
@@ -131,6 +123,7 @@ end
 
 """
     fma_hilo(a, b, c) => (x, y, z)
+
 Computes `x = fl(fma(a, b, c))` and `y, z = fl(err(fma(a, b, c)))`.
 """
 function fma_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
@@ -139,18 +132,13 @@ function fma_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
      t, z = add_hilo(c, z)
      t, u = add_hilo(y, t)
      y = ((t - x) + u)
-     y, z = add_maxmin_hilo(y, z)@inline function add_hilo(a::T, b::T) where {T<:AbstractFloat}
-    s = a + b
-    v = s - a
-    e = (a - (s - v)) + (b - v)
-    return s, e
-end
-
+     y, z = add_maxmin_hilo(y, z)
      return x, y, z
 end
 
 """
     fms_hilo(a, b, c) => (x, y, z)
+
 Computes `x = fl(fms(a, b, c))` and `y, z = fl(err(fms(a, b, c)))`.
 """
 @inline function fms_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
