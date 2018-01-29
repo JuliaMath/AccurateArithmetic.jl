@@ -16,6 +16,6 @@ end
 
 include("errorfree.jl")
 include("faithful.jl")
-include("compensated/sum.jl")
+include("compensated.jl")
 
 end # module AccurateArithmetic
