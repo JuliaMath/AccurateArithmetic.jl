@@ -2,10 +2,9 @@ module AccurateArithmetic
 
 export add_acc, add_hilo_acc,
        sub_acc, sub_hilo_acc,
-       sqr_acc, cub_acc,
+       sqr_acc, sqrt_acc, cub_acc,
        mul_acc, mul3acc,
-       sqrt_acc, inv_acc,
-       div_acc,
+       inv_acc, div_acc,
        fma_acc, fms_acc, 
        sum_acc,
 
