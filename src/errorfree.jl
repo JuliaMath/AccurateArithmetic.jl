@@ -11,7 +11,7 @@ function add_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_hilo(b, c)
     x, u = add_hilo(a, s)
     y, z = add_hilo(u, t)
-    x, y = add_maxmin_hilo(x, y)
+    x, y = add_hilo_hilo(x, y)
     return x, y, z
 end
 
@@ -22,7 +22,7 @@ function add_hilo(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     a,  t3 = add_hilo(t0,  d)
     t0, t1 = add_hilo(t1, t2)
     b,  t2 = add_hilo(t0, t3)
-    c,  d  = add_maxmin_hilo(t1, t2)
+    c,  d  = add_hilo_hilo(t1, t2)
     return a, b, c, d
 end
 
@@ -43,32 +43,32 @@ function sub_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
 end
 
 # this is QuickTwoSum, requires abs(a) >= abs(b)
-@inline function add_maxmin_hilo(a::T, b::T) where {T<:AbstractFloat}
+@inline function add_hilo_hilo(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
     e = b - (s - a)
     return s, e
 end
 
-function add_maxmin_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
-    s, t = add_maxmin_hilo(b, c)
-    x, u = add_maxmin_hilo(a, s)
-    y, z = add_maxmin_hilo(u, t)
-    x, y = add_maxmin_hilo(x, y)
+function add_hilo_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = add_hilo_hilo(b, c)
+    x, u = add_hilo_hilo(a, s)
+    y, z = add_hilo_hilo(u, t)
+    x, y = add_hilo_hilo(x, y)
     return x, y, z
 end
 
 # this is QuickTwoDiff, requires abs(a) >= abs(b)
-@inline function sub_maxmin_hilo(a::T, b::T) where {T<:AbstractFloat}
+@inline function sub_hilo_hilo(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
     e = (a - s) - b
     s, e
 end
 
-function sub_maxmin_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
-    s, t = sub_maxmin_hilo(-b, c)
-    x, u = add_maxmin_hilo(a, s)
-    y, z = add_maxmin_hilo(u, t)
-    x, y = add_maxmin_hilo(x, y)
+function sub_hilo_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = sub_hilo_hilo(-b, c)
+    x, u = add_hilo_hilo(a, s)
+    y, z = add_hilo_hilo(u, t)
+    x, y = add_hilo_hilo(x, y)
     return x, y, z
 end
 
@@ -111,8 +111,8 @@ end
     hi, lo = sqr_hilo(a)
     hihi, _hilo = mul_hilo(hi, a)
     lohi, lolo = mul_hilo(lo, a)
-    _hilo, lohi = add_maxmin_hilo(_hilo, lohi)
-    hi, lo = add_maxmin_hilo(hihi, _hilo)
+    _hilo, lohi = add_hilo_hilo(_hilo, lohi)
+    hi, lo = add_hilo_hilo(hihi, _hilo)
     lo += lohi + lolo
     return hi, lo
 end
@@ -134,7 +134,7 @@ function fma_hilo(a::T, b::T, c::T) where {T<:AbstractFloat}
      t, z = add_hilo(c, z)
      t, u = add_hilo(y, t)
      y = ((t - x) + u)
-     y, z = add_maxmin_hilo(y, z)
+     y, z = add_hilo_hilo(y, z)
      return x, y, z
 end
 
