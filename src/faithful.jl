@@ -1,9 +1,9 @@
 """
-    recip(a)
+    inv_hilo(a)
     
-1/a --> (hi_part, lo_part)
+
 """
-function recip(b::T) where {T<:AbstractFloat}
+function inv_hilo(b::T) where {T<:AbstractFloat}
     hi = inv(b)
     v = hi * b
     w = fma(hi, b, -v)
@@ -12,12 +12,12 @@ function recip(b::T) where {T<:AbstractFloat}
 end
 
 """
-    divide(a, b)
+    div_hilo(a, b)
     
 a/b --> (hi_part, lo_part)
 divide(a,b) == quohi as (hi, lo) (a)/(b) 
 """
-function divide(a::T, b::T) where {T<:AbstractFloat}
+function div_hilo(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
     v = hi * b
     w = fma(hi, b, -v)
