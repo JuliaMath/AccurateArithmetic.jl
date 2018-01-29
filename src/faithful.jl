@@ -15,7 +15,7 @@ end
     div_hilo(a, b)
     
 a/b --> (hi_part, lo_part)
-divide(a,b) == quohi as (hi, lo) (a)/(b) 
+div_hilo(a,b) == quohi as (hi, lo) (a)/(b) 
 """
 function div_hilo(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
@@ -27,7 +27,7 @@ end
 
 
 """
-    sqrt_root(a)
+    sqrt uses _root(a)
     
 sqrt(a) == Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
