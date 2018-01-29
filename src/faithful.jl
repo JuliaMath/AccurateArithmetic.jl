@@ -1,9 +1,9 @@
 """
-    inv_err(a)
+    recip(a)
     
-Computes `q = fl(inv(a))` and `e = err(inv(a))`.
+1/a --> (hi_part, lo_part)
 """
-function inv_hilo(b::T) where {T<:AbstractFloat}
+function recip(b::T) where {T<:AbstractFloat}
     hi = inv(b)
     v = hi * b
     w = fma(hi, b, -v)
@@ -12,11 +12,12 @@ function inv_hilo(b::T) where {T<:AbstractFloat}
 end
 
 """
-    div_hilo(a, b)
-
-Computes `q = fl(a/b)` and `e = err(a/b)`.
+    divide(a, b)
+    
+a/b --> (hi_part, lo_part)
+divide(a,b) == quohi as (hi, lo) (a)/(b) 
 """
-function div_hilo(a::T, b::T) where {T<:AbstractFloat}
+function divide(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
     v = hi * b
     w = fma(hi, b, -v)
@@ -26,9 +27,9 @@ end
 
 
 """
-    sqrt_hilo(a)
+    sqrt_root(a)
     
-Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
+sqrt(a) == Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
 function sqrt_hilo(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
