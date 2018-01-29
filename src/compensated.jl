@@ -14,11 +14,6 @@ function do_sum_hilo(n::Int, x::A) where {T, N, A<:AbstractArray{T,N}}
        hi, low = add_acc(hi, x[i])
        lo += low
    end
-   hi, lo = add_hilo_acc(hi, lo)
+   hi, lo = add_maxmin_hilo(hi, lo)
    return hi, lo
 end
-
-
-       
-   
-   
