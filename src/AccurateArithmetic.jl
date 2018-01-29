@@ -14,7 +14,7 @@ else
     const IEEEFloat = Union{Float64, Float32, Float16}
 end
 
-include("errorfree/addsubmul.jl")
+include("errorfree.jl")
 include("faithful/divsqrt.jl")
 include("compensated/sum.jl")
 
