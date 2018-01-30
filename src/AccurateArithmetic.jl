@@ -1,12 +1,13 @@
 module AccurateArithmetic
 
-export add, add_hilo,
-       sub, sub_hilo,
-       sqr, sqrt, cub,
-       mul_3, mul,
-       acc_inv, acc_div,
-       fma_hilo, fms_hilo,
-       sum_hilo
+export add_acc, add_hilo_acc,
+       sub_acc, sub_hilo_acc,
+       sqr_acc, cub_acc,
+       sqrt_acc,
+       mul_acc, mul_acc3,
+       inv_acc, div_acc,
+       fma_acc, fms_acc,
+       sum_acc
 
 if VERSION >= v"0.7.0-"
     import Base.IEEEFloat

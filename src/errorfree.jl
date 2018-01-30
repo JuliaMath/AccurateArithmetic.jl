@@ -1,5 +1,5 @@
 # this is "TwoSum"
-@inline function add(a::T, b::T) where {T<:AbstractFloat}
+@inline function add_acc(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
     v = s - a
     e = (a - (s - v)) + (b - v)
@@ -7,37 +7,37 @@
 end
 
 # ThreeSum
-function add(a::T,b::T,c::T) where {T<:AbstractFloat}
-    s, t = add(b, c)
-    x, u = add(a, s)
-    y, z = add(u, t)
+function add_acc(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = add_acc(b, c)
+    x, u = add_acc(a, s)
+    y, z = add_acc(u, t)
     x, y = add_hilo(x, y)
     return x, y, z
 end
 
 # FourSum
-function add(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
-    t0, t1 = add(a ,  b)
-    t0, t2 = add(t0,  c)
-    a,  t3 = add(t0,  d)
-    t0, t1 = add(t1, t2)
-    b,  t2 = add(t0, t3)
+function add_acc(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = add_acc(a ,  b)
+    t0, t2 = add_acc(t0,  c)
+    a,  t3 = add_acc(t0,  d)
+    t0, t1 = add_acc(t1, t2)
+    b,  t2 = add_acc(t0, t3)
     c,  d  = add_hilo(t1, t2)
     return a, b, c, d
 end
 
 # this is TwoDiff
-@inline function sub(a::T, b::T) where {T<:AbstractFloat}
+@inline function sub_acc(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
     v = s - a
     e = (a - (s - v)) - (b + v)
     return s, e
 end
 
-function sub(a::T, b::T, c::T) where {T<:AbstractFloat}
-    s, t = sub(-b, c)
-    x, u = add(a, s)
-    y, z = add(u, t)
+function sub_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+    s, t = sub_acc(-b, c)
+    x, u = add_acc(a, s)
+    y, z = add_acc(u, t)
     x, y = add_hilo(x, y)
     return x, y, z
 end
@@ -73,44 +73,44 @@ function sub_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
 end
 
 # this is TwoProdFMA
-@inline function mul(a::T, b::T) where {T<:AbstractFloat}
+@inline function mul_acc(a::T, b::T) where {T<:AbstractFloat}
     p = a * b
-    e = fma(a, b, -p)
+    e = fma_acc(a, b, -p)
     p, e
 end
 
-function mul(a::T, b::T, c::T) where {T<:AbstractFloat}
-    y, z = mul(a, b)
-    x, y = mul(y, c)
-    z, t = mul(z, c)
+function mul_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+    y, z = mul_acc(a, b)
+    x, y = mul_acc(y, c)
+    z, t = mul_acc(z, c)
     return x, y, z, t
 end
 
 """
-    mul_3(a, b, c)
+    mul_acc3(a, b, c)
 
-similar to mul(a, b, c)
+similar to mul_acc(a, b, c)
 returns a three tuple
 """
-function mul_3(a::T, b::T, c::T) where {T<:AbstractFloat}
-    y, z = mul(a, b)
-    x, y = mul(y, c)
+function mul_acc3(a::T, b::T, c::T) where {T<:AbstractFloat}
+    y, z = mul_acc(a, b)
+    x, y = mul_acc(y, c)
     z    *= c
     return x, y, z
 end
 
 # a squared
-@inline function sqr(a::T) where {T<:AbstractFloat}
+@inline function sqr_acc(a::T) where {T<:AbstractFloat}
     p = a * a
-    e = fma(a, a, -p)
+    e = fma_acc(a, a, -p)
     p, e
 end
 
 # a cubed
 @inline function cub(a::T) where {T<:AbstractFloat}
-    hi, lo = sqr(a)
-    hihi, _hilo = mul(hi, a)
-    lohi, lolo = mul(lo, a)
+    hi, lo = sqr_acc(a)
+    hihi, _hilo = mul_acc(hi, a)
+    lohi, lolo = mul_acc(lo, a)
     _hilo, lohi = add_hilo(_hilo, lohi)
     hi, lo = add_hilo(hihi, _hilo)
     lo += lohi + lolo
@@ -118,32 +118,32 @@ end
 end
 
 #=
-   fma_hilo algorithm from
+   xfma algorithm from
    Sylvie Boldo and Jean-Michel Muller
    Some Functions Computable with a Fused-mac
 =#
 
 """
-    acc_fma(a, b, c) => (x, y, z)
+    fma_acc(a, b, c) => (x, y, z)
 
-Computes `x = fl(fma(a, b, c))` and `y, z = fl(err(fma(a, b, c)))`.
+Computes `x = fl(fma_acc(a, b, c))` and `y, z = fl(err(fma_acc(a, b, c)))`.
 """
-function acc_fma(a::T, b::T, c::T) where {T<:AbstractFloat}
+function fma_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
      x = fma(a, b, c)
-     y, z = mul(a, b)
-     t, z = add(c, z)
-     t, u = add(y, t)
+     y, z = mul_acc(a, b)
+     t, z = add_acc(c, z)
+     t, u = add_acc(y, t)
      y = ((t - x) + u)
      y, z = add_hilo(y, z)
      return x, y, z
 end
 
 """
-    fms_(a, b, c) => (x, y, z)
+    fms_acc(a, b, c) => (x, y, z)
 
-Computes `x = fl(fms(a, b, c))` and `y, z = fl(err(fms(a, b, c)))`.
+Computes `x = fl(xfms_acc(a, b, c))` and `y, z = fl(err(xfms_acc(a, b, c)))`.
 """
-@inline function fms_(a::T, b::T, c::T) where {T<:AbstractFloat}
-     return acc_fma(a, b, -c)
+@inline function fms_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
+     return fma_acc(a, b, -c)
 end
 
