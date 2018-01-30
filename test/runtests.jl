@@ -32,7 +32,7 @@ hi32, lo32 = Floats2(Float32, flbig[4])
 @test mul_acc(hi64, lo64) == Floats2(Float64, BigFloat(hi64)*BigFloat(lo64))
 @test div_acc(hi32, lo32) == Floats2(Float32, BigFloat(hi32)/BigFloat(lo32))
 
-@test sqrt(hi64) == Floats2(Float64, xsqrt(BigFloat(hi64)))
+@test sqrt_acc(hi64) == Floats2(Float64, sqrt_acc(BigFloat(hi64)))
 @test inv_acc(hi32)  == Floats2(Float32, inv(BigFloat(hi32)))
 
 hi64, md64, lo64 = Floats3(Float64, flbig[5])
