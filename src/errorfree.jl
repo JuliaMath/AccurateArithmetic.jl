@@ -11,7 +11,7 @@ function add_acc(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_acc(b, c)
     x, u = add_acc(a, s)
     y, z = add_acc(u, t)
-    x, y = add_hilo(x, y)
+    x, y = add_hilo_acc(x, y)
     return x, y, z
 end
 
@@ -22,7 +22,7 @@ function add_acc(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     a,  t3 = add_acc(t0,  d)
     t0, t1 = add_acc(t1, t2)
     b,  t2 = add_acc(t0, t3)
-    c,  d  = add_hilo(t1, t2)
+    c,  d  = add_hilo_acc(t1, t2)
     return a, b, c, d
 end
 
@@ -38,7 +38,7 @@ function sub_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
     s, t = sub_acc(-b, c)
     x, u = add_acc(a, s)
     y, z = add_acc(u, t)
-    x, y = add_hilo(x, y)
+    x, y = add_hilo_acc(x, y)
     return x, y, z
 end
 
@@ -76,7 +76,7 @@ end
 @inline function mul_acc(a::T, b::T) where {T<:AbstractFloat}
     p = a * b
     e = fma(a, b, -p)
-    p, e
+    return p, e
 end
 
 function mul_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
@@ -103,7 +103,7 @@ end
 @inline function sqr_acc(a::T) where {T<:AbstractFloat}
     p = a * a
     e = fma(a, a, -p)
-    p, e
+    return p, e
 end
 
 # a cubed
@@ -111,14 +111,14 @@ end
     hi, lo = sqr_acc(a)
     hihi, _hilo = mul_acc(hi, a)
     lohi, lolo = mul_acc(lo, a)
-    _hilo, lohi = add_hilo(_hilo, lohi)
-    hi, lo = add_hilo(hihi, _hilo)
+    _hilo, lohi = add_hilo_acc(_hilo, lohi)
+    hi, lo = add_hilo_acc(hihi, _hilo)
     lo += lohi + lolo
     return hi, lo
 end
 
 #=
-   fma algorithm from
+   xfma algorithm from
    Sylvie Boldo and Jean-Michel Muller
    Some Functions Computable with a Fused-mac
 =#
@@ -134,16 +134,15 @@ function fma_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
      t, z = add_acc(c, z)
      t, u = add_acc(y, t)
      y = ((t - x) + u)
-     y, z = add_hilo(y, z)
+     y, z = add_hilo_acc(y, z)
      return x, y, z
 end
 
 """
     fms_acc(a, b, c) => (x, y, z)
 
-Computes `x = fl(xfms_acc(a, b, c))` and `y, z = fl(err(xfms_acc(a, b, c)))`.
+Computes `x = fl(fms_acc(a, b, c))` and `y, z = fl(err(xfms_acc(a, b, c)))`.
 """
 @inline function fms_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
      return fma_acc(a, b, -c)
 end
-
