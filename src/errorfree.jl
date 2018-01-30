@@ -107,7 +107,7 @@ end
 end
 
 # a cubed
-@inline function cub(a::T) where {T<:AbstractFloat}
+@inline function cub_acc(a::T) where {T<:AbstractFloat}
     hi, lo = sqr_acc(a)
     hihi, _hilo = mul_acc(hi, a)
     lohi, lolo = mul_acc(lo, a)
