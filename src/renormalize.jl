@@ -46,12 +46,3 @@ function renorm_inorder(a::T, b::T, c::T) where T<:Real
     return ab, ε
 end
 
-if nargin==3
-    [s1,c] = FastTwoSum(b,c);
-    [a, b] = FastTwoSum(a,s1);
-    s3=0.0;
-    if b~=0
-       [b,c] = FastTwoSum(b,c);
-    else
-       [s1,b] = FastTwoSum(s1,c);
-    end
