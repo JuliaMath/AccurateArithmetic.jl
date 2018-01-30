@@ -75,7 +75,7 @@ end
 # this is TwoProdFMA
 @inline function mul_acc(a::T, b::T) where {T<:AbstractFloat}
     p = a * b
-    e = fma_acc(a, b, -p)
+    e = fma(a, b, -p)
     p, e
 end
 
@@ -102,7 +102,7 @@ end
 # a squared
 @inline function sqr_acc(a::T) where {T<:AbstractFloat}
     p = a * a
-    e = fma_acc(a, a, -p)
+    e = fma(a, a, -p)
     p, e
 end
 
