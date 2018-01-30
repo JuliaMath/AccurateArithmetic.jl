@@ -118,8 +118,7 @@ end
 end
 
 #=
-   x
-   fma algorithm from
+   xfma algorithm from
    Sylvie Boldo and Jean-Michel Muller
    Some Functions Computable with a Fused-mac
 =#
