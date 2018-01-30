@@ -18,10 +18,12 @@ else
     end
 end
 
-if isdefined CONFIRM
-    macro confirm(expr)
-       :(@assert $expr)
-    end
+if @isdefined CONFIRM
+   if !@isdefined confirm
+       macro confirm(expr)
+           :(@assert $expr)
+       end
+   end  
 else
     macro confirm(expr) end
 end
