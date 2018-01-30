@@ -13,8 +13,20 @@ if VERSION >= v"0.7.0-"
     import Base.IEEEFloat
 else
     const IEEEFloat = Union{Float64, Float32, Float16}
+    macro isdefined(x)
+        :(isdefined(Symbol($x)))
+    end
 end
 
+if isdefined CONFIRM
+    macro confirm(expr)
+       :(@assert $expr)
+    end
+else
+    macro confirm(expr) end
+end
+
+include("renormalize.jl")
 include("errorfree.jl")
 include("faithful.jl")
 include("compensated.jl")
