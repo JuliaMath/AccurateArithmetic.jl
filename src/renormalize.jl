@@ -1,5 +1,17 @@
-function renorm_hilo(a::T, b::T) where T<:Real
+function renorm_inorder(a::T, b::T) where T<:Real
      @confirm abs(a) > abs(b)
+     
+     ab = a + b
+     ε  = (a - ab) + b
+     return ab, ε 
+end
+
+
+
+
+function renorm_inorder(a::T, b::T) where T<:Real
+     @confirm abs(a) > abs(b)
+     
      ab = a + b
      ε  = (a - ab) + b
      return ab, ε 
@@ -12,7 +24,9 @@ function renorm(a::T, b::T) where T<:Real
     return ab, ε
 end
 
-function renorm(a::T, b::T, c::T) where T<:Real
+function renorm_inorder(a::T, b::T, c::T) where T<:Real
+    @confirm abs(a) > abs(b) > abs(c)
+     
     ab =  a + b
     B  = ab - a
     ε  = (a - (ab - B)) + (b - B)
