@@ -43,32 +43,32 @@ function sub_acc(a::T, b::T, c::T) where {T<:AbstractFloat}
 end
 
 # this is QuickTwoSum, requires abs(a) >= abs(b)
-@inline function add_hilo(a::T, b::T) where {T<:AbstractFloat}
+@inline function add_hilo_acc(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
     e = b - (s - a)
     return s, e
 end
 
-function add_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
-    s, t = add_hilo(b, c)
-    x, u = add_hilo(a, s)
-    y, z = add_hilo(u, t)
-    x, y = add_hilo(x, y)
+function add_hilo_acc(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = add_hilo_acc(b, c)
+    x, u = add_hilo_acc(a, s)
+    y, z = add_hilo_acc(u, t)
+    x, y = add_hilo_acc(x, y)
     return x, y, z
 end
 
 # this is QuickTwoDiff, requires abs(a) >= abs(b)
-@inline function sub_hilo(a::T, b::T) where {T<:AbstractFloat}
+@inline function sub_hilo_acc(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
     e = (a - s) - b
     s, e
 end
 
-function sub_hilo(a::T,b::T,c::T) where {T<:AbstractFloat}
-    s, t = sub_hilo(-b, c)
-    x, u = add_hilo(a, s)
-    y, z = add_hilo(u, t)
-    x, y = add_hilo(x, y)
+function sub_hilo_acc(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = sub_hilo_acc(-b, c)
+    x, u = add_hilo_acc(a, s)
+    y, z = add_hilo_acc(u, t)
+    x, y = add_hilo_acc(x, y)
     return x, y, z
 end
 
@@ -118,7 +118,7 @@ end
 end
 
 #=
-   xfma algorithm from
+   fma algorithm from
    Sylvie Boldo and Jean-Michel Muller
    Some Functions Computable with a Fused-mac
 =#
