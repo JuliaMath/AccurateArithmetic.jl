@@ -30,9 +30,9 @@ hi32, lo32 = Floats2(Float32, flbig[4])
 @test cub_acc(hi32) == Floats2(Float32, BigFloat(hi32)^3)
 
 @test mul_acc(hi64, lo64) == Floats2(Float64, BigFloat(hi64)*BigFloat(lo64))
-@test div_acc(hi32, lo32) == Floats2(Float32, BigFloat(hi32)/BigFloat(lo32))
+@test xdiv_acc(hi32, lo32) == Floats2(Float32, BigFloat(hi32)/BigFloat(lo32))
 
-@test sqrt_acc(hi64) == Floats2(Float64, xsqrt(BigFloat(hi64)))
+@test xsqrt(hi64) == Floats2(Float64, xsqrt(BigFloat(hi64)))
 @test inv_acc(hi32)  == Floats2(Float32, inv(BigFloat(hi32)))
 
 hi64, md64, lo64 = Floats3(Float64, flbig[5])
@@ -45,4 +45,4 @@ hi32, md32, lo32 = Floats3(Float32, flbig[5])
 @test fms_acc(md32, lo32, hi32) == Floats3(Float32, BigFloat(md32) * BigFloat(lo32) - BigFloat(hi32))
 
 flbig64s = map(BigFloat, fl64s)
-@test sum_acc(fl64s) == Floats2(Float64, sum(flbig64s))
+@test sum_(fl64s) == Floats2(Float64, sum(flbig64s))
