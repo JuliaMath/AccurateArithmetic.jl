@@ -1,11 +1,11 @@
 module AccurateArithmetic
 
-export add_hilo, add_hilo_hilo,
-       sub_hilo, sub_hilo_hilo,
-       sqr_hilo, sqrt_hilo, cub_hilo,
-       mul_hilo, mul3hilo,
-       inv_hilo, div_hilo,
-       fma_hilo, fms_hilo, 
+export add, add_hilo,
+       sub, sub_hilo,
+       sqr, sqrt, cub,
+       mul_3, mul,
+       acc_inv, acc_div,
+       fma_hilo, fms_hilo,
        sum_hilo
 
 if VERSION >= v"0.7.0-"

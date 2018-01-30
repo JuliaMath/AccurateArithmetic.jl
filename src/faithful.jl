@@ -1,9 +1,9 @@
 """
-    inv_hilo(a)
-    
+    acc_inv(a)
+
 
 """
-function inv_hilo(b::T) where {T<:AbstractFloat}
+function acc_inv(b::T) where {T<:AbstractFloat}
     hi = inv(b)
     v = hi * b
     w = fma(hi, b, -v)
@@ -12,12 +12,12 @@ function inv_hilo(b::T) where {T<:AbstractFloat}
 end
 
 """
-    div_hilo(a, b)
-    
+    acc_div(a, b)
+
 a/b --> (hi_part, lo_part)
-div_hilo(a,b) == quohi as (hi, lo) (a)/(b) 
+acc_div(a,b) == quohi as (hi, lo) (a)/(b)
 """
-function div_hilo(a::T, b::T) where {T<:AbstractFloat}
+function acc_div(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
     v = hi * b
     w = fma(hi, b, -v)
@@ -27,11 +27,11 @@ end
 
 
 """
-    sqrt_hilo(a)
-    
+    sqrt(a)
+
 sqrt(a) == Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
-function sqrt_hilo(a::T) where {T<:AbstractFloat}
+function sqrt(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
     lo = fma(-hi, hi, a) / (hi + hi)
     return hi, lo
@@ -49,7 +49,7 @@ we can expect in the working precision."
 
 While the sqrt algorithm is not strictly an errorfree transformation,
 it is known to be reliable and is recommended for general use.
-"Augmented precision square roots, 2-D norms and 
+"Augmented precision square roots, 2-D norms and
    discussion on correctly reounding sqrt(x^2 + y^2)"
 by Nicolas Brisebarre, Mioara Joldes, Erik Martin-Dorel,
    Hean-Michel Muller, Peter Kornerup
