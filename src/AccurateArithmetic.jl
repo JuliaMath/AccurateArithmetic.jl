@@ -25,6 +25,7 @@ else
 end
 
 
+include("twoarith.jl")
 include("renormalize.jl")
 include("errorfree.jl")
 include("faithful.jl")
