@@ -43,7 +43,7 @@ __unchecked precondition__: abs(a) >= abs(b).
 end
 
 
-function two_prod(a::T, b::T) where T<:Real
+@inline function two_prod(a::T, b::T) where T<:Real
     ab =  a * b
     ε  = fma(a, b, -ab)
     return ab, ε
