@@ -27,7 +27,7 @@ end
 
 
 """
-    fast_two_sum(x, y)::(a, b)
+    fast_two_diff(x, y)::(a, b)
 
 { ab  =  a - b,  ε  = (a - ab) + b }
 
