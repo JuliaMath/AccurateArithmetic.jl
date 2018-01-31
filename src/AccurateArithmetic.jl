@@ -1,13 +1,15 @@
 module AccurateArithmetic
 
-export add_acc, add_hilo_acc,
-       sub_acc, sub_hilo_acc,
-       sqr_acc, cub_acc,
-       sqrt_acc,
-       mul_acc, mul_acc3,
-       inv_acc, div_acc,
-       fma_acc, fms_acc,
-       sum_acc
+#=
+     These exported functions are named with a trailing underscore ('_').
+     Evaluating as multipart values, the '_' indicates this extra accuracy.
+=#
+
+export add_, sub_, sum_,
+       sqr_, cub_, mul_,
+       fma_, fms_,
+       sqrt_, inv_, div_,
+
 
 if VERSION >= v"0.7.0-"
     import Base.IEEEFloat
