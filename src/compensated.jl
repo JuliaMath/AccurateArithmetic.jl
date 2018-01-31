@@ -1,19 +1,19 @@
-function sum_acc(x::A) where {T, N, A<:AbstractArray{T,N}}
+function sum_(x::A) where {T, N, A<:AbstractArray{T,N}}
     n = length(x)
     if n < 2
         iszero(n) && return zero(T)
         isone(n)  && return x[1]
     end
-    return do_sum_acc(n, x)
+    return summation_(n, x)
 end
 
-function do_sum_acc(n::Int, x::A) where {T, N, A<:AbstractArray{T,N}}
+function summation_(n::Int, x::A) where {T, N, A<:AbstractArray{T,N}}
    hi = x[1]
    lo = zero(T)
    for i in 2:n
-       hi, low = add_acc(hi, x[i])
+       hi, low = add_(hi, x[i])
        lo += low
    end
-   hi, lo = add_hilo(hi, lo)
+   hi, lo = add_hilo_(hi, lo)
    return hi, lo
 end
