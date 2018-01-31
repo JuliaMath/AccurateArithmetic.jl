@@ -17,6 +17,7 @@ end
 a/b --> (hi_part, lo_part)
 div_(a,b) == quohi as (hi, lo) (a)/(b)
 """
+#=
 function div_(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
     v = hi * b
@@ -24,7 +25,13 @@ function div_(a::T, b::T) where {T<:AbstractFloat}
     lo = (a - v - w) / b
     return hi, lo
 end
-
+=#
+# !?! `y` must be negated to get the right result
+function div_2(a::T, b::T) where {T<:AbstractFloat}
+     x = a / b
+     y = -(fma(x, b, -a) / b)
+     return x, y
+end
 
 """
     sqrt_(a)
