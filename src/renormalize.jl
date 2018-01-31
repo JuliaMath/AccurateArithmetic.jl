@@ -39,6 +39,18 @@ function renorm_inorder(a::T, b::T) where T<:Real
      return ab, ε 
 end
 
+function renorm_inorder(a::T, b::T, c::T) where T<:Real
+     @confirm abs(a) >= abs(b) >= abs(c)
+  
+    t₁, t₂ = FastTwoSum(b, c)
+    t₃, t₁ = FastTwoSum(a, t₁)
+    t₁, t₂ = FastTwoSum(t₁,t₂)
+  
+    return t₁, t₂, t₃
+end
+
+
+
 function renorm(a::T, b::T) where T<:Real
     ab =  a + b
     B  = ab - a
