@@ -1,8 +1,11 @@
 """
     fast_two_sum(a, b)
 
+- ab = a + b  
+- ε  = a + b - ab    
+- ab + ε == ab
+- ab ⊕ ε == a ⊕ b    
 
-a ⊕ b == ab ⊕ ε &nbsp; and &nbsp; ab + ε == ab
 """
 function fast_two_sum(a::T, b::T) where T<:Real
      @confirm abs(a) > abs(b)
