@@ -1,3 +1,9 @@
+"""
+    fast_two_sum(a, b)
+
+
+a ⊕ b == ab ⊕ ε &nbsp; and &nbsp; ab + ε == ab
+"""
 function fast_two_sum(a::T, b::T) where T<:Real
      @confirm abs(a) > abs(b)
      
