@@ -1,3 +1,8 @@
+# use HiLo as first arg to renorm when values
+# are ordered by decreasing magnitude
+struct HiLo end  
+
+
 """
     fast_two_sum(a, b)
 
@@ -7,7 +12,7 @@
 - ab ⊕ ε == a ⊕ b    
 
 """
-function fast_two_sum(a::T, b::T) where T<:Real
+@inline function fast_two_sum(a::T, b::T) where T<:Real
      @confirm abs(a) > abs(b)
      
      ab = a + b
@@ -29,22 +34,19 @@ function two_prod(a::T, b::T) where T<:Real
 end
 
 
-
-
-function renorm_inorder(a::T, b::T) where T<:Real
+function renorm(::HiLo}, a::T, b::T) where T<:Real
      @confirm abs(a) > abs(b)
-     
-     ab = a + b
-     ε  = (a - ab) + b
-     return ab, ε 
+     return fast_two_sum(a, b)
+
 end
 
-function renorm_inorder(a::T, b::T, c::T) where T<:Real
+
+function renoer(a::T, b::T, c::T) where T<:Real
      @confirm abs(a) >= abs(b) >= abs(c)
   
-    t₁, t₂ = FastTwoSum(b, c)
-    t₃, t₁ = FastTwoSum(a, t₁)
-    t₁, t₂ = FastTwoSum(t₁,t₂)
+    t₁, t₂ = fast_two_sum(b, c)
+    t₃, t₁ = fast_two_sum(a, t₁)
+    t₁, t₂ = fast_two_sum(t₁,t₂)
   
     return t₁, t₂, t₃
 end
