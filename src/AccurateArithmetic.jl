@@ -1,10 +1,16 @@
 module AccurateArithmetic
 
-#=
-     These exported functions are named with a trailing underscore ('_').
-     Evaluating as multipart values, the '_' indicates this extra accuracy.
-=#
 
+export
+#=
+       These functions appear in the literature, named similarly.
+=#
+       two_sum, two_diff, two_prod, 
+       fast_two_sum, fast_two_diff,
+#=
+     These functions evaluate as multipart floats.
+     The trailing '_' signifies this extra accuracy.
+=#
 export add_, sub_, add_hilo_, sub_hilo_, 
        sqr_, cub_, mul_,
        fma_, fms_,
