@@ -16,12 +16,8 @@ struct Sorted end
 """
     fast_two_sum(x, y)::(a, b)
 
-|  ε  = (a - ab) + b
-|  return ab, ε 
-
-- a + b === a
-
-- a ⊕ b === x ⊕ y
+|  ab  =  a + b
+|  ε   = (a - ab) + b
 
 """
 @inline function fast_two_sum(a::T, b::T) where T<:Real
