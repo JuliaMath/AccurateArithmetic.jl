@@ -1,9 +1,9 @@
 """
-    inv_acc(a)
+    inv_(a)
 
 
 """
-function inv_acc(b::T) where {T<:AbstractFloat}
+function inv_(b::T) where {T<:AbstractFloat}
     hi = inv(b)
     v = hi * b
     w = fma(hi, b, -v)
@@ -12,12 +12,12 @@ function inv_acc(b::T) where {T<:AbstractFloat}
 end
 
 """
-    div_acc(a, b)
+    div_(a, b)
 
 a/b --> (hi_part, lo_part)
-div_acc(a,b) == quohi as (hi, lo) (a)/(b)
+div_(a,b) == quohi as (hi, lo) (a)/(b)
 """
-function div_acc(a::T, b::T) where {T<:AbstractFloat}
+function div_(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
     v = hi * b
     w = fma(hi, b, -v)
@@ -27,11 +27,11 @@ end
 
 
 """
-    sqrt_acc(a)
+    sqrt_(a)
 
-sqrt_acc(a) == Computes `r = fl(xsqrt(a))` and `e = err(xsqrt(a))`.
+sqrt_(a) == Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
-function sqrt_acc(a::T) where {T<:AbstractFloat}
+function sqrt_(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
     lo = fma(-hi, hi, a) / (hi + hi)
     return hi, lo
