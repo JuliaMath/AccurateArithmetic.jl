@@ -35,7 +35,7 @@ __unchecked precondition__: abs(a) >= abs(b).
 """
 @inline function fast_two_diff(a::T, b::T) where T<:Real
      
-     ab = a + b
+     ab = a - b
      ε  = a + b - ab
      return ab, ε
 end
