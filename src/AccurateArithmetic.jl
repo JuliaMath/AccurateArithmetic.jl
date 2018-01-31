@@ -11,7 +11,7 @@ export
      These functions evaluate as multipart floats.
      The trailing '_' signifies this extra accuracy.
 =#
-export add_, sub_, add_hilo_, sub_hilo_, 
+       add_, sub_, add_hilo_, sub_hilo_, 
        sqr_, cub_, mul_,
        fma_, fms_,
        sqrt_, inv_, div_,
