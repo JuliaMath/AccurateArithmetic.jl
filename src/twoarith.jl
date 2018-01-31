@@ -10,13 +10,11 @@ end
 """
     fast_two_sum(x, y)::(a, b)
 
-|  ab  =  a + b
-|  ε   = (a - ab) + b
+{ ab  =  a + b,  ε  = (a - ab) + b }
 
+__unchecked precondition__: abs(a) >= abs(b).
 """
 @inline function fast_two_sum(a::T, b::T) where T<:Real
-     @confirm abs(a) > abs(b)
-     
      ab = a + b
      ε  = a + b - ab
      return ab, ε
