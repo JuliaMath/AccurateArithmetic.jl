@@ -33,7 +33,7 @@ hi32, lo32 = Floats2(Float32, flbig[4])
 @test div_(hi32, lo32) == Floats2(Float32, BigFloat(hi32)/BigFloat(lo32))
 
 @test sqrt_(hi64) == Floats2(Float64, sqrt_(BigFloat(hi64)))
-@test inv_(hi32)  == Floats2(Float32, inv(BigFloat(hi32)))
+@test inv_(hi32)  == Floats2(Float32, inv_(BigFloat(hi32)))
 
 hi64, md64, lo64 = Floats3(Float64, flbig[5])
 hi32, md32, lo32 = Floats3(Float32, flbig[5])
