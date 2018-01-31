@@ -5,10 +5,11 @@ module AccurateArithmetic
      Evaluating as multipart values, the '_' indicates this extra accuracy.
 =#
 
-export add_, sub_, sum_,
+export add_, sub_, add_hilo_, sub_hilo_, 
        sqr_, cub_, mul_,
        fma_, fms_,
        sqrt_, inv_, div_,
+       sum_ 
 
 
 if VERSION >= v"0.7.0-"
