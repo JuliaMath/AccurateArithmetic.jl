@@ -12,28 +12,33 @@
 struct Sorted end
 
 
+renorm(a::T) where T<:Real = a
 
+renorm(a::T, b::T) where T<:Real = two_sum(a, b)
 
-function renorm(a::T, b::T) where T<:Real
-     return two_sum(a, b)
+renorm(::Type{Sorted}, a::T, b::T) where T<:Real = quick_two_sum(a, b)
+
+function renorm(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = two_sum(b, c)
+    x, u = two_sum(a, s)
+    y, z = two_sum(u, t)
+    x, y = quick_two_sum(x, y)
+    return x, y, z
 end
 
-function renorm(::Type{Sorted}, a::T, b::T) where T<:Real
-     return fast_two_sum(a, b)
+
+
+function add_(::Type{Sorted}, a::T,b::T,c::T) where {T<:Real}
+    s, t = quick_two_sum(b, c)
+    x, u = quick_two_sum(a, s)
+    y, z = quick_two_sum(u, t)
+    x, y = quick_two_sum(x, y)
+    return x, y, z
 end
 
-function renorm(a::T, b::T, c::T) where T<:Real  
-    t₁, t₂ = two_sum(b, c)
-    t₃, t₁ = two_sum(a, t₁)
-    t₁, t₂ = fast_two_sum(t₁,t₂)
-  
-    return t₁, t₂, t₃
-end
-
-function renorm(::Type{Sorted}, a::T, b::T, c::T) where T<:Real
-    t₁, t₂ = fast_two_sum(b, c)
-    t₃, t₁ = fast_two_sum(a, t₁)
-    t₁, t₂ = fast_two_sum(t₁,t₂)
-  
-    return t₁, t₂, t₃
+function mul_3{T<:AbstractFloat}(a::T, b::T, c::T)
+    p, e = mul_(a, b)
+    x, p = mul_(p, c)
+    y, z = mul_(e, c)
+    return x, y, z
 end
