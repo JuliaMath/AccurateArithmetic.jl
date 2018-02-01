@@ -42,6 +42,14 @@ function sub_(a::T, b::T, c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+
+
+
+
+
+
+
+
 # this is QuickTwoSum, requires abs(a) >= abs(b)
 @inline function add_hilo_(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
