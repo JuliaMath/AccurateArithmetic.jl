@@ -11,7 +11,7 @@ function add_(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_(b, c)
     x, u = add_(a, s)
     y, z = add_(u, t)
-    x, y = add_hilo_(x, y)
+    x, y = add_(x, y)
     return x, y, z
 end
 
@@ -22,7 +22,7 @@ function add_(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     a,  t3 = add_(t0,  d)
     t0, t1 = add_(t1, t2)
     b,  t2 = add_(t0, t3)
-    c,  d  = add_hilo_(t1, t2)
+    c,  d  = add_(t1, t2)
     return a, b, c, d
 end
 
@@ -38,7 +38,7 @@ function sub_(a::T, b::T, c::T) where {T<:AbstractFloat}
     s, t = sub_(-b, c)
     x, u = add_(a, s)
     y, z = add_(u, t)
-    x, y = add_hilo(x, y)
+    x, y = add_(x, y)
     return x, y, z
 end
 
