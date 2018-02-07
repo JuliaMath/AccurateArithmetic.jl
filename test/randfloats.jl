@@ -42,7 +42,7 @@ for (U,F) in ((:UInt64, :Float64), (:UInt32, :Float32), (:UInt16, :Float16))
                    result[i] = copysign(result[i], signs[i])
                end
             end
-            return n==1 ? result[1] : result
+            return result
         end
     end
 end
