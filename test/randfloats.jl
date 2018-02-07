@@ -1,4 +1,4 @@
-#= for significands in [1, 2)
+#= for significands in [1, 2), exponents are powers of 2
 exponent_max(::Type{Float16})  =   15
 exponent_max(::Type{Float32})  =  127
 exponent_max(::Type{Float64})  = 1023
