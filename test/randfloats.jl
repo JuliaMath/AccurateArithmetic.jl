@@ -15,7 +15,7 @@ for (U,F) in ((:UInt64, :Float64), (:UInt32, :Float32), (:UInt16, :Float16))
             end
             return r
         end
-        function randfloat(::Type{$F}, n::Int, emin::Int=exponent_min($F), emax::Int=exponent_max($F), signed::Bool=false)
+        function randfloat(::Type{$F}, n::Int=1; emin::Int=exponent_min($F), emax::Int=exponent_max($F), signed::Bool=false)
             emin, emax = minmax(emin, emax)
             emin = max(exponent_min($F), emin)
             emax = min(exponent_max($F), emax)
@@ -32,7 +32,7 @@ for (U,F) in ((:UInt64, :Float64), (:UInt32, :Float32), (:UInt16, :Float16))
                    result[i] = copysign(result[i], rand(-1:2:1))
                end
             end
-            return result
+            return n==1 ? result[1] : result
         end
     end
 end
