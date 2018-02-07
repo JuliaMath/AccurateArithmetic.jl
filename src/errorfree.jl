@@ -26,6 +26,22 @@ function add_(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     return a, b, c, d
 end
 
+# FiveSum
+function add_(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+    t0, t4 = add_(y, z)
+    t0, t3 = add_(x, t0)
+    t0, t2 = add_(w, t0)
+    a, t1  = add_(v, t0)
+    t0, t3 = add_(t3, t4)
+    t0, t2 = add_(t2, t0)
+    b, t1  = add_(t1, t0)
+    t0, t2 = add_(t2, t3)
+    c, t1  = add_(t1, t0)
+    d, e   = add_(t1, t2)
+    return a, b, c, d, e
+end
+
+
 # this is TwoDiff
 @inline function sub_(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
@@ -43,26 +59,46 @@ function sub_(a::T, b::T, c::T) where {T<:AbstractFloat}
 end
 
 
-
-
-
-
-
-
-
-# this is QuickTwoSum, requires abs(a) >= abs(b)
+# this is QuickTwoSum, presumes abs(a) >= abs(b)
 @inline function add_hilo_(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
     e = b - (s - a)
     return s, e
 end
 
+# QuickThreeSum, presumes abs(a) >= abs(b) >= abs(c)
 function add_hilo_(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_hilo_(b, c)
     x, u = add_hilo_(a, s)
     y, z = add_hilo_(u, t)
     x, y = add_hilo_(x, y)
     return x, y, z
+end
+
+# QuickFourSum, presumes abs(a) >= abs(b) >= abs(c) >= abs(d)
+function add_hilo_(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = add_hilo_(a ,  b)
+    t0, t2 = add_hilo_(t0,  c)
+    a,  t3 = add_hilo_(t0,  d)
+    t0, t1 = add_hilo_(t1, t2)
+    b,  t2 = add_hilo_(t0, t3)
+    c,  d  = add_hilo_(t1, t2)
+    return a, b, c, d
+end
+
+# QuickFiveSum presumes abs(a) >= abs(b) >= abs(c) >= abs(d) >= abs(e)
+function add_hilo_(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+    t0, t4 = add_hilo_(y, z)
+    t0, t3 = add_hilo_(x, t0)
+    t0, t2 = add_hilo_(w, t0)
+    a, t1  = add_hilo_(v, t0)
+    t0, t3 = add_hilo_(t3, t4)
+    t0, t2 = add_hilo_(t2, t0)
+    b, t1  = add_hilo_(t1, t0)
+    t0, t2 = add_hilo_(t2, t3)
+    c, t1  = add_hilo_(t1, t0)
+    d, e   = add_hilo_(t1, t2)
+    return a, b, c, d, e
 end
 
 # this is QuickTwoDiff, requires abs(a) >= abs(b)
