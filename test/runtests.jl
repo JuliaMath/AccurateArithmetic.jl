@@ -8,6 +8,7 @@ end
 
 srand(1602)
 include("bigfloats.jl")
+include("randfloats.jl")
 
 const nrands = 16
 const flbig = randbf(nrands)
