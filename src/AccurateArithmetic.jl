@@ -11,13 +11,13 @@ export
      These functions evaluate as multipart floats.
      The trailing '_' signifies this extra accuracy.
 =#
-       add_, sub_, add_hilo_, sub_hilo_,
-       add_2, add_3,
-       sqr_, cub_2, cub_3, 
-       mul_, mul_2, mul_3,
-       fma_, fms_,
-       sqrt_, inv_, div_,
-       sum_ 
+       add_, sub_, add_hilo_, sub_hilo_, 
+       sqr_, cub_, sqrt_, mul_, inv_, div_,
+       sum_
+       add_2, add_3, add_4, add_5,
+       add_hilo_2, add_hilo_3, add_hilo_4, add_hilo_5,
+       sqr_2, cub_2, cub_3, mul_2, mul_3,
+       sqrt_2, inv_2, div_2
 
 
 if VERSION >= v"0.7.0-"
