@@ -207,14 +207,20 @@ end
 end
 
 # a cubed
-@inline function cub_(a::T) where {T<:AbstractFloat}
-    hi, lo = sqr_(a)
-    hihi, _hilo = mul_(hi, a)
-    lohi, lolo = mul_(lo, a)
-    _hilo, lohi = add_hilo_(_hilo, lohi)
-    hi, lo = add_hilo_(hihi, _hilo)
-    lo += lohi + lolo
-    return hi, lo
+function cub_2(a::T) where {T<:AbstractFloat}
+    y = a*a; z = fma(a, a, -y)
+    x = y*a; y = fma(y, a, -x)
+    z = fma(z,a,y)
+    return x, z
+end 
+
+function cub_3(a::T) where {T<:AbstractFloat}
+    y, z = mul_(a, a)
+    x, y = mul_(y, a)
+    z, t = mul_(z, a)
+    y, z = add_hilo_(y, z)
+    z += t
+    return x, y, z
 end
 
 #=
