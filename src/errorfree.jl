@@ -6,6 +6,10 @@
     return s, e
 end
 
+@inline function add_2(a::T, b::T) where {T<:AbstractFloat}
+    return add_(a, b)
+end
+
 # ThreeSum
 function add_(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_(b, c)
@@ -13,6 +17,18 @@ function add_(a::T,b::T,c::T) where {T<:AbstractFloat}
     y, z = add_(u, t)
     x, y = add_(x, y)
     return x, y, z
+end
+
+@inline function add_3(a::T, b::T, c::T) where {T<:AbstractFloat}
+    return add_(a, b, c)
+end
+
+function add_2(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = add_(b, c)
+    x, u = add_(a, s)
+    y    = u + t
+    x, y = add_(x, y)
+    return x, y
 end
 
 # FourSum
@@ -24,6 +40,25 @@ function add_(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     b,  t2 = add_(t0, t3)
     c,  d  = add_(t1, t2)
     return a, b, c, d
+end
+
+function add_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = add_(a ,  b)
+    t0, t2 = add_(t0,  c)
+    a,  t3 = add_(t0,  d)
+    t0  = t1 + t2
+    b   = t0 + t3
+    return a, b
+end
+
+function add_3(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = add_(a ,  b)
+    t0, t2 = add_(t0,  c)
+    a,  t3 = add_(t0,  d)
+    t0, t1 = add_(t1, t2)
+    b,  t2 = add_(t0, t3)
+    c  = t1 + t2
+    return a, b, c
 end
 
 # FiveSum
