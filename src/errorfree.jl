@@ -180,7 +180,7 @@ returns a two tuple
     mul_3(xs...)
 
 returns a three tuple for 3 xs
-""" mul_2
+""" mul_3
 
 function mul_2(a::T, b::T, c::T) where {T<:AbstractFloat}
     y = a*b; z = fma(a, b, -y)
@@ -198,6 +198,9 @@ function mul_3(a::T, b::T, c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+@inline function mul_(a::T, b::T, c::T) where {T<:AbstractFloat}
+    return mul_2(a, b, c)
+end
 
 # a squared
 @inline function sqr_(a::T) where {T<:AbstractFloat}
