@@ -16,6 +16,8 @@ export
        sum_,
        add_2, add_3, add_4, add_5,
        add_hilo_2, add_hilo_3, add_hilo_4, add_hilo_5,
+       sub_2, sub_3,
+       sub_hilo_2, sub_hilo_3,
        sqr_2, cub_2, cub_3, mul_2, mul_3,
        sqrt_2, inv_2, div_2
 
