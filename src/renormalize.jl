@@ -22,23 +22,14 @@ function renorm(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = two_sum(b, c)
     x, u = two_sum(a, s)
     y, z = two_sum(u, t)
-    x, y = quick_two_sum(x, y)
+    x, y = two_sum(x, y)
     return x, y, z
 end
 
-
-
-function add_(::Type{Sorted}, a::T,b::T,c::T) where {T<:Real}
+function renorm_(::Type{Sorted}, a::T,b::T,c::T) where {T<:Real}
     s, t = quick_two_sum(b, c)
     x, u = quick_two_sum(a, s)
     y, z = quick_two_sum(u, t)
     x, y = quick_two_sum(x, y)
-    return x, y, z
-end
-
-function mul_3{T<:AbstractFloat}(a::T, b::T, c::T)
-    p, e = mul_(a, b)
-    x, p = mul_(p, c)
-    y, z = mul_(e, c)
     return x, y, z
 end
