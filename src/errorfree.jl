@@ -226,6 +226,10 @@ function cub_3(a::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+@inline function cub_(a::T, b::T) where {T<:AbstractFloat}
+    return cub_2(a, b)
+end
+
 #=
    xfma algorithm from
    Sylvie Boldo and Jean-Michel Muller
