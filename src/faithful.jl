@@ -11,12 +11,6 @@ function inv_(b::T) where {T<:AbstractFloat}
     return hi, lo
 end
 
-"""
-    div_(a, b)
-
-a/b --> (hi_part, lo_part)
-div_(a,b) == quohi as (hi, lo) (a)/(b)
-"""
 #=
 function div_(a::T, b::T) where {T<:AbstractFloat}
     hi = a / b
@@ -27,16 +21,22 @@ function div_(a::T, b::T) where {T<:AbstractFloat}
 end
 =#
 # !?! `y` must be negated to get the right result
-function div_2(a::T, b::T) where {T<:AbstractFloat}
-     x = a / b
-     y = -(fma(x, b, -a) / b)
-     return x, y
+
+"""
+    div_(a, b)
+
+Computes `q = fl(a/b)` and `e = err(a/b)`.
+"""
+function div_(a::T, b::T) where {T<:AbstractFloat}
+     q = a / b
+     e = -(fma(q, b, -a) / b)
+     return q, e
 end
 
 """
     sqrt_(a)
 
-sqrt_(a) == Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
+Computes `r = fl(sqrt(a))` and `e = err(sqrt(a))`.
 """
 function sqrt_(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
