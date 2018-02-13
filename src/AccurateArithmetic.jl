@@ -1,4 +1,4 @@
-module AccurateArithmetic
+ module AccurateArithmetic
 
 
 export
@@ -13,7 +13,7 @@ export
 =#
        add_, sub_, add_hilo_, sub_hilo_, 
        sqr_, cub_, sqrt_, mul_, inv_, div_,
-       sum_
+       sum_,
        add_2, add_3, add_4, add_5,
        add_hilo_2, add_hilo_3, add_hilo_4, add_hilo_5,
        sqr_2, cub_2, cub_3, mul_2, mul_3,
