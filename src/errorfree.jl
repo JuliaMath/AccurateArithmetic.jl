@@ -257,19 +257,26 @@ function add_hilo_2(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
 end
 
 # this is QuickTwoDiff, requires abs(a) >= abs(b)
-@inline function sub_hilo_(a::T, b::T) where {T<:AbstractFloat}
+@inline function sub_hilo_2(a::T, b::T) where {T<:AbstractFloat}
     s = a - b
     e = (a - s) - b
     s, e
 end
 
-function sub_hilo_(a::T,b::T,c::T) where {T<:AbstractFloat}
+@inline sub_hilo_(a::T, b::T) where {T<:AbstractFloat} =
+    sub_hilo_2(a, b)
+
+function sub_hilo_3(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = sub_hilo_(-b, c)
     x, u = add_hilo_(a, s)
     y, z = add_hilo_(u, t)
     x, y = add_hilo_(x, y)
     return x, y, z
 end
+
+@inline sub_hilo_(a::T, b::T, c::T) where {T<:AbstractFloat} =
+    add_hilo_3(a, b, c)
+
 
 # this is TwoProdFMA
 @inline function mul_2(a::T, b::T) where {T<:AbstractFloat}
