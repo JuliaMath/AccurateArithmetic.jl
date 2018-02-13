@@ -123,25 +123,46 @@ end
     return p, e
 end
 
-function mul_(a::T, b::T, c::T) where {T<:AbstractFloat}
+@inline function mul_2(a::T, b::T) where {T<:AbstractFloat}
+    return mul_(a, b)
+end
+
+"""
+    mul_(x1, x2)
+    mul_(x1, x2, x3)
+
+mul_(x1, x2) returns a two tuple
+mul_(x1, x2, x3) returns a three tuple
+""" mul_
+
+"""
+    mul_2(xs...)
+
+returns a two tuple
+""" mul_2
+
+"""
+    mul_3(xs...)
+
+returns a three tuple for 3 xs
+""" mul_2
+
+function mul_2(a::T, b::T, c::T) where {T<:AbstractFloat}
+    y = a*b; z = fma(a, b, -y)
+    x = y*c; y = fma(y, c, -x)
+    z = fma(z,c,y)
+    return x, z
+end
+
+function mul_3(a::T, b::T, c::T) where {T<:AbstractFloat}
     y, z = mul_(a, b)
     x, y = mul_(y, c)
     z, t = mul_(z, c)
-    return x, y, z, t
-end
-
-"""
-    mul_3(a, b, c)
-
-similar to mul_(a, b, c)
-returns a three tuple
-"""
-function mul_3(a::T, b::T, c::T) where {T<:AbstractFloat}
-    y, z = mul_(a, b)
-    x, y = mul_(y, c) 
-    z    *= c
+    y, z = add_hilo_(y, z)
+    z += t
     return x, y, z
 end
+
 
 # a squared
 @inline function sqr_(a::T) where {T<:AbstractFloat}
