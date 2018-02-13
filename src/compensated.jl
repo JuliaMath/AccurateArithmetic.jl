@@ -1,4 +1,4 @@
-function sum_(x::A) where {T, N, A<:AbstractArray{T,N}}
+function sum_2(x::A) where {T, N, A<:AbstractArray{T,N}}
     n = length(x)
     if n < 2
         iszero(n) && return zero(T)
@@ -6,6 +6,8 @@ function sum_(x::A) where {T, N, A<:AbstractArray{T,N}}
     end
     return summation_(n, x)
 end
+
+@inline sum_(x::A) where {T, N, A<:AbstractArray{T,N}} = sum_2(a)
 
 function summation_(n::Int, x::A) where {T, N, A<:AbstractArray{T,N}}
    hi = x[1]
