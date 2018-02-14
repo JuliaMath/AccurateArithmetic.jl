@@ -11,7 +11,7 @@ They are used as building blocks for extended precision floating point types.
 ## Exports
 
 The exported functions that are named with the postfixes `_2`, `_3` &etc
-are functions that *return* 2 values or 3 values (respectively).   
+are functions that *return* 2 values or 3 values (respectively). The exported functions that are named with the postfix `_` are functions that return the same number of values as it is given arguments.  These are easier to use where the number of components to an extended precision value may vary. And they are more succinct where that is useful.
 
 The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order of decreasing magnitude.  This is an __unchecked__ precondition.
 
