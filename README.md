@@ -5,45 +5,57 @@
 -------
 &nbsp;
 
-These arithmetic functions calculate results with extended precision significands.
+These arithmetic functions calculate results with extended precision significands.    
 They are used as building blocks for extended precision floating point types.
 
 ## Exports
 
-Each exported function is named with the postfix "\_acc" (accurate).
+The exported functions that are named with the postfixes `_2`, `_3` &etc
+are functions that *return* 2 values or 3 values (respectively).   
 
 The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order of decreasing magnitude.  This is an __unchecked__ precondition.
 
 
-| function     | transformation |
-|:-------------|---------------:|
-|              |                |
-| add_acc      | two_sum        |
-| add_hilo_acc | quick_two_sum  |
-|              |                |
-| sub_acc      | two_diff       |
-| sub_hilo_acc | quick_two_diff |
-|              |                |
-| mul_acc      | two_prod (FMA) |
-|              |                |
-| inv_acc      | reciprocal (FMA) |
-| div_acc      | two_div  (FMA) |
+| function     | n args in      | n values out | transformation |
+|:-------------|---------------:|:------------:|:---------------|
+|              |                |              |                |
+| add_2        | 2,3,4,5        | 2            | two_sum        |
+| add_3        | 3,4,5          | 3            | two_sum        |
+| add_4        | 4,5            | 4            | two_sum        |
+| add_5        | 5              | 5            | two_sum        |
+|              |                |              |                |
+| add_hilo_2   | 2,3,4,5        | 2            | quick_two_sum  |
+| add_hilo_3   | 3,4,5          | 3            | quick_two_sum  |
+| add_hilo_4   | 4,5            | 4            | quick_two_sum  |
+| add_hilo_5   | 5              | 5            | quick_two_sum  |
+|              |                |              |                |
+| sub_2        | 2,3            | 2            | two_diff       |
+| sub_3        | 3              | 3            | two_diff       |
+|              |                |              |                |
+| sub_hilo_2   | 2,3            | 2            | quick_two_diff |
+| sub_hilo_3   | 3              | 3            | quick_two_diff |
+|              |                |              |                |
+| mul_2        | 2,3            | 2            | two_prod_fma   |
+| mul_3        | 3              | 3            | two_prod_fma   |
+|              |                |              |                |
+| sqrt_2       | 1              | 2            | faithful sqrt  |
+| inv_2        | 1              | 2            | faithful divide |
+| div_2        | 2              | 2            | faithful divide |
+
+
 
 &nbsp;
 
 | function     | mapping        |
 |:-------------|---------------:|
 |              |                |
-| sqr_acc      | hi(x^2), lo(x^2) |
-| cub_acc      | hi(x^3), lo(x^3) |
+| sqr_2        | hi(x^2), lo(x^2) |
+| cub_2        | hi(x^3), lo(x^3) |
 |              |                |
-| inv_acc      | hi(1/x), lo(1/x) |
-| sqrt_acc     | hi(1/x^2), lo(1/x^2) |
+| fma_         | hi(fma), mid(fma), lo(fma) |
+| fms_         | hi(fms), mid(fms), lo(fms) |
 |              |                |
-| fma_acc      | hi(fma), mid(fma), lo(fma) |
-| fms_acc      | hi(fms), mid(fms), lo(fms) |
-|              |                |
-| sum_acc      | error-free compensated |
+| sum_         | error-free compensated |
 
 &nbsp;
 
