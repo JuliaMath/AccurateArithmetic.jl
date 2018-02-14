@@ -7,7 +7,7 @@ function sum_2(x::A) where {T, N, A<:AbstractArray{T,N}}
     return summation_(n, x)
 end
 
-@inline sum_(x::A) where {T, N, A<:AbstractArray{T,N}} = sum_2(a)
+@inline sum_(x::A) where {T, N, A<:AbstractArray{T,N}} = sum_2(x)
 
 function summation_(n::Int, x::A) where {T, N, A<:AbstractArray{T,N}}
    hi = x[1]
