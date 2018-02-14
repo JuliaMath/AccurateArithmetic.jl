@@ -200,7 +200,7 @@ function add_hilo_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     return a, b
 end
 
-# QuickFiveSum presumes abs(a) >= abs(b) >= abs(c) >= abs(d) >= abs(e)
+# QuickFiveSum presumes abs(v) >= abs(w) >= abs(x) >= abs(y) >= abs(z)
 function add_hilo_5(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_hilo_(y, z)
     t0, t3 = add_hilo_(x, t0)
