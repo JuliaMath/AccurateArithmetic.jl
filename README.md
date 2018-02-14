@@ -19,24 +19,38 @@ The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order 
 | function     | n args in      | n values out | transformation |
 |:-------------|---------------:|:------------:|:---------------|
 |              |                |              |                |
+| add_         | 2,3,4,5        | n args in    | two_sum        |
+|              |                |              |                |
 | add_2        | 2,3,4,5        | 2            | two_sum        |
 | add_3        | 3,4,5          | 3            | two_sum        |
 | add_4        | 4,5            | 4            | two_sum        |
 | add_5        | 5              | 5            | two_sum        |
+|              |                |              |                |
+| add_hilo_    | 2,3,4,5        | n args in    | two_sum        |
 |              |                |              |                |
 | add_hilo_2   | 2,3,4,5        | 2            | quick_two_sum  |
 | add_hilo_3   | 3,4,5          | 3            | quick_two_sum  |
 | add_hilo_4   | 4,5            | 4            | quick_two_sum  |
 | add_hilo_5   | 5              | 5            | quick_two_sum  |
 |              |                |              |                |
+| sub_         | 2,3            | n args in    | two_diff       |
+|              |                |              |                |
 | sub_2        | 2,3            | 2            | two_diff       |
 | sub_3        | 3              | 3            | two_diff       |
+|              |                |              |                |
+| sub_hilo_    | 2,3            | n args in    | quick_two_diff |
 |              |                |              |                |
 | sub_hilo_2   | 2,3            | 2            | quick_two_diff |
 | sub_hilo_3   | 3              | 3            | quick_two_diff |
 |              |                |              |                |
+| mul_         | 2,3            | n args in    | two_prod_fma   |
+|              |                |              |                |
 | mul_2        | 2,3            | 2            | two_prod_fma   |
 | mul_3        | 3              | 3            | two_prod_fma   |
+|              |                |              |                |
+| sqrt_        | 1              | 2            | faithful sqrt  |
+| inv_         | 1              | 2            | faithful divide |
+| div_         | 2              | 2            | faithful divide |
 |              |                |              |                |
 | sqrt_2       | 1              | 2            | faithful sqrt  |
 | inv_2        | 1              | 2            | faithful divide |
