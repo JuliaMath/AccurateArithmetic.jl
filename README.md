@@ -50,12 +50,13 @@ The functions `add_hilo_acc` and `sub_hilo_acc` expect their arguments in order 
 |              |                |              |                |
 | sqrt_        | 1              | 2            | faithful sqrt  |
 | inv_         | 1              | 2            | faithful divide |
-| div_         | 2              | 2            | faithful divide |
+| dve_         | 2              | 2            | faithful divide |
 |              |                |              |                |
 | sqrt_2       | 1              | 2            | faithful sqrt  |
 | inv_2        | 1              | 2            | faithful divide |
-| div_2        | 2              | 2            | faithful divide |
+| dve_2        | 2              | 2            | faithful divide |
 
+- note that *divide* is abbreviated *dve* (to distinguish it from *div*)
 
 
 &nbsp;
