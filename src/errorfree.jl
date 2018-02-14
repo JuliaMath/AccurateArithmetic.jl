@@ -60,7 +60,7 @@ function add_3(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
 end
 
 # FiveSum
-function add_5(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_5(v::T, w::T, x::T, y::T, ez::T) where {T<:AbstractFloat}
     t0, t4 = add_(y, z)
     t0, t3 = add_(x, t0)
     t0, t2 = add_(w, t0)
@@ -77,7 +77,7 @@ end
 @inline add_(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat} =
     add_5(a, b, c, d, e)
 
-function add_4(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_4(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_(y, z)
     t0, t3 = add_(x, t0)
     t0, t2 = add_(w, t0)
@@ -91,7 +91,7 @@ function add_4(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
     return a, b, c, d
 end
 
-function add_3(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_3(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_(y, z)
     t0, t3 = add_(x, t0)
     t0, t2 = add_(w, t0)
@@ -104,7 +104,7 @@ function add_3(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
     return a, b, c
 end
 
-function add_2(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_2(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_(y, z)
     t0, t3 = add_(x, t0)
     t0, t2 = add_(w, t0)
@@ -201,7 +201,7 @@ function add_hilo_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
 end
 
 # QuickFiveSum presumes abs(a) >= abs(b) >= abs(c) >= abs(d) >= abs(e)
-function add_hilo_5(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_hilo_5(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_hilo_(y, z)
     t0, t3 = add_hilo_(x, t0)
     t0, t2 = add_hilo_(w, t0)
@@ -218,7 +218,7 @@ end
 @inline add_hilo_(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat} =
     add_hilo_5(a, b, c, d, e)
 
-function add_hilo_4(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_hilo_4(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_hilo_(y, z)
     t0, t3 = add_hilo_(x, t0)
     t0, t2 = add_hilo_(w, t0)
@@ -232,7 +232,7 @@ function add_hilo_4(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
     return a, b, c, d
 end
 
-function add_hilo_3(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_hilo_3(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_hilo_(y, z)
     t0, t3 = add_hilo_(x, t0)
     t0, t2 = add_hilo_(w, t0)
@@ -245,7 +245,7 @@ function add_hilo_3(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
     return a, b, c
 end
 
-function add_hilo_2(a::T, b::T, c::T, d::T, e::T) where {T<:AbstractFloat}
+function add_hilo_2(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_hilo_(y, z)
     t0, t3 = add_hilo_(x, t0)
     t0, t2 = add_hilo_(w, t0)
