@@ -33,7 +33,7 @@ function sqrt_2(a::T) where {T<:AbstractFloat}
     return hi, lo
 end
 
-@inline sqrt_(a::T) where {T<:AbstractFloat} = sqrt_2(b)
+@inline sqrt_(x::T) where {T<:AbstractFloat} = sqrt_2(x)
 
 #=
 "Concerning the division, the elementary rounding error is
