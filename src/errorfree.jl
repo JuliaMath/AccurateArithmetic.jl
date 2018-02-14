@@ -60,7 +60,7 @@ function add_3(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
 end
 
 # FiveSum
-function add_5(v::T, w::T, x::T, y::T, ez::T) where {T<:AbstractFloat}
+function add_5(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t4 = add_(y, z)
     t0, t3 = add_(x, t0)
     t0, t2 = add_(w, t0)
