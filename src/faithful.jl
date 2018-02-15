@@ -27,13 +27,21 @@ end
 
 @inline dve_(a::T, b::T) where {T<:AbstractFloat} = div_2(b)
 
-function sqrt_2(a::T) where {T<:AbstractFloat}
+function root2_2(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
     lo = fma(-hi, hi, a) / (hi + hi)
     return hi, lo
 end
 
-@inline sqrt_(x::T) where {T<:AbstractFloat} = sqrt_2(x)
+@inline root2_(x::T) where {T<:AbstractFloat} = root2_2(x)
+
+function root3_2(a::T) where {T<:AbstractFloat}
+    hi = sqrt(a)
+    lo = fma(-hi, hi, a) / (hi + hi)
+    return hi, lo
+end
+
+@inline root3_(x::T) where {T<:AbstractFloat} = root3_2(x)
 
 #=
 "Concerning the division, the elementary rounding error is
