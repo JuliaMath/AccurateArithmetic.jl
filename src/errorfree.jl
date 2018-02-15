@@ -308,25 +308,25 @@ end
 end
 
 # a squared
-@inline function sqr_2(a::T) where {T<:AbstractFloat}
+@inline function powr2_2(a::T) where {T<:AbstractFloat}
     p = a * a
     e = fma(a, a, -p)
     return p, e
 end
 
-@inline sqr_(a::T) where {T<:AbstractFloat} = sqr_2(a)
+@inline powr2_(a::T) where {T<:AbstractFloat} = powr2_2(a)
 
 # a cubed
-function cub_2(a::T) where {T<:AbstractFloat}
+function powr3_2(a::T) where {T<:AbstractFloat}
     y = a*a; z = fma(a, a, -y)
     x = y*a; y = fma(y, a, -x)
     z = fma(z,a,y)
     return x, z
 end 
 
-@inline cub_(a::T) where {T<:AbstractFloat} = cub_2(a)
+@inline powr3_(a::T) where {T<:AbstractFloat} = powr3_2(a)
 
-function cub_3(a::T) where {T<:AbstractFloat}
+function powr3_3(a::T) where {T<:AbstractFloat}
     y, z = mul_(a, a)
     x, y = mul_(y, a)
     z, t = mul_(z, a)
