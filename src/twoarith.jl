@@ -64,12 +64,19 @@ end
 =#
 
 # the 'factor' (2^s + 1)
+#=
+julia> p(::Type{Float64}) = round(Int64, -log2(ulp(Float64)))
+p (generic function with 3 methods)
+
+julia> one(Int64)+Int64(2)^cld(p(Float64),2),one(Int32)+Int32(2)^cld(p(Float32),2),one(Int16)+Int16(2)^cld(p(Float16),2)
+(134217729, 4097, 65)
+=#
 
 # isplitter(::Type{Float128}) = one(Int128) << cld(113,2) + 1
-isplitter(::Type{Float64}) = one(Int64) << cld(53,2) + 1
-isplitter(::Type{Float32}) = one(Int32) << cld(24,2) + 1
-isplitter(::Type{Float16}) = one(Int16) << cld(11,2) + 1
-# 144115188075855873, 134217729, 4097, 65
+isplitter(::Type{Float64}) = one(Int64) + one(Int64) << (cld(precision(Float64),2)-1)
+isplitter(::Type{Float32}) = one(Int32) + one(Int32) << (cld(precision(Float32),2)-1)
+isplitter(::Type{Float16}) = one(Int16) + one(Int16) << (cld(precision(Float16),2)-1)
+
 
 splitter(::Type{Float64}) = Float64(isplitter(Float64))
 splitter(::Type{Float32}) = Float32(isplitter(Float32))
