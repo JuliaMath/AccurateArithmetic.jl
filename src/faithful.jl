@@ -19,13 +19,13 @@ end
 =#
 # !?! `y` must be negated to get the right result
 
-function dve_2(a::T, b::T) where {T<:AbstractFloat}
+function dvi_2(a::T, b::T) where {T<:AbstractFloat}
      hi = a / b
      lo = -(fma(hi, b, -a) / b)
      return hi, lo
 end
 
-@inline dve_(a::T, b::T) where {T<:AbstractFloat} = div_2(b)
+@inline dvi_(a::T, b::T) where {T<:AbstractFloat} = div_2(b)
 
 function root2_2(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
