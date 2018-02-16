@@ -16,7 +16,7 @@ renorm(a::T) where T<:Real = a
 
 renorm(a::T, b::T) where T<:Real = two_sum(a, b)
 
-renorm(::Type{Sorted}, a::T, b::T) where T<:Real = quick_two_sum(a, b)
+renorm(::Type{Sorted}, a::T, b::T) where T<:Real = fast_two_sum(a, b)
 
 function renorm(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = two_sum(b, c)
@@ -27,9 +27,16 @@ function renorm(a::T,b::T,c::T) where {T<:AbstractFloat}
 end
 
 function renorm_(::Type{Sorted}, a::T,b::T,c::T) where {T<:Real}
-    s, t = quick_two_sum(b, c)
-    x, u = quick_two_sum(a, s)
-    y, z = quick_two_sum(u, t)
-    x, y = quick_two_sum(x, y)
+    s, t = fast_two_sum(b, c)
+    x, u = fast_two_sum(a, s)
+    y, z = fast_two_sum(u, t)
+    x, y = fast_two_sum(x, y)
     return x, y, z
+end
+
+function renorm_3(::Type{Sorted}, ahi::T, amd::T, alo::T) where {T<:Real}
+    amd, alo = fast_two_sum(amd, alo)
+    ahi, amd = fast_two_sum(ahi, amd)
+    amd, alo = fast_two_sum(amd, alo)
+    return ahi, amd, alo
 end
