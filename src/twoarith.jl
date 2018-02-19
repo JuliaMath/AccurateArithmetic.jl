@@ -92,7 +92,10 @@ function extractscalar(fp, p2=2^27)
     return hi, lo
 end
 
+#=
+    splitfp(fp) =?= extractscalar(2^(26+exponent(fp)), fp)
 
+=#
 
 for (U,F) in ((:UInt64, :Float64), (:UInt32, :Float32), (:UInt16, :Float16))
   @eval begin
