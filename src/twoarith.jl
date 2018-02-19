@@ -93,7 +93,7 @@ function extractscalar(fp, p2=2^27)
 end
 
 #=
-    splitfp(fp) =?= extractscalar(2^(26+exponent(fp)), fp)
+    splitfp(fp) =?= extractscalar(2^(?+exponent(fp)), fp)
 
 =#
 
