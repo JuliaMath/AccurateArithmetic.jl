@@ -119,6 +119,6 @@ const Float64eps = inv(ldexp(1.0, precision(Float64)-1))
 const Float32eps = inv(ldexp(1.0, precision(Float32)-1))
 const Float16eps = inv(ldexp(1.0, precision(Float16)-1))
 
-@inline eps(x::Float64) = ufp(x) * Float64eps
-@inline eps(x::Float32) = ufp(x) * Float32eps
-@inline eps(x::Float16) = ufp(x) * Float16eps
+@inline epsi(x::Float64) = ufp(x) * Float64eps
+@inline epsi(x::Float32) = ufp(x) * Float32eps
+@inline epsi(x::Float16) = ufp(x) * Float16eps
