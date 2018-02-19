@@ -14,7 +14,7 @@ export
 =#
        add_, sub_, add_hilo_, sub_hilo_, 
        mul_, inv_, dvi_,
-       powr2_, powr3_, root2_, root3_
+       powr2_, powr3_, root2_, root3_,
        sum_,
        add_2, add_3, add_4, add_5,
        add_hilo_2, add_hilo_3, add_hilo_4, add_hilo_5,
