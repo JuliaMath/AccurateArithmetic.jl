@@ -73,24 +73,23 @@ julia> one(Int64)+Int64(2)^cld(p(Float64),2),one(Int32)+Int32(2)^cld(p(Float32),
 =#
 
 # isplitter(::Type{Float128}) = one(Int128) << cld(113,2) + 1
-isplitter(::Type{Float64}) = one(Int64) + one(Int64) << (cld(precision(Float64),2)-1)
-isplitter(::Type{Float32}) = one(Int32) + one(Int32) << (cld(precision(Float32),2)-1)
-isplitter(::Type{Float16}) = one(Int16) + one(Int16) << (cld(precision(Float16),2)-1)
+splitter(::Type{Float64}) =
+    Float64(one(Int64) + one(Int64) << (cld(precision(Float64),2)-1))
+splitter(::Type{Float32}) = 
+    Float32(one(Int32) + one(Int32) << (cld(precision(Float32),2)-1))
+splitter(::Type{Float16}) = 
+    Float16(one(Int16) + one(Int16) << (cld(precision(Float16),2)-1))
 
+splitmax(::Type{Float64}) = realmax(Float64) / splitter(Float64)
+splitmax(::Type{Float32}) = realmax(Float32) / splitter(Float32)
+splitmax(::Type{Float16}) = realmax(Float16) / splitter(Float16)
 
-splitter(::Type{Float64}) = Float64(isplitter(Float64))
-splitter(::Type{Float32}) = Float32(isplitter(Float32))
-splitter(::Type{Float16}) = Float16(isplitter(Float16))
-
-# Dekker Veldkamp splitting of a floating point value
-@inline function split_dv(x::T) where T<:Base.IEEEFloat
-    absx = abs(x)
-    z   = absx * splitter(T)
-    !isfinite(z)   && throw(OverflowError("overflow using $x"))
-    issubnormal(z) && throw(OverflowError("underflow using $x"))
-    
-    zₕᵢ = z - (z - absx)
-    zₗₒ = absx - zₕᵢ
-    return flipsign(zₕᵢ, x), flipsign(zₗₒ, x)
+# Veldkamp splitting of a floating point value
+@inline function split(x::T) where T<:Base.IEEEFloat
+    (!isfinite(x) || abs(x) > splitmax(T)) && throw(OverflowError("$x overflows"))
+    z   = x * splitter(T)
+    zₕᵢ = z - (z - x)
+    zₗₒ = x - zₕᵢ
+    return zₕᵢ, zₗₒ
 end
 
