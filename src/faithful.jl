@@ -35,9 +35,11 @@ end
 
 @inline root2_(x::T) where {T<:AbstractFloat} = root2_2(x)
 
-function root3_2(a::T) where {T<:AbstractFloat}
+function root3_2(x::T) where {T<:AbstractFloat}
     hi = cbrt(a)
-    lo = fma(-hi, hi, a) / (hi + hi)
+    chi, clo = powr3_2(hi)
+    d = (-chi + x) - clo
+    lo = d / (T(3)*hi*hi)
     return hi, lo
 end
 
