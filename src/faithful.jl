@@ -25,7 +25,7 @@ function dvi_2(a::T, b::T) where {T<:AbstractFloat}
      return hi, lo
 end
 
-@inline dvi_(a::T, b::T) where {T<:AbstractFloat} = div_2(b)
+@inline dvi_(a::T, b::T) where {T<:AbstractFloat} = dvi_2(b)
 
 function root2_2(a::T) where {T<:AbstractFloat}
     hi = sqrt(a)
