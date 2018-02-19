@@ -23,7 +23,7 @@ export
        powr2_2, powr3_2, powr3_3,
        root2_2, root3_2, 
        mul_2, mul_3,
-       sqrt_2, inv_2, dvi_2
+       inv_2, dvi_2
 
 
 if VERSION >= v"0.7.0-"
