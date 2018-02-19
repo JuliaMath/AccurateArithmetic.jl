@@ -275,7 +275,7 @@ function sub_hilo_3(a::T,b::T,c::T) where {T<:AbstractFloat}
 end
 
 @inline sub_hilo_(a::T, b::T, c::T) where {T<:AbstractFloat} =
-    add_hilo_3(a, b, c)
+    sub_hilo_3(a, b, c)
 
 
 # this is TwoProdFMA
@@ -304,7 +304,7 @@ end
 end
 
 @inline function mul_(a::T, b::T, c::T) where {T<:AbstractFloat}
-    return mul_2(a, b, c)
+    return mul_3(a, b, c)
 end
 
 # a squared
