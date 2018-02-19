@@ -75,13 +75,23 @@ splitmax(::Type{Float32}) = realmax(Float32) / splitter(Float32)
 splitmax(::Type{Float16}) = realmax(Float16) / splitter(Float16)
 
 # Veldkamp splitting of a floating point value
-@inline function split(x::T) where T<:AbstractFloat
+@inline function splitting(x::T) where T<:AbstractFloat
     (!isfinite(x) || abs(x) > splitmax(T)) && throw(OverflowError("$x overflows"))
     z   = x * splitter(T)
     zₕᵢ = z - (z - x)
     zₗₒ = x - zₕᵢ
     return zₕᵢ, zₗₒ
 end
+
+# Rump splitting
+#    In extractscalar, a floating-point number fp is split relative to p2,
+#    a fixed power of 2.
+function extractscalar(fp, p2=2^27)
+    hi = (p2 + fp) - p2
+    lo = fp - hi
+    return hi, lo
+end
+
 
 
 for (U,F) in ((:UInt64, :Float64), (:UInt32, :Float32), (:UInt16, :Float16))
