@@ -36,7 +36,7 @@ end
 @inline root2_(x::T) where {T<:AbstractFloat} = root2_2(x)
 
 function root3_2(a::T) where {T<:AbstractFloat}
-    hi = sqrt(a)
+    hi = cbrt(a)
     lo = fma(-hi, hi, a) / (hi + hi)
     return hi, lo
 end
