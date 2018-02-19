@@ -13,7 +13,7 @@ export
      The trailing '_' signifies this extra accuracy.
 =#
        add_, sub_, add_hilo_, sub_hilo_, 
-       mul_, inv_, dve_,
+       mul_, inv_, dvi_,
        powr2_, powr3_, root2_, root3_
        sum_,
        add_2, add_3, add_4, add_5,
@@ -23,7 +23,7 @@ export
        powr2_2, powr3_2, powr3_3,
        root2_2, root3_2, 
        mul_2, mul_3,
-       sqrt_2, inv_2, dve_2
+       sqrt_2, inv_2, dvi_2
 
 
 if VERSION >= v"0.7.0-"
@@ -39,4 +39,4 @@ include("errorfree.jl")
 include("faithful.jl")
 include("compensated.jl")
 
-end # module AccurateArithmetic
+end # module AccurateAritmetic
