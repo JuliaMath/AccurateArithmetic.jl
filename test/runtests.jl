@@ -6,6 +6,12 @@ if VERSION >= v"0.7.0-"
   using Random
 end
 
+if VERSION >= v"0.7.0-"
+    import Base.IEEEFloat
+else
+    const IEEEFloat = Union{Float64, Float32, Float16}
+end
+
 srand(1602)
 include("bigfloats.jl")
 include("randfloats.jl")
