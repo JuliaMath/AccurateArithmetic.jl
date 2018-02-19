@@ -7,6 +7,7 @@ export
 =#
        two_sum, two_diff, two_prod, 
        fast_two_sum, fast_two_diff,
+       split,
 #=
      These functions evaluate as multipart floats.
      The trailing '_' signifies this extra accuracy.
