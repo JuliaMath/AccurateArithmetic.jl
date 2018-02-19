@@ -36,7 +36,7 @@ end
 @inline root2_(x::T) where {T<:AbstractFloat} = root2_2(x)
 
 function root3_2(x::T) where {T<:AbstractFloat}
-    hi = cbrt(a)
+    hi = cbrt(x)
     chi, clo = powr3_2(hi)
     d = (-chi + x) - clo
     lo = d / (T(3)*hi*hi)
