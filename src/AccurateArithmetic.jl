@@ -38,6 +38,7 @@ include("twoarith.jl")
 include("renormalize.jl")
 include("errorfree.jl")
 include("faithful.jl")
+include("nearfaithful.jl")
 include("compensated.jl")
 
 end # module AccurateAritmetic
