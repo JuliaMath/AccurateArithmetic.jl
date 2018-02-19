@@ -1,4 +1,4 @@
- module AccurateArithmetic
+module AccurateArithmetic
 
 
 export
