@@ -133,6 +133,14 @@ function sub_3(a::T, b::T, c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+function sub_2(a::T, b::T, c::T) where {T<:AbstractFloat}
+    s, t = sub_(-b, c)
+    x, u = add_(a, s)
+    y    = u + t
+    x, y = add_(x, y)
+    return x, y
+end
+
 @inline sub_(a::T, b::T, c::T) where {T<:AbstractFloat} = sub_3(a, b, c)
 
 
