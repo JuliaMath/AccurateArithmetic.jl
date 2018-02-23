@@ -38,6 +38,18 @@ function add_4(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     return a, b, c, d
 end
 
+function add_4(ac::Tuple{T, T}, bd::Tuple{T, T}) where {T<: AbstractFloat}
+    a, c = ac
+    b, d = bd
+    t0, t1 = add_(a ,  b)
+    t0, t2 = add_(t0,  c)
+    a,  t3 = add_(t0,  d)
+    t0, t1 = add_(t1, t2)
+    b,  t2 = add_(t0, t3)
+    c,  d  = add_(t1, t2)
+    return a, b, c, d
+end
+
 @inline add_(a::T, b::T, c::T, d::T) where {T<:AbstractFloat} = add_4(a, b, c, d)
 
 function add_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
@@ -125,6 +137,7 @@ end
 
 @inline sub_(a::T, b::T) where {T<:AbstractFloat} = sub_2(a, b)
 
+# a - b - c
 function sub_3(a::T, b::T, c::T) where {T<:AbstractFloat}
     s, t = sub_(-b, c)
     x, u = add_(a, s)
@@ -133,6 +146,7 @@ function sub_3(a::T, b::T, c::T) where {T<:AbstractFloat}
     return x, y, z
 end
 
+# a - b - c
 function sub_2(a::T, b::T, c::T) where {T<:AbstractFloat}
     s, t = sub_(-b, c)
     x, u = add_(a, s)
@@ -141,8 +155,51 @@ function sub_2(a::T, b::T, c::T) where {T<:AbstractFloat}
     return x, y
 end
 
+# a - b - c - d
+function sub_4(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = sub_(a ,  b)
+    t0, t2 = sub_(t0,  c)
+    a,  t3 = sub_(t0,  d)
+    t0, t1 = add_(t1, t2)
+    b,  t2 = add_(t0, t3)
+    c,  d  = add_(t1, t2)
+    return a, b, c, d
+end
+
+# a - b - c - d
+function sub_3(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = sub_(a ,  b)
+    t0, t2 = sub_(t0,  c)
+    a,  t3 = sub_(t0,  d)
+    t0, t1 = add_(t1, t2)
+    b,  t2 = add_(t0, t3)
+    c  = t1 + t2
+    return a, b, c
+end
+
+# a - b - c - d
+function sub_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = sub_(a ,  b)
+    t0, t2 = sub_(t0,  c)
+    a,  t3 = sub_(t0,  d)
+    t0  = t1 + t2
+    b   = t0 + t3
+    return a, b
+end
+
 @inline sub_(a::T, b::T, c::T) where {T<:AbstractFloat} = sub_3(a, b, c)
 
+function sub_(ac::Tuple{T, T}, bd::Tuple{T, T}) where {T<: AbstractFloat}
+    a, c = ac
+    b, d = bd
+    t0, t1 = sub_(a ,  b)
+    t0, t2 = add_(t0,  c)
+    a,  t3 = sub_(t0,  d)
+    t0, t1 = add_(t1, t2)
+    b,  t2 = add_(t0, t3)
+    c,  d  = add_(t1, t2)
+    return a, b, c, d
+end
 
 
 # this is QuickTwoSum, presumes abs(a) >= abs(b)
