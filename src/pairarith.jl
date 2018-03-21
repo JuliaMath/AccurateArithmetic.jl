@@ -1,21 +1,25 @@
+function Base.:(-)(x::Tuple{T,T}) where T<:AbstractFloat
+    return -x[1], -x[2]
+end
+
 function Base.:(+)(x::Tuple{T,T}, y::Tuple{T,T}) where T<:AbstractFloat
-       hi, lo = two_sum(x[1], y[1])
-       lohi, lolo = two_sum(x[2], y[2])
-       lohi += lo
-       hi, lo = fast_two_sum(hi, lohi)
-       lolo += lo
-       hi, lo = fast_two_sum(hi, lolo)
-       return hi, lo
+    hi, lo = two_sum(x[1], y[1])
+    lohi, lolo = two_sum(x[2], y[2])
+    lohi += lo
+    hi, lo = fast_two_sum(hi, lohi)
+    lolo += lo
+    hi, lo = fast_two_sum(hi, lolo)
+    return hi, lo
 end
 
 function Base.:(-)(x::Tuple{T,T}, y::Tuple{T,T}) where T<:AbstractFloat
-       hi, lo = two_diff(x[1], y[1])
-       lohi, lolo = two_diff(x[2], y[2])
-       lohi += lo
-       hi, lo = fast_two_sum(hi, lohi)
-       lolo += lo
-       hi, lo = fast_two_sum(hi, lolo)
-       return hi, lo
+    hi, lo = two_diff(x[1], y[1])
+    lohi, lolo = two_diff(x[2], y[2])
+    lohi += lo
+    hi, lo = fast_two_sum(hi, lohi)
+    lolo += lo
+    hi, lo = fast_two_sum(hi, lolo)
+    return hi, lo
 end
 
 function Base.:(*)(x::Tuple{T,T}, y::Tuple{T,T}) where T<:AbstractFloat
