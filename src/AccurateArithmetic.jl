@@ -33,6 +33,7 @@ else
     const IEEEFloat = Union{Float64, Float32, Float16}
 end
 
+import Base: (+), (-), (*)
 
 include("twoarith.jl")
 include("renormalize.jl")
@@ -40,5 +41,6 @@ include("errorfree.jl")
 include("faithful.jl")
 include("nearfaithful.jl")
 include("compensated.jl")
+include("pairarith.jl")
 
 end # module AccurateAritmetic
