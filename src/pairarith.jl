@@ -1,5 +1,17 @@
-function Base.:(-)(x::Tuple{T,T}) where T<:AbstractFloat
+@inline function Base.:(-)(x::Tuple{T,T}) where T<:AbstractFloat
     return -x[1], -x[2]
+end
+
+@inline function Base.abs(x::Tuple{T,T}) where T<:AbstractFloat
+    return signbit(x[1]) ? -x : x
+end
+
+@inline function Base.flipsign(x::Tuple{T,T}, y::Tuple{T,T}) where T<:AbstractFloat
+    return signbit(y[1]) ? -x : x
+end
+
+@inline function Base.copysign(x::Tuple{T,T}, y::Tuple{T,T}) where T<:AbstractFloat
+    return signbit(y[1]) ? -abs(x) : abs(x)
 end
 
 function Base.:(+)(x::Tuple{T,T}, y::Tuple{T,T}) where T<:AbstractFloat
