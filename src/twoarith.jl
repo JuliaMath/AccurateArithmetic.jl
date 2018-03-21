@@ -1,11 +1,11 @@
-function two_sum(a::T, b::T) where T<:AbstractFloat
+@inline function two_sum(a::T, b::T) where T<:AbstractFloat
     ab =  a + b
     B  = ab - a
     ε  = (a - (ab - B)) + (b - B)
     return ab, ε
 end
 
-function two_diff(a::T, b::T) where T<:AbstractFloat
+@inline function two_diff(a::T, b::T) where T<:AbstractFloat
     ab =  a - b
     B  = ab - a
     ε  = (a - (ab - B)) + (b - B)
