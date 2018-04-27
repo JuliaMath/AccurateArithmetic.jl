@@ -13,6 +13,7 @@ makedocs(
 )
 
 deploydocs(
+    julia = "nightly",
     repo = "github.com/JuliaMath/AccurateArithmetic.jl.git",
     target = "build",
     deps = nothing,
