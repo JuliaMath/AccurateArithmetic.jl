@@ -145,12 +145,11 @@ function sub_3(a::T, b::T, c::T) where {T<:AbstractFloat}
     x, y = add_(x, y)
     return x, y, z
 end
-
 # a - b - c
 function sub_2(a::T, b::T, c::T) where {T<:AbstractFloat}
     s, t = sub_(-b, c)
     x, u = add_(a, s)
-    y    = u + t
+       y = u + t
     x, y = add_(x, y)
     return x, y
 end
