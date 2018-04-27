@@ -412,12 +412,29 @@ Computes `x = fl(fma_(a, b, c))` and `y, z = fl(err(fma_(a, b, c)))`.
 """
 function fma_(a::T, b::T, c::T) where {T<:AbstractFloat}
      x = fma(a, b, c)
+    
      y, z = mul_(a, b)
      t, z = add_(c, z)
      t, u = add_(y, t)
      y = ((t - x) + u)
+     
      y, z = add_hilo_(y, z)
      return x, y, z
+end
+
+fma_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_(a, b, c)
+
+function fma_2(a::T, b::T, c::T) where {T<:IEEEFloat}
+     x = fma(a, b, c)
+
+     y, z = mul_2(a, b)
+     t, z = add_2(c, z)
+     t, u = add_2(y, t)
+     y = ((t - x) + u)
+    
+     y += z
+
+     return x, y
 end
 
 """
@@ -428,3 +445,6 @@ Computes `x = fl(fms_(a, b, c))` and `y, z = fl(err(fms_(a, b, c)))`.
 @inline function fms_(a::T, b::T, c::T) where {T<:AbstractFloat}
      return fma_(a, b, -c)
 end
+
+fms_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fms(a, b, c)
+fms_2(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_2(a, b, -c)
