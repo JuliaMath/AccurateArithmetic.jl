@@ -24,7 +24,7 @@ export
        root2_2, root3_2, 
        mul_2, mul_3,
        inv_2, dvi_2,
-       fma_, fms_
+       fma_, fma_3, fma_2, fms_, fms_3, fms_2
 
 
 if VERSION >= v"0.7.0-"
