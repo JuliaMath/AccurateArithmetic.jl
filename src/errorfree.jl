@@ -1,3 +1,9 @@
+fourx(x::T) where {T<:IEEEFloat} = four(T) * x
+twox(x::T) where {T<:IEEEFloat} = two(T) * x
+halfx(x::T) where {T<:IEEEFloat} = onehalf(T) * x
+quarterx(x::T) where {T<:IEEEFloat} = onequarter(T) * x
+
+
 # this is "TwoSum"
 @inline function add_2(a::T, b::T) where {T<:AbstractFloat}
     s = a + b
