@@ -2,6 +2,8 @@ module AccurateArithmetic
 
 
 export
+       four, two, negone, onehalf, onequarter, 
+       fourx, twox, onehalfx, onequarterx,
 #=
        These functions appear in the literature, named similarly.
 =#
