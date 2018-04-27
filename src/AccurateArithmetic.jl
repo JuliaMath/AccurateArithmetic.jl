@@ -37,6 +37,7 @@ end
 
 import Base: signbit, flipsign, copysign, abs, (+), (-), (*)
 
+include("constants.jl")
 include("twoarith.jl")
 include("renormalize.jl")
 include("errorfree.jl")
