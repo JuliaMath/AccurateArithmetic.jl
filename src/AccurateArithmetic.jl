@@ -35,7 +35,7 @@ else
     const IEEEFloat = Union{Float64, Float32, Float16}
 end
 
-import Base: signbit, flipsign, copysign, abs, (+), (-), (*)
+import Base: signbit, flipsign, copysign, abs, inv, (+), (-), (*), (/)
 
 include("constants.jl")
 include("twoarith.jl")
