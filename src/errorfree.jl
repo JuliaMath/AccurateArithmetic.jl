@@ -416,7 +416,7 @@ end
 
 Computes `x = fl(fma_(a, b, c))` and `y, z = fl(err(fma_(a, b, c)))`.
 """
-function fma_(a::T, b::T, c::T) where {T<:AbstractFloat}
+function fma_(a::T, b::T, c::T) where {T<:IEEEFloat}
      x = fma(a, b, c)
     
      y, z = mul_(a, b)
@@ -428,9 +428,12 @@ function fma_(a::T, b::T, c::T) where {T<:AbstractFloat}
      return x, y, z
 end
 
+fma_(a::T, b::T, c::T) where {T<:AbstractFloat} =
+    add_(fma(a, b, c)...,)
+
 fma_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_(a, b, c)
 
-function fma_2(a::T, b::T, c::T) where {T<:AbstractFloat}
+function fma_2(a::T, b::T, c::T) where {T<:IEEEFloat}
      x = fma(a, b, c)
 
      y, z = mul_2(a, b)
@@ -443,14 +446,21 @@ function fma_2(a::T, b::T, c::T) where {T<:AbstractFloat}
      return x, y
 end
 
+fma_2(a::T, b::T, c::T) where {T<:AbstractFloat} =
+    add_(fma_2(a, b, c)...,)
+
 """
     fms_(a, b, c) => (x, y, z)
 
 Computes `x = fl(fms_(a, b, c))` and `y, z = fl(err(fms_(a, b, c)))`.
 """
-@inline function fms_(a::T, b::T, c::T) where {T<:AbstractFloat}
+@inline function fms_(a::T, b::T, c::T) where {T<:IEEEFloat}
      return fma_(a, b, -c)
 end
 
+fms_(a::T, b::T, c::T) where {T<:AbstractFloat} =
+    add_(fms(a, b, c)...,)
+
 fms_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fms(a, b, c)
 fms_2(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_2(a, b, -c)
+
