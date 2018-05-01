@@ -416,7 +416,7 @@ end
 
 Computes `x = fl(fma_(a, b, c))` and `y, z = fl(err(fma_(a, b, c)))`.
 """
-function fma_(a::T, b::T, c::T) where {T<:IEEEFloat}
+function fma_(a::T, b::T, c::T) where {T<:AbstractFloat}
      x = fma(a, b, c)
     
      y, z = mul_(a, b)
@@ -425,15 +425,12 @@ function fma_(a::T, b::T, c::T) where {T<:IEEEFloat}
      y = ((t - x) + u)
      
      y, z = add_hilo_(y, z)
-     return x, y, z
+     return T<:IEEEFloat ? (x, y, z) : add_(x, y, z)
 end
-
-fma_(a::T, b::T, c::T) where {T<:AbstractFloat} =
-    add_(fma_(a, b, c)...,)
 
 fma_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_(a, b, c)
 
-function fma_2(a::T, b::T, c::T) where {T<:IEEEFloat}
+function fma_2(a::T, b::T, c::T) where {T<:AbstractFloat}
      x = fma(a, b, c)
 
      y, z = mul_2(a, b)
