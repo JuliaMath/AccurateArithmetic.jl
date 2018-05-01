@@ -430,7 +430,7 @@ end
 
 fma_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_(a, b, c)
 
-function fma_2(a::T, b::T, c::T) where {T<:IEEEFloat}
+function fma_2(a::T, b::T, c::T) where {T<:AbstractFloat}
      x = fma(a, b, c)
 
      y, z = mul_2(a, b)
