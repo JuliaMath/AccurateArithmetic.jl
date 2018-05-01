@@ -440,11 +440,8 @@ function fma_2(a::T, b::T, c::T) where {T<:AbstractFloat}
     
      y += z
 
-     return x, y
+     return T<:IEEEFloat ? (x, y) : add_(x, y)
 end
-
-fma_2(a::T, b::T, c::T) where {T<:AbstractFloat} =
-    add_(fma_2(a, b, c)...,)
 
 """
     fms_(a, b, c) => (x, y, z)
