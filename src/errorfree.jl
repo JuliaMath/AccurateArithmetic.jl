@@ -429,7 +429,7 @@ function fma_(a::T, b::T, c::T) where {T<:IEEEFloat}
 end
 
 fma_(a::T, b::T, c::T) where {T<:AbstractFloat} =
-    add_(fma(a, b, c)...,)
+    add_(fma_(a, b, c)...,)
 
 fma_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_(a, b, c)
 
@@ -461,6 +461,6 @@ end
 fms_(a::T, b::T, c::T) where {T<:AbstractFloat} =
     add_(fms(a, b, c)...,)
 
-fms_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fms(a, b, c)
+fms_3(a::T, b::T, c::T) where {T<:AbstractFloat} = fms_(a, b, c)
 fms_2(a::T, b::T, c::T) where {T<:AbstractFloat} = fma_2(a, b, -c)
 
