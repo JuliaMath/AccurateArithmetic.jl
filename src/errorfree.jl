@@ -14,6 +14,11 @@ end
 
 @inline add_(a::T, b::T) where {T<:AbstractFloat} = add_2(a, b)
 
+@inline function add_1(a::T, b::T) where {T<:AbstractFloat}
+    s = a + b
+    return s
+end
+
 # ThreeSum
 function add_3(a::T,b::T,c::T) where {T<:AbstractFloat}
     s, t = add_(b, c)
@@ -31,6 +36,14 @@ function add_2(a::T,b::T,c::T) where {T<:AbstractFloat}
     y    = u + t
     x, y = add_(x, y)
     return x, y
+end
+
+function add_1(a::T,b::T,c::T) where {T<:AbstractFloat}
+    s, t = add_(b, c)
+    x, u = add_(a, s)
+    y    = u + t
+    x   += y
+    return x
 end
 
 # FourSum
@@ -58,6 +71,16 @@ end
 
 @inline add_(a::T, b::T, c::T, d::T) where {T<:AbstractFloat} = add_4(a, b, c, d)
 
+function add_3(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+    t0, t1 = add_(a ,  b)
+    t0, t2 = add_(t0,  c)
+    a,  t3 = add_(t0,  d)
+    t0, t1 = add_(t1, t2)
+    b,  t2 = add_(t0, t3)
+    c  = t1 + t2
+    return a, b, c
+end
+
 function add_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     t0, t1 = add_(a ,  b)
     t0, t2 = add_(t0,  c)
@@ -67,14 +90,11 @@ function add_2(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     return a, b
 end
 
-function add_3(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
+function add_1(a::T,b::T,c::T,d::T) where {T<: AbstractFloat}
     t0, t1 = add_(a ,  b)
     t0, t2 = add_(t0,  c)
-    a,  t3 = add_(t0,  d)
-    t0, t1 = add_(t1, t2)
-    b,  t2 = add_(t0, t3)
-    c  = t1 + t2
-    return a, b, c
+    a = t0 + d
+    return a
 end
 
 # FiveSum
@@ -131,6 +151,14 @@ function add_2(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
     t0, t2 = add_(t2, t0)
     b      = t1 + t0
     return a, b
+end
+
+function add_1(v::T, w::T, x::T, y::T, z::T) where {T<:AbstractFloat}
+    t0, t4 = add_(y, z)
+    t0, t3 = add_(x, t0)
+    t0, t2 = add_(w, t0)
+    a  = v + t0
+    return a
 end
 
 # this is TwoDiff
