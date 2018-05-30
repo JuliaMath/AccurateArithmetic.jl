@@ -1,9 +1,10 @@
-using Compat
-using Compat.Test
 using AccurateArithmetic
 
 if VERSION >= v"0.7.0-"
+  using Test
   using Random
+else
+  using Base.Test
 end
 
 if VERSION >= v"0.7.0-"
