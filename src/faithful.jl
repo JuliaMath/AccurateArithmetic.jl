@@ -1,9 +1,18 @@
+#=
 function inv_2(b::T) where {T<:AbstractFloat}
     hi = inv(b)
     v = hi * b
     w = fma(hi, b, -v)
     lo = (one(T) - v - w) / b
     return hi, lo
+end
+=#
+
+function inv_2(b::T) where {T<:AbstractFloat}
+     hi = inv(b)
+     lo = fma(hi, b, -1.0)
+     lo = -lo / b
+     return hi, lo
 end
 
 @inline inv_(b::T) where {T<:AbstractFloat} = inv_2(b)
