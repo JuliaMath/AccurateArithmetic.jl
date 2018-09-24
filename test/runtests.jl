@@ -2,7 +2,7 @@ using AccurateArithmetic
 using Test
 using Random: seed!
 
-using Base.IEEEFloat
+using Base:IEEEFloat
 
 seed!(1602)
 include("bigfloats.jl")
