@@ -1,19 +1,10 @@
 using AccurateArithmetic
+using Test
+using Random: seed!
 
-if VERSION >= v"0.7.0-"
-  using Test
-  using Random
-else
-  using Base.Test
-end
+using Base.IEEEFloat
 
-if VERSION >= v"0.7.0-"
-    import Base.IEEEFloat
-else
-    const IEEEFloat = Union{Float64, Float32, Float16}
-end
-
-srand(1602)
+seed!(1602)
 include("bigfloats.jl")
 include("randfloats.jl")
 
