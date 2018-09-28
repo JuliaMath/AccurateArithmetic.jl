@@ -386,19 +386,19 @@ end
 @inline mul_(a::T, b::T) where {T<:AbstractFloat} = mul_2(a, b)
 
 function mul_3(a::T, b::T, c::T) where {T<:AbstractFloat}
-    y, z = mul_(a, b)
-    x, y = mul_(y, c)
-    z, t = mul_(z, c)
-    y, z = add_hilo_(y, z)
-    z += t
-    return x, y, z
+    abhi, ablo = two_prod(a, b)
+    hi, abhiclo = two_prod(abhi, c)
+    ablochi, abloclo = two_prod(ablo, c)
+    md, lo, tmp  = three_sum(ablochi, abhiclo, abloclo)
+    return hi, md, lo
 end
 
 @inline function mul_2(a::T, b::T, c::T) where {T<:AbstractFloat}
-    y = a*b; z = fma(a, b, -y)
-    x = y*c; y = fma(y, c, -x)
-    z = fma(z,c,y)
-    return x, z
+    abhi, ablo = two_prod(a, b)
+    hi, abhiclo = two_prod(abhi, c)
+    ablochi, abloclo = two_prod(ablo, c)
+    md = ablochi + (abhiclo + abloclo)
+    return hi, md
 end
 
 @inline function mul_(a::T, b::T, c::T) where {T<:AbstractFloat}
