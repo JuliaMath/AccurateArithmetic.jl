@@ -414,7 +414,7 @@ end
 
 @inline powr2_(a::T) where {T<:AbstractFloat} = powr2_2(a)
 
-# a cubed
+#= a cubed
 function powr3_2(a::T) where {T<:AbstractFloat}
     y = a*a; z = fma(a, a, -y)
     x = y*a; y = fma(y, a, -x)
@@ -432,6 +432,7 @@ function powr3_3(a::T) where {T<:AbstractFloat}
     z += t
     return x, y, z
 end
+=#
 
 #=
    xfma algorithm from
