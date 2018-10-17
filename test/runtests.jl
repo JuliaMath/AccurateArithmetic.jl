@@ -33,8 +33,8 @@ hi32, lo32 = Floats2(Float32, flbig[4])
 hi,lo=Floats2(Float64, sqrt(BigFloat(hi64)))
 @test (root2_(hi64) == (hi, lo)) || (root2_(hi64) == (hi, prevfloat(lo))) || (root2_(hi64) == (hi, nextfloat(lo)))
 
-#hi,lo=Floats2(Float32, inv(BigFloat(hi32)))
-#@test (inv_(hi32)  == (hi,lo)) || (inv_(hi32) == (hi, prevfloat(lo))) || (inv_(hi32) == (hi, nextfloat(lo)))
+hi,lo=Floats2(Float32, inv(BigFloat(hi32)))
+@test (inv_(hi32)  == (hi,lo)) || (inv_(hi32) == (hi, prevfloat(lo))) || (inv_(hi32) == (hi, nextfloat(lo)))
 
 hi64, md64, lo64 = Floats3(Float64, flbig[5])
 hi32, md32, lo32 = Floats3(Float32, flbig[5])
