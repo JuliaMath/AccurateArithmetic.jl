@@ -10,7 +10,7 @@ end
 
 function inv_2(b::T) where {T<:AbstractFloat}
      hi = inv(b)
-     lo = fma(hi, b, -1.0)
+     lo = fma(hi, b, -one(T))
      lo = -lo / b
      return hi, lo
 end
