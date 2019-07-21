@@ -1,0 +1,16 @@
+name = "CompensatedAlgorithms"
+uuid = "22c0b190-da47-5b2d-9c1e-49f1e4d5ee73"
+authors = ["Chris Elrod <elrodc@gmail.com>",
+           "François Févotte <ff@triscale-innov.com>"]
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+SIMD = "fdea26ae-647d-5447-a871-4b548cad5224"
+SIMDPirates = "21efa798-c60a-11e8-04d3-e1a92915a26a"
+VectorizationBase = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
