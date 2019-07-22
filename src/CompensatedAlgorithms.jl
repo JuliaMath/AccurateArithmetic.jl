@@ -7,14 +7,14 @@ import SIMDPirates: Vec, evadd, evsub, vifelse, vabs, vload, vsum, vbroadcast, v
 
 
 # D. E. Knuth, The Art of Computer Programming: Seminumerical Algorithms, 1969.
-function two_sum(a::T, b::T) where T <: Real
+@inline function two_sum(a::T, b::T) where T <: Real
     x = a + b
     z = x - a
     e = (a - (x-z)) + (b-z)
     (x, e)
 end
 
-function two_sum(a::T, b::T) where T <: NTuple
+@inline function two_sum(a::T, b::T) where T <: NTuple
     x = evadd(a, b)
     z = evsub(x, a)
     e = evadd(evsub(a, evsub(x, z)),
@@ -24,7 +24,7 @@ end
 
 
 # T. J. Dekker. "A Floating-Point Technique for Extending the Available Precision". 1971
-function fast_two_sum(a::T, b::T) where T <: Real
+@inline function fast_two_sum(a::T, b::T) where T <: Real
     x = a + b
 
     if abs(a) < abs(b)
@@ -39,7 +39,7 @@ function fast_two_sum(a::T, b::T) where T <: Real
     x, e
 end
 
-function fast_two_sum(a::T, b::T) where T <: NTuple
+@inline function fast_two_sum(a::T, b::T) where T <: NTuple
     x = evadd(a, b)
 
     t = vless(vabs(a), vabs(b))
@@ -153,31 +153,7 @@ end
 end
 
 
-sum_kahan(x) = cascaded_eft(x, fast_two_sum)
-sum_oro(x) = cascaded_eft(x, two_sum)
-
-
-relative_error(x, y) = (x - y) / y
-
-using BenchmarkTools
-
-function check(x, eft, rem_handling, ushift)
-    v = cascaded_eft(x, eft, Val(rem_handling), Val(ushift))
-    e = relative_error(v, Float64(sum(Rational{BigInt}, x)))
-    b = @benchmark cascaded_eft($x, $eft, $(Val(rem_handling)), $(Val(ushift)))
-
-    println((nameof(eft), rem_handling, ushift, e, minimum(b.times)))
-end
-
-function bench(siz)
-    x = siz |> N->randn(N) .* exp.(10 .* randn(N)) |> x->[x;-x;1.0] |> x->x[sortperm(rand(length(x)))];
-    for eft in (two_sum, fast_two_sum)
-        for rem_handling in (:scalar, :mask)
-            for ushift in 0:5
-                check(x, eft, rem_handling, ushift)
-            end
-        end
-    end
-end
+sum_kahan(x) = cascaded_eft(x, fast_two_sum, Val(:mask), Val(2))
+sum_oro(x) = cascaded_eft(x, two_sum, Val(:mask), Val(2))
 
 end # module
