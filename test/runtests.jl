@@ -202,6 +202,40 @@ function plot_perf(data)
     display(p)
 end
 
+
+function mask_vs_scalar(N)
+    data = [Float64[] for _ in 1:10]
+    for n in N:N+8
+        x = rand(n)
+        output(n)
+        push!(data[1], n)
+
+        b = @benchmark cascaded_eft($x, two_sum, Val(:mask), Val(2))
+        t = minimum(b.times) / n
+        output(t)
+        push!(data[2], t)
+
+        b = @benchmark cascaded_eft($x, two_sum, Val(:scalar), Val(2))
+        t = minimum(b.times) / n
+        output(t)
+        push!(data[3], t)
+
+        println()
+    end
+
+    data
+end
+
+
+function plot_mvs(data)
+    p = plot(title="Mask vs Scalar",
+             xlabel="Vector size",
+             ylabel="Time [µs/elem]")
+    plot!(data[1], data[2], label="mask")
+    plot!(data[1], data[3], label="scalar")
+    display(p)
+end
+
 begin
     BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
 
@@ -216,4 +250,11 @@ begin
     data_perf = perf(32, 1e8, 1.1)
     plot_perf(data_perf)
     savefig("perf.svg")
+
+    sleep(5)
+
+    println("Comparing variants: 'mask' vs 'scalar'...")
+    data_mvs = mask_vs_scalar(32)
+    plot_mvs(data_mvs)
+    savefig("mvs.svg")
 end
