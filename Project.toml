@@ -3,9 +3,6 @@ uuid = "22286c92-06ac-501d-9306-4abd417d9753"
 repo = "https://github.com/JuliaMath/AccurateArithmetic.jl.git"
 license = "MIT"
 version = "0.3.0"
-authors = ["Chris Elrod <elrodc@gmail.com>",
-           "François Févotte <ff@triscale-innov.com>",
-           "Jeffrey Sarnoff <JeffreySarnoff@users.noreply.github.com>"]
 
 [deps]
 SIMDPirates = "21efa798-c60a-11e8-04d3-e1a92915a26a"

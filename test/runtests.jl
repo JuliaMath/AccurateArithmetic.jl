@@ -131,7 +131,7 @@ function qual(n, c1, c2, logstep)
         output(ε)
         push!(data[3], ε)
 
-        r = sum_kahan(x)
+        r = sum_kbn(x)
         ε = err(r, d)
         output(ε)
         push!(data[4], ε)
@@ -193,7 +193,7 @@ function plot_perf(data)
     p = plot(title="Performance of summation algorithms",
              xscale=:log10,
              xlabel="Vector size",
-             ylabel="Time [µs/elem]")
+             ylabel="Time [ns/elem]")
 
     plot!(data[1], data[2], label="sum")
     plot!(data[1], data[3], label="oro, ushift=1")
@@ -230,7 +230,7 @@ end
 function plot_mvs(data)
     p = plot(title="Mask vs Scalar",
              xlabel="Vector size",
-             ylabel="Time [µs/elem]")
+             ylabel="Time [ns/elem]")
     plot!(data[1], data[2], label="mask")
     plot!(data[1], data[3], label="scalar")
     display(p)
