@@ -1,7 +1,7 @@
 module AccurateArithmetic
 
 import VectorizationBase
-import SIMDPirates: Vec, evadd, evsub, vifelse, vabs, vload, vsum, vbroadcast, vless
+using SIMDPirates: Vec, evadd, evsub, vifelse, vabs, vload, vsum, vbroadcast, vless
 
 include("errorfree.jl")
 
@@ -23,14 +23,16 @@ include("errorfree.jl")
 end
 
 @inline function fast_two_sum(a::T, b::T) where T <: NTuple
-    x = evadd(a, b)
+    Pirate.@explicit
+
+    x = a + b
 
     t = vless(vabs(a), vabs(b))
     a_ = vifelse(t, b, a)
     b_ = vifelse(t, a, b)
 
-    z = evsub(x, a_)
-    e = evsub(b_, z)
+    z = x - a_
+    e = b_ - z
 
     x, e
 end
@@ -38,5 +40,8 @@ end
 
 export sum_kbn, sum_oro
 include("summation.jl")
+
+
+include("Test.jl")
 
 end # module

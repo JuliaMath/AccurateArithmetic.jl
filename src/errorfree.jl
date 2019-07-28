@@ -1,21 +1,35 @@
-# D. E. Knuth, The Art of Computer Programming: Seminumerical Algorithms, 1969.
+module Pirate
+import SIMDPirates
 
+eadd(x...) = Base.:+(x...)
+eadd(x::T, y::T) where {T<:NTuple} = SIMDPirates.evadd(x, y)
+
+esub(x...) = Base.:-(x...)
+esub(x::T, y::T) where {T<:NTuple} = SIMDPirates.evsub(x, y)
+
+less(x...) = Base.:<(x...)
+less(x::T, y::T) where {T<:NTuple} = SIMDPirates.vless(x, y)
+
+macro explicit()
+    quote
+        $(esc(:+)) = eadd
+        $(esc(:-)) = esub
+    end
+end
+end
+
+
+# D. E. Knuth, The Art of Computer Programming: Seminumerical Algorithms, 1969.
 """
     two_sum(a, b)
 Computes `hi = fl(a+b)` and `lo = err(a+b)`.
 """
 @inline function two_sum(a::T, b::T) where {T}
+    Pirate.@explicit
+
     hi = a + b
     v  = hi - a
     lo = (a - (hi - v)) + (b - v)
-    return hi, lo
-end
-
-@inline function two_sum(a::T, b::T) where T <: NTuple
-    hi = evadd(a, b)
-    v = evsub(hi, a)
-    lo = evadd(evsub(a, evsub(hi, v)),
-              evsub(b, v))
     return hi, lo
 end
 
