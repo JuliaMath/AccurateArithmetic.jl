@@ -139,6 +139,13 @@ vectors. For smaller vectors, the accuracy comes with a slow-down that can reach
 values slightly above 3 for vectors which fit in the L2 cache.
 
 
+### Tests
+
+The graphs above can be reproduced using the `test/perftests.jl` script in this
+repository. Before running them, be aware that it takes around one hour to
+generate the performance graph, during which the benchmark machine should be as
+low-loaded as possible in order to avoid perturbing performance measurements.
+
 ### References
 
 - T. Ogita, S. Rump and S. Oishi, "Accurate sum and dot product", SIAM Journal
