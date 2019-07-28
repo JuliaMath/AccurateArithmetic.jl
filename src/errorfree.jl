@@ -1,17 +1,44 @@
+module Pirate
+import SIMDPirates
+
+eadd(x...) = Base.:+(x...)
+eadd(x::T, y::T) where {T<:NTuple} = SIMDPirates.evadd(x, y)
+
+esub(x...) = Base.:-(x...)
+esub(x::T, y::T) where {T<:NTuple} = SIMDPirates.evsub(x, y)
+
+less(x...) = Base.:<(x...)
+less(x::T, y::T) where {T<:NTuple} = SIMDPirates.vless(x, y)
+
+macro explicit()
+    quote
+        $(esc(:+)) = eadd
+        $(esc(:-)) = esub
+    end
+end
+end
+
+
+# D. E. Knuth, The Art of Computer Programming: Seminumerical Algorithms, 1969.
 """
     two_sum(a, b)
 Computes `hi = fl(a+b)` and `lo = err(a+b)`.
 """
 @inline function two_sum(a::T, b::T) where {T}
+    Pirate.@explicit
+
     hi = a + b
     v  = hi - a
     lo = (a - (hi - v)) + (b - v)
     return hi, lo
 end
 
+
+
+
 """
    three_sum(a, b, c)
-    
+
 Computes `hi = fl(a+b+c)` and `md = err(a+b+c), lo = err(md)`.
 """
 function three_sum(a::T,b::T,c::T) where {T}
@@ -24,7 +51,7 @@ end
 
 """
     two_sum(a, b, c)
-    
+
 Computes `hi = fl(a+b+c)` and `lo = err(a+b+c)`.
 """
 function two_sum(a::T,b::T,c::T) where {T}
@@ -37,7 +64,7 @@ end
 
 """
     four_sum(a, b, c, d)
-    
+
 Computes `hi = fl(a+b+c+d)` and `hm = err(a+b+c+d), ml = err(hm), lo = err(ml)`.
 """
 function four_sum(a::T,b::T,c::T,d::T) where {T}
@@ -52,7 +79,7 @@ end
 
 """
     three_sum(a, b, c, d)
-    
+
 Computes `hi = fl(a+b+c+d)` and `md = err(a+b+c+d), lo = err(md)`.
 """
 function three_sum(a::T,b::T,c::T,d::T) where {T}
@@ -67,7 +94,7 @@ end
 
 """
     two_sum(a, b, c, d)
-    
+
 Computes `hi = fl(a+b+c+d)` and `lo = err(a+b+c+d)`.
 """
 function two_sum(a::T,b::T,c::T,d::T) where {T}
@@ -81,8 +108,8 @@ end
 
 """
     five_sum(a, b, c, d, e)
-    
-Computes `s = fl(a+b+c+d+e)` and 
+
+Computes `s = fl(a+b+c+d+e)` and
     `e1 = err(a+b+c+d), e2 = err(e1), e3 = err(e2), e4 = err(e3)`.
 """
 function five_sum(v::T, w::T, x::T, y::T, z::T) where {T}
@@ -112,7 +139,7 @@ Computes `s = fl(a-b)` and `e = err(a-b)`.
 end
 """
     three_diff(a, b, c)
-    
+
 Computes `s = fl(a-b-c)` and `e1 = err(a-b-c), e2 = err(e1)`.
 """
 function three_diff(a::T,b::T,c::T) where {T}
@@ -125,7 +152,7 @@ end
 
 """
     four_diff(a, b, c, d)
-    
+
 Computes `hi = fl(a-b-c-d)` and `hm = err(a-b-c-d), ml = err(hm), lo = err(ml)`.
 """
 function four_diff(a::T,b::T,c::T,d::T) where {T}
@@ -161,7 +188,7 @@ end
 
 """
     three_prod(a, b, c)
-    
+
 Computes `hi = fl(a*b*c)` and `md = err(a*b*c), lo = err(md)`.
 """
 function three_prod(a::T, b::T, c::T) where {T}
@@ -220,7 +247,7 @@ end
 
 """
     two_hilo_diff(a, b)
-    
+
 *unchecked* requirement `|a| ≥ |b|`
 Computes `hi = fl(a-b)` and `lo = err(a-b)`.
 """
@@ -232,7 +259,7 @@ end
 
 """
     two_lohi_diff(a, b)
-    
+
 *unchecked* requirement `|b| ≥ |a|`
 Computes `hi = fl(a-b)` and `lo = err(a-b)`.
 """
@@ -246,7 +273,7 @@ end
 
 """
     three_hilo_sum(a, b, c)
-    
+
 *unchecked* requirement `|a| ≥ |b| ≥ |c|`
 Computes `x = fl(a+b+c)` and `y = err(a+b+c), z = err(y)`.
 """
@@ -260,7 +287,7 @@ end
 
 """
     three_lohi_sum(a, b, c)
-    
+
 *unchecked* requirement `|c| ≥ |b| ≥ |a|`
 Computes `x = fl(a+b+c)` and `y = err(a+b+c), z = err(y)`.
 """
@@ -274,7 +301,7 @@ end
 
 """
     three_hilo_diff(a, b, c)
-    
+
 *unchecked* requirement `|a| ≥ |b| ≥ |c|`
 Computes `x = fl(a-b-c)` and `y = err(a-b-c), z = err(y)`.
 """
@@ -288,7 +315,7 @@ end
 
 """
     three_lohi_diff(a, b, c)
-    
+
 *unchecked* requirement `|c| ≥ |b| ≥ |a|`
 Computes `x = fl(a-b-c)` and `y = err(a-b-c), z = err(y)`.
 """
@@ -302,7 +329,7 @@ end
 
 """
     four_hilo_sum(a, b, c, d)
-    
+
 *unchecked* requirement `|a| ≥ |b| ≥ |c| ≥ |d|`
 Computes `hi = fl(a+b+c+d)` and `hm = err(a+b+c+d), ml = err(hm), lo = err(ml)`.
 """
@@ -318,7 +345,7 @@ end
 
 """
     four_lohi_sum(a, b, c, d)
-    
+
 *unchecked* requirement `|d| ≥ |c| ≥ |b| ≥ |a|`
 Computes `hi = fl(a+b+c+d)` and `hm = err(a+b+c+d), ml = err(hm), lo = err(ml)`.
 """
@@ -335,7 +362,7 @@ end
 
 """
     four_hilo_diff(a, b, c, d)
-    
+
 *unchecked* requirement `|a| ≥ |b| ≥ |c| ≥ |d|`
 Computes `hi = fl(a-b-c-d)` and `hm = err(a-b-c-d), ml = err(hm), lo = err(ml)`.
 """
@@ -352,7 +379,7 @@ end
 
 """
     four_hilo_diff(a, b, c, d)
-    
+
 *unchecked* requirement `|d| ≥ |c| ≥ |b| ≥ |a|`
 Computes `hi = fl(a-b-c-d)` and `hm = err(a-b-c-d), ml = err(hm), lo = err(ml)`.
 """
