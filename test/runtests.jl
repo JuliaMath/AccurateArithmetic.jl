@@ -9,6 +9,9 @@ using AccurateArithmetic.Test: generate_sum
     x, ref, _ = generate_sum(100, 1e10)
     @test sum_oro(x) == ref
     @test sum_kbn(x) == ref
+
+    @test ref == cascaded_eft(x, two_sum, Val(:scalar), Val(2))
+    @test ref == cascaded_eft(x, two_sum, Val(:mask),   Val(2))
 end
 
 
