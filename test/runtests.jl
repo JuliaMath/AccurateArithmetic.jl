@@ -15,10 +15,14 @@ using AccurateArithmetic.Test: generate_sum
 end
 
 
-# using BenchmarkTools
+using BenchmarkTools
 
-# BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
-# @btime cascaded_eft($(rand(10_000)),    two_sum, Val(:scalar), Val(2))
+BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
+@btime cascaded_eft($(rand(10_000)),    two_sum, Val(:scalar), Val(2))
 
-# BenchmarkTools.DEFAULT_PARAMETERS.evals = 10
-# @btime cascaded_eft($(rand(1_000_000)), two_sum, Val(:scalar), Val(2))
+BenchmarkTools.DEFAULT_PARAMETERS.evals = 10
+@btime cascaded_eft($(rand(1_000_000)), two_sum, Val(:scalar), Val(2))
+
+x = rand(100_000_000)
+@btime sum_oro($x)
+@btime sum($x)

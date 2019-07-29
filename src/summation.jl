@@ -48,8 +48,8 @@ end
 # DOI: 10.1137/030601818
 @generated function cascaded_eft(x::AbstractArray{T},
                                  eft,
-                                 rem_handling = Val{:scalar},
-                                 ::Val{Ushift} = Val{2}()
+                                 rem_handling = Val(:scalar),
+                                 ::Val{Ushift} = Val(2)
                                  )  where {T <: Union{Float32,Float64}, Ushift}
     @assert 0 ≤ Ushift < 6
     U = 1 << Ushift
@@ -60,7 +60,7 @@ end
     WU = W * U
     V = Vec{W,T}
 
-    q = quote
+    quote
         px = pointer(x)
         N = length(x)
         Base.Cartesian.@nexprs $U u -> begin
@@ -83,10 +83,8 @@ end
             add!(acc_1, xi)
             offset += $WT
         end
-    end
 
-    if rem_handling <: Val{:mask}
-        q_rem = quote
+        if $rem_handling isa Val{:mask}
             rem &= $(W-1)
             if rem > 0
                 mask = VectorizationBase.mask(Val{$W}(), rem)
@@ -94,20 +92,14 @@ end
                 add!(acc_1, xi)
             end
         end
-        push!(q.args, q_rem)
-    end
 
-    q_reduce = quote
         Base.Cartesian.@nexprs $(U-1) u -> begin
             add!(acc_1, acc_{u+1})
         end
 
         acc = sum(acc_1)
-    end
-    push!(q.args, q_reduce)
 
-    if rem_handling <: Val{:scalar}
-        q_rem = quote
+        if $rem_handling isa Val{:scalar}
             offset = div(offset, $sizeT) + 1
             while offset <= N
                 @inbounds xi = x[offset]
@@ -115,12 +107,9 @@ end
                 offset += 1
             end
         end
-        push!(q.args, q_rem)
+
+        sum(acc)
     end
-
-    push!(q.args, :(sum(acc)))
-
-    q
 end
 
 sum_kbn(x) = cascaded_eft(x, fast_two_sum, Val(:mask), Val(2))
