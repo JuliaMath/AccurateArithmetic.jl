@@ -5,9 +5,6 @@ mutable struct Accumulator{T, EFT}
 end
 
 Base.zero(::Type{Vec{W, T}}) where {W, T} = vbroadcast(Vec{W, T}, 0)
-
-eft(acc::Accumulator{T, EFT}) where {T, EFT} = EFT
-Base.eltype(acc::Accumulator{T, EFT}) where {T, EFT} = T
 fptype(::Type{Vec{W, T}}) where {W, T} = T
 
 Accumulator(T, EFT) = Accumulator{T, EFT}(zero(T), zero(T))
@@ -19,10 +16,10 @@ function add!(acc::Accumulator{T, EFT}, x::T) where {T, EFT}
     acc.e += e
 end
 
-function add!(acc::A, x::A) where {A<:Accumulator}
+function add!(acc::A, x::A) where {A<:Accumulator{T, EFT}} where {T, EFT}
     Pirate.@explicit
 
-    acc.s, e = eft(acc)(acc.s, x.s)
+    acc.s, e = EFT(acc.s, x.s)
     acc.e += x.e + e
 end
 
