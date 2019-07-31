@@ -84,7 +84,7 @@ end
             offset += $WT
         end
 
-        if $rem_handling isa Val{:mask}
+        if $rem_handling <: Val{:mask}
             rem &= $(W-1)
             if rem > 0
                 mask = VectorizationBase.mask(Val{$W}(), rem)
@@ -99,7 +99,7 @@ end
 
         acc = sum(acc_1)
 
-        if $rem_handling isa Val{:scalar}
+        if $rem_handling <: Val{:scalar}
             offset = div(offset, $sizeT) + 1
             while offset <= N
                 @inbounds xi = x[offset]

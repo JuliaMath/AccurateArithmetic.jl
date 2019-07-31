@@ -86,11 +86,18 @@ Results:
 function generate_sum(n, c)
     R = Rational{BigInt}
 
-    (x, y, _, _) = generate_dot(n, c)
+    (x, y, _, _) = generate_dot(n÷2, c)
+
     z = (two_prod.(x, y)
          |> Iterators.flatten
-         |> collect
-         |> shuffle)
+         |> collect)
+
+    # Complete if necessary
+    if length(z) < n
+        push!(z, rand())
+    end
+
+    z = shuffle(z)
 
     # Sum, rounded to nearest
     s = Float64(sum(R.(z)))
