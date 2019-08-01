@@ -38,7 +38,7 @@ end
 end
 
 
-export sum_kbn, sum_oro
+export sum_kbn, sum_oro, sum_naive
 include("summation.jl")
 
 
