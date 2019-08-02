@@ -1,24 +1,3 @@
-module Pirate
-import SIMDPirates
-
-eadd(x...) = Base.:+(x...)
-eadd(x::T, y::T) where {T<:NTuple} = SIMDPirates.evadd(x, y)
-
-esub(x...) = Base.:-(x...)
-esub(x::T, y::T) where {T<:NTuple} = SIMDPirates.evsub(x, y)
-
-less(x...) = Base.:<(x...)
-less(x::T, y::T) where {T<:NTuple} = SIMDPirates.vless(x, y)
-
-macro explicit()
-    quote
-        $(esc(:+)) = eadd
-        $(esc(:-)) = esub
-    end
-end
-end
-
-
 # D. E. Knuth, The Art of Computer Programming: Seminumerical Algorithms, 1969.
 """
     two_sum(a, b)
@@ -185,6 +164,16 @@ Computes `s = fl(a*b)` and `e = err(a*b)`.
     e = fma(a, b, -p)
     p, e
 end
+
+@inline function two_prod(a::T, b::T) where {T<:NTuple}
+    Pirate.@explicit
+    p = a * b
+    # TODO: add vfma to @explicit so that this method can be merged with the
+    # generic one
+    e = SIMDPirates.vfma(a, b, -p)
+    p, e
+end
+
 
 """
     three_prod(a, b, c)

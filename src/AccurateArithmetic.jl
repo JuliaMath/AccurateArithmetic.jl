@@ -1,8 +1,14 @@
 module AccurateArithmetic
 
-import VectorizationBase
-using SIMDPirates: Vec, evadd, evsub, vifelse, vabs, vload, vsum, vbroadcast, vless
+export two_sum, two_prod
+export sum_naive, sum_kbn, sum_oro
+export dot_naive, dot_oro
 
+import VectorizationBase
+import SIMDPirates
+using SIMDPirates: Vec, vload, vabs, vless, vifelse, vsum, vfmsub
+
+include("pirate.jl")
 include("errorfree.jl")
 
 
@@ -38,7 +44,6 @@ end
 end
 
 
-export sum_kbn, sum_oro, sum_naive
 include("summation.jl")
 
 

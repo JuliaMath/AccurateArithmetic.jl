@@ -1,8 +1,7 @@
-Base.zero(::Type{Vec{W, T}}) where {W, T} = vbroadcast(Vec{W, T}, 0)
-fptype(::Type{Vec{W, T}}) where {W, T} = T
-
 include("accumulators/sum.jl")
+include("accumulators/dot.jl")
 include("accumulators/compSum.jl")
+include("accumulators/compDot.jl")
 
 
 # T. Ogita, S. Rump and S. Oishi, "Accurate sum and dot product",
@@ -77,3 +76,6 @@ end
 sum_naive(x) = accumulate((x,), sumAcc,                   Val(:scalar), Val(2))
 sum_kbn(x)   = accumulate((x,), compSumAcc(fast_two_sum), Val(:scalar), Val(2))
 sum_oro(x)   = accumulate((x,), compSumAcc(two_sum),      Val(:scalar), Val(2))
+
+dot_naive(x, y) = accumulate((x,y), dotAcc,     Val(:scalar), Val(2))
+dot_oro(x, y)   = accumulate((x,y), compDotAcc, Val(:scalar), Val(2))
