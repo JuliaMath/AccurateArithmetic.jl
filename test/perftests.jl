@@ -2,6 +2,7 @@ using LinearAlgebra, Random, Printf, Statistics
 using Plots, BenchmarkTools, JSON
 
 using AccurateArithmetic
+using AccurateArithmetic: accumulate, sumAcc, dotAcc, compSumAcc, compDotAcc, two_sum
 using AccurateArithmetic.Test
 
 output(x) = @printf "%.2e " x
@@ -49,52 +50,48 @@ function accuracy_plot(labels, outfile, plotfile)
     savefig(plotfile)
 end
 
-function perf(n1, n2, logstep)
-    data = [Float64[] for _ in 1:10]
+function performance_run(n1, n2, logstep, gen, funs, outfile)
+    data = [Float64[] for _ in 1:(1+length(funs))]
 
     n = n1
     while n < n2
-        x = rand(n)
+        i = 1
+        x = gen(n)
         output(n)
-        push!(data[1], n)
+        push!(data[i], n)
 
-        b = @benchmark sum($x)
-        t = minimum(b.times) / n
-        output(t)
-        push!(data[2], t)
-
-        b = @benchmark cascaded_eft($x, two_sum, Val(:scalar), Val(1))
-        t = minimum(b.times) / n
-        output(t)
-        push!(data[3], t)
-
-        b = @benchmark cascaded_eft($x, two_sum, Val(:scalar), Val(2))
-        t = minimum(b.times) / n
-        output(t)
-        push!(data[4], t)
+        for fun in funs
+            i += 1
+            b = @benchmark $fun($(x)...)
+            t = minimum(b.times) / n
+            output(t)
+            push!(data[i], t)
+        end
 
         println()
         N = Int(round(n*logstep))
         N = 32*div(N, 32)
         n = max(N, n+32)
-
-        # plot_perf(data)
     end
 
-    data
+    open(outfile, "w") do f
+        JSON.print(f, data)
+    end
 end
 
-function plot_perf(data)
+function performance_plot(labels, outfile, plotfile)
+    data = JSON.parsefile(outfile)
+
     p = plot(title="Performance of summation algorithms",
              xscale=:log10,
              xlabel="Vector size",
              ylabel="Time [ns/elem]")
 
-    plot!(data[1], data[2], label="sum")
-    plot!(data[1], data[3], label="oro, ushift=1")
-    plot!(data[1], data[4], label="oro, ushift=2")
+    for i in 1:length(labels)
+        plot!(data[1], data[i+1], label=labels[i])
+    end
 
-    display(p)
+    savefig(plotfile)
 end
 
 
@@ -134,7 +131,7 @@ end
 function run_tests()
     BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
 
-    println("Running quality tests...")
+    println("Running accuracy tests...")
 
     outfile  = "sum_accuracy.json"
     plotfile = "sum_accuracy.pdf"
@@ -149,6 +146,7 @@ function run_tests()
     accuracy_plot(("pairwise", "naive", "oro", "kbn"),
                   outfile, plotfile)
 
+
     outfile  = "dot_accuracy.json"
     plotfile = "dot_accuracy.pdf"
     function gen_dot(n, c)
@@ -162,12 +160,43 @@ function run_tests()
     accuracy_plot(("blas", "naive", "oro"),
                   outfile, plotfile)
 
-    # sleep(5)
 
-    # println("Running performance tests...")
-    # data_perf = perf(32, 1e8, 1.1)
-    # plot_perf(data_perf)
-    # savefig("perf.svg")
+    sleep(5)
+
+
+    println("Running performance tests...")
+
+    # for ushift in 0:4
+    #     print(ushift, " ")
+    #     for n in (100, 10_000, 1_000_000, 10_000_000)
+    #         x = rand(n)
+    #         y = rand(n)
+    #         b = @benchmark accumulate($((x,y)), $compDotAcc, $(Val(:scalar)), $(Val(ushift)))
+    #         t = minimum(b.times) / n
+    #         output(t)
+    #     end
+    #     println()
+    # end
+
+    outfile  = "sum_performance.json"
+    plotfile = "sum_performance.pdf"
+    performance_run(32, 1e8, 111.1,
+                    n->(rand(n),),
+                    (sum, sum_naive, sum_oro, sum_kbn),
+                    outfile)
+    performance_plot(("pairwise", "naive", "oro", "kbn"),
+                     outfile, plotfile)
+
+
+    BLAS.set_num_threads(1)
+    outfile  = "dot_performance.json"
+    plotfile = "dot_performance.pdf"
+    performance_run(32, 1e8, 111.1,
+                    n->(rand(n), rand(n)),
+                    (dot, dot_naive, dot_oro),
+                    outfile)
+    performance_plot(("blas", "naive", "oro"),
+                     outfile, plotfile)
 
     # sleep(5)
 
