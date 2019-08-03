@@ -1,53 +1,52 @@
 using LinearAlgebra, Random, Printf, Statistics
-using Plots, BenchmarkTools
+using Plots, BenchmarkTools, JSON
 
 using AccurateArithmetic
-using AccurateArithmetic: cascaded_eft, two_sum
 using AccurateArithmetic.Test
 
 output(x) = @printf "%.2e " x
 err(val, ref) = min(1, max(eps(Float64), abs((val-ref)/ref)))
 
-function qual(n, c1, c2, logstep)
-    data = [Float64[] for _ in 1:10]
+function accuracy_run(n, c1, c2, logstep, gen, funs, outfile)
+    data = [Float64[] for _ in 1:(1+length(funs))]
 
     c = c1
     while c < c2
-        (x, d, C) = generate_sum(n, c)
+        i = 1
+        (x, d, C) = gen(n, c)
         output(C)
-        push!(data[1], C)
+        push!(data[i], C)
 
-        r = sum(x)
-        ε = err(r, d)
-        output(ε)
-        push!(data[2], ε)
-
-        r = sum_oro(x)
-        ε = err(r, d)
-        output(ε)
-        push!(data[3], ε)
-
-        r = sum_kbn(x)
-        ε = err(r, d)
-        output(ε)
-        push!(data[4], ε)
+        for fun in funs
+            i += 1
+            r = fun(x...)
+            ε = err(r, d)
+            output(ε)
+            push!(data[i], ε)
+        end
 
         println()
         c *= logstep
     end
 
-    data
+    open(outfile, "w") do f
+        JSON.print(f, data)
+    end
 end
 
-function plot_qual(data)
+function accuracy_plot(labels, outfile, plotfile)
+    data = JSON.parsefile(outfile)
+
     scatter(title="Error of summation algorithms",
             xscale=:log10, yscale=:log10,
             xlabel="Condition number",
             ylabel="Relative error")
 
-    scatter!(data[1], data[2], label="sum")
-    scatter!(data[1], data[3], label="oro")
-    scatter!(data[1], data[4], label="kbn")
+    for i in 1:length(labels)
+        scatter!(data[1], data[i+1], label=labels[i])
+    end
+
+    savefig(plotfile)
 end
 
 function perf(n1, n2, logstep)
@@ -136,23 +135,46 @@ function run_tests()
     BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
 
     println("Running quality tests...")
-    data_qual = qual(100, 2., 1e45, 2.)
-    plot_qual(data_qual)
-    savefig("qual.svg")
 
-    sleep(5)
+    outfile  = "sum_accuracy.json"
+    plotfile = "sum_accuracy.pdf"
+    function gen_sum(n, c)
+        (x, d, c) = generate_sum(n, c)
+        ((x,), d, c)
+    end
+    accuracy_run(100, 2., 1e45, 2.,
+                 gen_sum,
+                 (sum, sum_naive, sum_oro, sum_kbn),
+                 outfile)
+    accuracy_plot(("pairwise", "naive", "oro", "kbn"),
+                  outfile, plotfile)
 
-    println("Running performance tests...")
-    data_perf = perf(32, 1e8, 1.1)
-    plot_perf(data_perf)
-    savefig("perf.svg")
+    outfile  = "dot_accuracy.json"
+    plotfile = "dot_accuracy.pdf"
+    function gen_dot(n, c)
+        (x, y, d, c) = generate_dot(n, c)
+        ((x, y), d, c)
+    end
+    accuracy_run(100, 2., 1e45, 2.,
+                 gen_dot,
+                 (dot, dot_naive, dot_oro),
+                 outfile)
+    accuracy_plot(("blas", "naive", "oro"),
+                  outfile, plotfile)
 
-    sleep(5)
+    # sleep(5)
 
-    println("Comparing variants: 'mask' vs 'scalar'...")
-    data_mvs = mask_vs_scalar(32)
-    plot_mvs(data_mvs)
-    savefig("mvs.svg")
+    # println("Running performance tests...")
+    # data_perf = perf(32, 1e8, 1.1)
+    # plot_perf(data_perf)
+    # savefig("perf.svg")
+
+    # sleep(5)
+
+    # println("Comparing variants: 'mask' vs 'scalar'...")
+    # data_mvs = mask_vs_scalar(32)
+    # plot_mvs(data_mvs)
+    # savefig("mvs.svg")
 end
 
 run_tests()
