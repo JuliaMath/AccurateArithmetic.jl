@@ -73,9 +73,9 @@ include("accumulators/compDot.jl")
     end
 end
 
-sum_naive(x) = accumulate((x,), sumAcc,                   Val(:scalar), Val(2))
+sum_naive(x) = accumulate((x,), sumAcc,                   Val(:scalar), Val(3))
 sum_kbn(x)   = accumulate((x,), compSumAcc(fast_two_sum), Val(:scalar), Val(2))
 sum_oro(x)   = accumulate((x,), compSumAcc(two_sum),      Val(:scalar), Val(2))
 
-dot_naive(x, y) = accumulate((x,y), dotAcc,     Val(:scalar), Val(2))
-dot_oro(x, y)   = accumulate((x,y), compDotAcc, Val(:scalar), Val(2))
+dot_naive(x, y) = accumulate((x,y), dotAcc,     Val(:scalar), Val(3))
+dot_oro(x, y)   = accumulate((x,y), compDotAcc, Val(:scalar), Val(3))
