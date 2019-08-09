@@ -54,6 +54,7 @@ function accuracy_plt(title, labels, outfile, pltfile)
     end
 
     savefig(pltfile)
+    savefig(replace(pltfile, ".pdf"=>".svg"))
 end
 
 function performance_run(n1, n2, logstep, gen, funs, outfile)
@@ -102,6 +103,7 @@ function performance_plt(title, labels, outfile, pltfile)
     end
 
     savefig(pltfile)
+    savefig(replace(pltfile, ".pdf"=>".svg"))
 end
 
 function ushift_run(gen, acc, outfile)
@@ -147,6 +149,7 @@ function ushift_plt(title, outfile, pltfile)
     end
 
     savefig(pltfile)
+    savefig(replace(pltfile, ".pdf"=>".svg"))
 end
 
 function run_tests()
