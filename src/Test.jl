@@ -18,12 +18,12 @@ Results:
   d    -- accurate dot product, rounded to nearest
   c    -- actual condition number of the dot product
 """
-function generate_dot(n, c)
+function generate_dot(n, c::T) where {T}
     R = Rational{BigInt}
 
     # Initialization
-    x = zeros(Float64, n)
-    y = zeros(Float64, n)
+    x = zeros(T, n)
+    y = zeros(T, n)
 
     # First half of the vectors:
     #   random numbers within a large exponent range
@@ -34,8 +34,8 @@ function generate_dot(n, c)
     e[1]  = b/2 + 1           # Make sure exponents b/2
     e[n2] = 0                 # and 0 actually occur
     for i in 1:n2
-        x[i] = (2*rand()-1) * 2^(e[i])
-        y[i] = (2*rand()-1) * 2^(e[i])
+        x[i] = (2*rand(T)-1) * 2^(e[i])
+        y[i] = (2*rand(T)-1) * 2^(e[i])
     end
 
 
@@ -50,7 +50,7 @@ function generate_dot(n, c)
 
         # y[i] chosen according to (*)
         cy = (2*rand()-1) * 2^(e[i])
-        y[i+n2] = (cy - Float64(dot(R.(x), R.(y)))) / cx
+        y[i+n2] = (cy - T(dot(R.(x), R.(y)))) / cx
     end
 
 
@@ -60,7 +60,7 @@ function generate_dot(n, c)
     Y = y[perm]
 
     # Dot product, rounded to nearest
-    d = Float64(dot(R.(X), R.(Y)))
+    d = T(dot(R.(X), R.(Y)))
 
     # Actual condition number
     c = 2 * dot(abs.(X), abs.(Y)) / abs(d)
@@ -83,7 +83,7 @@ Results:
   s -- accurate sum, rounded to nearest
   c -- actual condition number of the sum
 """
-function generate_sum(n, c)
+function generate_sum(n, c::T) where {T}
     R = Rational{BigInt}
 
     (x, y, _, _) = generate_dot(n÷2, c)
@@ -100,7 +100,7 @@ function generate_sum(n, c)
     z = shuffle(z)
 
     # Sum, rounded to nearest
-    s = Float64(sum(R.(z)))
+    s = T(sum(R.(z)))
 
     # Actual condition number
     c = sum(abs.(z)) / abs(s)

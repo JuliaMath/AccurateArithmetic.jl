@@ -6,7 +6,7 @@ using AccurateArithmetic: accumulate, sumAcc, dotAcc, compSumAcc, compDotAcc, tw
 using AccurateArithmetic.Test
 
 output(x) = @printf "%.2e " x
-err(val, ref) = min(1, max(eps(Float64), abs((val-ref)/ref)))
+err(val::T, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
 
 RUN_TESTS = true
 
@@ -164,7 +164,7 @@ function run_tests()
             (x, d, c) = generate_sum(n, c)
             ((x,), d, c)
         end
-        accuracy_run(100, 2., 1e45, 2.,
+        accuracy_run(100, 2., 1e45, 2,
                      gen_sum,
                      (sum, sum_naive, sum_oro, sum_kbn),
                      outfile)
@@ -179,7 +179,7 @@ function run_tests()
             (x, y, d, c) = generate_dot(n, c)
             ((x, y), d, c)
         end
-        accuracy_run(100, 2., 1e45, 2.,
+        accuracy_run(100, 2., 1e45, 2,
                      gen_dot,
                      (dot, dot_naive, dot_oro),
                      outfile)
