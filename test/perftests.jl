@@ -109,7 +109,7 @@ end
 function ushift_run(gen, acc, outfile)
     RUN_TESTS || return
 
-    sizes = [10^i for i in 2:6]
+    sizes = [2^(3*i) for i in 2:6]
     data = [[] for _ in 1:(1+length(sizes))]
     for ushift in 0:4
         i = 1
@@ -145,7 +145,7 @@ function ushift_plt(title, outfile, pltfile)
              ylabel="Time [ns/elem]")
 
     for i in 1:length(labels)
-        plot!(data[1], data[i+1], label="10^$(Int(round(log10(labels[i])))) elems")
+        plot!(data[1], data[i+1], label="2^$(Int(round(log2(labels[i])))) elems")
     end
 
     savefig(pltfile)
