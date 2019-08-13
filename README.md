@@ -146,7 +146,11 @@ repository. Before running them, be aware that it takes around one hour to
 generate the performance graph, during which the benchmark machine should be as
 low-loaded as possible in order to avoid perturbing performance measurements.
 
+
 ### References
+
+- C. Elrod and F. Févotte, "Accurate and Efficient Sums and Dot Products in
+  Julia". [preprint](https://hal.archives-ouvertes.fr/hal-02265534)
 
 - T. Ogita, S. Rump and S. Oishi, "Accurate sum and dot product", SIAM Journal
   on Scientific Computing, 6(26), 2005. DOI: 10.1137/030601818
