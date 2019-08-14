@@ -3,7 +3,7 @@ mutable struct CompDotAcc{T}
     e :: T
 end
 
-compDotAcc(T) = CompDotAcc{T}(zero(T), zero(T))
+compDotAcc(T) = CompDotAcc{T}(vzero(T), vzero(T))
 
 function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
     Pirate.@explicit

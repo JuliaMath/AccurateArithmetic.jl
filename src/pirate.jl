@@ -1,11 +1,13 @@
 module Pirate
 import SIMDPirates
+import SIMDPirates: Vec
 
 eadd(x...) = Base.:+(x...)
 eadd(x::T, y::T) where {T<:NTuple} = SIMDPirates.evadd(x, y)
 
 esub(x...) = Base.:-(x...)
-esub(x::NTuple) = broadcast(-, x)
+esub(x::NTuple) = broadcast(esub, x)
+esub(x::VecElement) = VecElement(-x.value)
 esub(x::T, y::T) where {T<:NTuple} = SIMDPirates.evsub(x, y)
 
 emul(x...) = Base.:*(x...)
@@ -21,9 +23,10 @@ macro explicit()
         $(esc(:*)) = emul
     end
 end
-end
 
+vzero(x) = zero(x)
+vzero(::Type{Vec{W, T}}) where {W, T} = SIMDPirates.vbroadcast(Vec{W, T}, 0)
 
-Base.:-(x::VecElement) = VecElement(-x.value)
-Base.zero(::Type{Vec{W, T}}) where {W, T} = SIMDPirates.vbroadcast(Vec{W, T}, 0)
 fptype(::Type{Vec{W, T}}) where {W, T} = T
+
+end

@@ -6,7 +6,7 @@ export dot_naive, dot_oro
 
 import VectorizationBase
 import SIMDPirates
-using SIMDPirates: Vec, vload, vabs, vless, vifelse, vsum, vfmsub
+using SIMDPirates: Vec, vload, vabs, vless, vifelse, vsum, vfma
 
 include("pirate.jl")
 include("errorfree.jl")

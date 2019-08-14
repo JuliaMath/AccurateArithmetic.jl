@@ -4,7 +4,7 @@ mutable struct CompSumAcc{T, EFT}
 end
 
 compSumAcc(EFT) = T->compSumAcc(EFT, T)
-compSumAcc(EFT, T) = CompSumAcc{T, EFT}(zero(T), zero(T))
+compSumAcc(EFT, T) = CompSumAcc{T, EFT}(vzero(T), vzero(T))
 
 function add!(acc::CompSumAcc{T, EFT}, x::T) where {T, EFT}
     Pirate.@explicit

@@ -170,7 +170,7 @@ end
     p = a * b
     # TODO: add vfma to @explicit so that this method can be merged with the
     # generic one
-    e = SIMDPirates.vfma(a, b, -p)
+    e = vfma(a, b, -p)
     p, e
 end
 

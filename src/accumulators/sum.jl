@@ -2,7 +2,7 @@ mutable struct SumAcc{T}
     s :: T
 end
 
-sumAcc(T) = SumAcc{T}(zero(T))
+sumAcc(T) = SumAcc{T}(vzero(T))
 
 function add!(acc::SumAcc, x)
     Pirate.@explicit

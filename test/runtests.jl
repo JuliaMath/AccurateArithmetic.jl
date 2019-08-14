@@ -103,10 +103,12 @@ using BenchmarkTools
 acc = AccurateArithmetic.compSumAcc(two_sum)
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
-@btime accumulate($((rand(10_000),)),    $acc, Val(:scalar), Val(2))
+@btime sum_oro($(rand(10_000)))
+@btime sum_kbn($(rand(10_000)))
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 10
-@btime accumulate($((rand(1_000_000),)), $acc, Val(:scalar), Val(2))
+@btime sum_oro($(rand(1_000_000)))
+@btime sum_kbn($(rand(1_000_000)))
 
 x = rand(100_000_000)
 @btime sum_oro($x)

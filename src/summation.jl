@@ -1,3 +1,5 @@
+using .Pirate: vzero, fptype
+
 include("accumulators/sum.jl")
 include("accumulators/dot.jl")
 include("accumulators/compSum.jl")
