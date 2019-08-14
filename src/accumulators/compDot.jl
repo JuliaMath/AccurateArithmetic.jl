@@ -6,7 +6,7 @@ end
 compDotAcc(T) = CompDotAcc{T}(vzero(T), vzero(T))
 
 function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
-    Pirate.@explicit
+    SIMDops.@explicit
 
     p, ep = two_prod(x, y)
     acc.s, es = two_sum(acc.s, p)
@@ -14,7 +14,7 @@ function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
 end
 
 function add!(acc::A, x::A) where {A<:CompDotAcc}
-    Pirate.@explicit
+    SIMDops.@explicit
 
     acc.s, e = two_sum(acc.s, x.s)
     acc.e += x.e + e

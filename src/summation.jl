@@ -1,4 +1,4 @@
-using .Pirate: vzero, fptype
+using .SIMDops: vzero, fptype
 
 include("accumulators/sum.jl")
 include("accumulators/dot.jl")

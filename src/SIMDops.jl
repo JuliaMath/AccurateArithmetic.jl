@@ -1,4 +1,4 @@
-module Pirate
+module SIMDops
 import SIMDPirates
 import SIMDPirates: Vec
 

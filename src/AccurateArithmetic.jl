@@ -8,7 +8,7 @@ import VectorizationBase
 import SIMDPirates
 using SIMDPirates: Vec, vload, vabs, vless, vifelse, vsum, vfma
 
-include("pirate.jl")
+include("SIMDops.jl")
 include("errorfree.jl")
 
 
@@ -29,7 +29,7 @@ include("errorfree.jl")
 end
 
 @inline function fast_two_sum(a::T, b::T) where T <: NTuple
-    Pirate.@explicit
+    SIMDops.@explicit
 
     x = a + b
 

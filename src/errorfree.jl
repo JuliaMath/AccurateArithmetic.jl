@@ -4,7 +4,7 @@
 Computes `hi = fl(a+b)` and `lo = err(a+b)`.
 """
 @inline function two_sum(a::T, b::T) where {T}
-    Pirate.@explicit
+    SIMDops.@explicit
 
     hi = a + b
     v  = hi - a
@@ -166,7 +166,7 @@ Computes `s = fl(a*b)` and `e = err(a*b)`.
 end
 
 @inline function two_prod(a::T, b::T) where {T<:NTuple}
-    Pirate.@explicit
+    SIMDops.@explicit
     p = a * b
     # TODO: add vfma to @explicit so that this method can be merged with the
     # generic one
