@@ -1,9 +1,11 @@
 using AccurateArithmetic
 using Test
 
-using AccurateArithmetic: accumulate
+using AccurateArithmetic.Summation: accumulate
+using AccurateArithmetic.Summation: sumAcc, compSumAcc, dotAcc, compDotAcc
 using AccurateArithmetic.Test: generate_sum, generate_dot
 using LinearAlgebra
+
 
 @testset "AccurateArithmetic" begin
     @testset "Tests" begin
@@ -52,7 +54,7 @@ using LinearAlgebra
                 ref = sum(x)
                 @test ref ≈ sum_naive(x)
 
-                acc = AccurateArithmetic.sumAcc
+                acc = sumAcc
                 @test ref ≈ accumulate((x,), acc, Val(:scalar), Val(2))
                 @test ref ≈ accumulate((x,), acc, Val(:mask),   Val(2))
             end
@@ -64,7 +66,7 @@ using LinearAlgebra
                 @test ref == sum_oro(x)
                 @test ref == sum_kbn(x)
 
-                acc = AccurateArithmetic.compSumAcc(two_sum)
+                acc = compSumAcc(two_sum)
                 @test ref == accumulate((x,), acc, Val(:scalar), Val(2))
                 @test ref == accumulate((x,), acc, Val(:mask),   Val(2))
             end
@@ -79,7 +81,7 @@ using LinearAlgebra
                 ref = dot(x, y)
                 @test ref ≈ dot_naive(x, y)
 
-                acc = AccurateArithmetic.dotAcc
+                acc = dotAcc
                 @test ref ≈ accumulate((x,y), acc, Val(:scalar), Val(2))
                 @test ref ≈ accumulate((x,y), acc, Val(:mask),   Val(2))
             end
@@ -90,7 +92,7 @@ using LinearAlgebra
                 x, y, ref, _ = generate_dot(N, 1e10)
                 @test ref == dot_oro(x, y)
 
-                acc = AccurateArithmetic.compDotAcc
+                acc = compDotAcc
                 @test ref == accumulate((x,y), acc, Val(:scalar), Val(2))
                 @test ref == accumulate((x,y), acc, Val(:mask),   Val(2))
             end
@@ -100,7 +102,7 @@ end
 
 using BenchmarkTools
 
-acc = AccurateArithmetic.compSumAcc(two_sum)
+acc = compSumAcc(two_sum)
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
 @btime sum_oro($(rand(10_000)))
@@ -117,6 +119,6 @@ x = rand(100_000_000)
 
 
 y = rand(100_000_000)
-@btime AccurateArithmetic.dot_oro(x, y)
-@btime AccurateArithmetic.dot_naive(x, y)
+@btime dot_oro(x, y)
+@btime dot_naive(x, y)
 @btime dot(x, y)

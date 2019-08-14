@@ -1,6 +1,6 @@
 module SIMDops
 import SIMDPirates
-import SIMDPirates: Vec
+using  SIMDPirates: Vec, vload, vsum, vabs, vfma, vifelse, vless
 
 eadd(x...) = Base.:+(x...)
 eadd(x::T, y::T) where {T<:NTuple} = SIMDPirates.evadd(x, y)

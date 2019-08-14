@@ -1,4 +1,13 @@
-using .SIMDops: vzero, fptype
+module Summation
+export sum_naive, sum_kbn, sum_oro
+export dot_naive, dot_oro
+
+import VectorizationBase
+
+import ..SIMDops
+using  ..SIMDops: Vec, vload, vsum, vzero, fptype
+
+using ..EFT: two_sum, fast_two_sum, two_prod
 
 include("accumulators/sum.jl")
 include("accumulators/dot.jl")
@@ -81,3 +90,5 @@ sum_oro(x)   = accumulate((x,), compSumAcc(two_sum),      Val(:scalar), Val(2))
 
 dot_naive(x, y) = accumulate((x,y), dotAcc,     Val(:scalar), Val(3))
 dot_oro(x, y)   = accumulate((x,y), compDotAcc, Val(:scalar), Val(3))
+
+end

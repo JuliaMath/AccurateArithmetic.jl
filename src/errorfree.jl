@@ -1,7 +1,11 @@
-# D. E. Knuth, The Art of Computer Programming: Seminumerical Algorithms, 1969.
 """
     two_sum(a, b)
-Computes `hi = fl(a+b)` and `lo = err(a+b)`.
+
+Computes `hi = fl(a+b)` and `lo = err(a+b)`, using the algorithm by D. E. Knuth,
+"The Art of Computer Programming: Seminumerical Algorithms", 1969.
+
+This algorithm does not use any branch. See also `fast_two_sum` for an
+alternative algorithm which branches but does fewer arithmetic operations.
 """
 @inline function two_sum(a::T, b::T) where {T}
     SIMDops.@explicit
@@ -10,6 +14,47 @@ Computes `hi = fl(a+b)` and `lo = err(a+b)`.
     v  = hi - a
     lo = (a - (hi - v)) + (b - v)
     return hi, lo
+end
+
+"""
+    fast_two_sum(a, b)
+
+Computes `hi = fl(a+b)` and `lo = err(a+b)`, using the algorithm by
+T. J. Dekker, "A Floating-Point Technique for Extending the Available
+Precision", 1971
+
+Despite its name, this algorithm may not be as fast as expected on all hardware
+architectures because it branches. See also `two_sum` for an alternative
+algorithm which performs more arithmetic operations, but does not branch.
+"""
+@inline function fast_two_sum(a::T, b::T) where T <: Real
+    x = a + b
+
+    if abs(a) < abs(b)
+        (a_,b_) = (b,a)
+    else
+        (a_,b_) = (a,b)
+    end
+
+    z = x - a_
+    e = b_ - z
+
+    x, e
+end
+
+@inline function fast_two_sum(a::T, b::T) where T <: NTuple
+    SIMDops.@explicit
+
+    x = a + b
+
+    t = vless(vabs(a), vabs(b))
+    a_ = vifelse(t, b, a)
+    b_ = vifelse(t, a, b)
+
+    z = x - a_
+    e = b_ - z
+
+    x, e
 end
 
 

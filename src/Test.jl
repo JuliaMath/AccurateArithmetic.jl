@@ -2,7 +2,7 @@ module Test
 export generate_dot, generate_sum
 
 using LinearAlgebra, Random
-using AccurateArithmetic: two_prod
+using ..EFT: two_prod
 
 """
     (x, y, d, c) = generate_dot(n, c)
