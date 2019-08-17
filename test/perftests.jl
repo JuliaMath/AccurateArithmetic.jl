@@ -2,13 +2,14 @@ using LinearAlgebra, Random, Printf, Statistics
 using Plots, BenchmarkTools, JSON
 
 using AccurateArithmetic
-using AccurateArithmetic: accumulate, sumAcc, dotAcc, compSumAcc, compDotAcc, two_sum
+using AccurateArithmetic.Summation: accumulate, sumAcc, dotAcc, compSumAcc, compDotAcc, two_sum
 using AccurateArithmetic.Test
 
 output(x) = @printf "%.2e " x
 err(val::T, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
 
 RUN_TESTS = true
+FAST_TESTS = false
 
 function accuracy_run(n, c1, c2, logstep, gen, funs, outfile)
     RUN_TESTS || return
@@ -232,9 +233,11 @@ function run_tests()
     sleep(5)
     println("Running performance tests...")
     if true
+        logstep = FAST_TESTS ? 10. : 1.1
+
         outfile = "sum_performance.json"
         pltfile = "sum_performance.pdf"
-        performance_run(32, 1e8, 1.1,
+        performance_run(32, 1e8, logstep,
                         n->(rand(n),),
                         (sum, sum_naive, sum_oro, sum_kbn),
                         outfile)
@@ -246,7 +249,7 @@ function run_tests()
         BLAS.set_num_threads(1)
         outfile = "dot_performance.json"
         pltfile = "dot_performance.pdf"
-        performance_run(32, 3e7, 1.1,
+        performance_run(32, 3e7, logstep,
                         n->(rand(n), rand(n)),
                         (dot, dot_naive, dot_oro),
                         outfile)
