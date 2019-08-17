@@ -1,3 +1,4 @@
+println("Loading required packages...")
 using LinearAlgebra, Random, Printf, Statistics
 using Plots, BenchmarkTools, JSON
 
@@ -51,7 +52,7 @@ function accuracy_plt(title, labels, outfile, pltfile)
     markers = Symbol[:circle, :+, :rect, :x]
 
     for i in 1:length(labels)
-        scatter!(data[1], data[i+1], label=labels[i], markershape=markers[i])
+        scatter!(Float64.(data[1]), Float64.(data[i+1]), label=labels[i], markershape=markers[i])
     end
 
     savefig(pltfile)
@@ -100,7 +101,7 @@ function performance_plt(title, labels, outfile, pltfile)
              ylabel="Time [ns/elem]")
 
     for i in 1:length(labels)
-        plot!(data[1], data[i+1], label=labels[i])
+        plot!(Float64.(data[1]), Float64.(data[i+1]), label=labels[i])
     end
 
     savefig(pltfile)
@@ -146,7 +147,7 @@ function ushift_plt(title, outfile, pltfile)
              ylabel="Time [ns/elem]")
 
     for i in 1:length(labels)
-        plot!(data[1], data[i+1], label="2^$(Int(round(log2(labels[i])))) elems")
+        plot!(Float64.(data[1]), Float64.(data[i+1]), label="2^$(Int(round(log2(labels[i])))) elems")
     end
 
     savefig(pltfile)
@@ -257,6 +258,6 @@ function run_tests()
                         ("blas", "naive", "oro"),
                         outfile, pltfile)
     end
-end
 
-run_tests()
+    println("Normal end of the performance tests")
+end
