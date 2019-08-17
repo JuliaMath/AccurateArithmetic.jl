@@ -1,19 +1,28 @@
 println("Loading required packages...")
 using LinearAlgebra, Random, Printf, Statistics
-using Plots, BenchmarkTools, JSON
+using BenchmarkTools, JSON
 
 using AccurateArithmetic
-using AccurateArithmetic.Summation: accumulate, sumAcc, dotAcc, compSumAcc, compDotAcc, two_sum
+using AccurateArithmetic.Summation: accumulate, two_sum, fast_two_sum
+using AccurateArithmetic.Summation: sumAcc, dotAcc, compSumAcc, compDotAcc
 using AccurateArithmetic.Test
 
 output(x) = @printf "%.2e " x
 err(val::T, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
 
-RUN_TESTS = true
 FAST_TESTS = false
 
-function accuracy_run(n, c1, c2, logstep, gen, funs, outfile)
-    RUN_TESTS || return
+
+
+# * Accuracy
+
+function run_accuracy(gen, funs, labels, title, filename)
+    println("-> $title")
+
+    n = 100     # Vector size
+    c1 = 2.     # Condition number (min)
+    c2 = 1e45   # -                (max)
+    logstep = 2 # Step for condition number increase (log scale)
 
     data = [Float64[] for _ in 1:(1+length(funs))]
 
@@ -36,38 +45,135 @@ function accuracy_run(n, c1, c2, logstep, gen, funs, outfile)
         c *= logstep
     end
 
-    open(outfile, "w") do f
-        JSON.print(f, data)
+    open(filename*".json", "w") do f
+        JSON.print(f, Dict(
+            :type   => :accuracy,
+            :title  => title,
+            :labels => labels,
+            :data   => data))
     end
 end
 
-function accuracy_plt(title, labels, outfile, pltfile)
-    data = JSON.parsefile(outfile)
 
-    scatter(title=title,
-            xscale=:log10, yscale=:log10,
-            xlabel="Condition number",
-            ylabel="Relative error")
+function run_accuracy()
+    println("Running accuracy tests...")
 
-    markers = Symbol[:circle, :+, :rect, :x]
-
-    for i in 1:length(labels)
-        scatter!(Float64.(data[1]), Float64.(data[i+1]), label=labels[i], markershape=markers[i])
+    function gen_sum(n, c)
+        (x, d, c) = generate_sum(n, c)
+        ((x,), d, c)
     end
+    run_accuracy(gen_sum,
+                 (sum,        sum_naive, sum_oro, sum_kbn),
+                 ("pairwise", "naive",   "oro",   "kbn"),
+                 "Error of summation algorithms",
+                 "sum_accuracy")
 
-    savefig(pltfile)
-    savefig(replace(pltfile, ".pdf"=>".svg"))
+
+    function gen_dot(n, c)
+        (x, y, d, c) = generate_dot(n, c)
+        ((x, y), d, c)
+    end
+    run_accuracy(gen_dot,
+                 (dot,    dot_naive, dot_oro),
+                 ("blas", "naive",   "oro"),
+                 "Error of dot product algorithms",
+                 "dot_accuracy")
 end
 
-function performance_run(n1, n2, logstep, gen, funs, outfile)
-    RUN_TESTS || return
+
+
+# * Optimal u_shift
+
+function run_ushift(gen, acc, title, filename)
+    println("-> $title")
+
+    if FAST_TESTS
+        title *= " [FAST]"
+        sizes = [2^(3*i) for i in 3:4]
+        ushifts = (0,2)
+        BenchmarkTools.DEFAULT_PARAMETERS.evals = 1
+        BenchmarkTools.DEFAULT_PARAMETERS.seconds = 0.5
+    else
+        sizes = [2^(3*i) for i in 2:6]
+        ushifts = 0:4
+        BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
+        BenchmarkTools.DEFAULT_PARAMETERS.seconds = 5.0
+    end
+
+    data = [[] for _ in 1:(1+length(sizes))]
+    for ushift in ushifts
+        i = 1
+        print(ushift, " ")
+        push!(data[i], ushift)
+
+        for n in sizes
+            i += 1
+            x = gen(n)
+
+            b = @benchmark accumulate($x, $acc, $(Val(:scalar)), $(Val(ushift)))
+            t = minimum(b.times) / n
+            output(t)
+            push!(data[i], t)
+        end
+        println()
+    end
+
+    open(filename*".json", "w") do f
+        JSON.print(f, Dict(
+            :type   => :ushift,
+            :title  => title,
+            :labels => sizes,
+            :data   => data))
+    end
+end
+
+
+function run_ushift()
+    BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
+    println("Finding optimal ushift...")
+
+    run_ushift(n->(rand(n),), sumAcc,
+               "Performance of naive summation",
+               "sum_naive_ushift")
+
+    run_ushift(n->(rand(n),), compSumAcc(two_sum),
+               "Performance of ORO summation",
+               "sum_oro_ushift")
+
+    run_ushift(n->(rand(n),), compSumAcc(fast_two_sum),
+               "Performance of KBN summation",
+               "sum_kbn_ushift")
+
+    run_ushift(n->(rand(n), rand(n)), dotAcc,
+               "Performance of naive dot product",
+               "dot_naive_ushift")
+
+    run_ushift(n->(rand(n), rand(n)), compDotAcc,
+               "Performance of compensated dot product",
+               "dot_oro_ushift")
+end
+
+
+
+# * Performance comparisons
+
+function run_performance(n2, gen, funs, labels, title, filename)
+    println("-> $title")
+
+    if FAST_TESTS
+        title *= " [FAST]"
+        logstep = 100.
+        BenchmarkTools.DEFAULT_PARAMETERS.evals = 1
+        BenchmarkTools.DEFAULT_PARAMETERS.seconds = 0.5
+    else
+        logstep = 1.1
+        BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
+        BenchmarkTools.DEFAULT_PARAMETERS.seconds = 5.0
+    end
 
     data = [Float64[] for _ in 1:(1+length(funs))]
-
-    n = n1
+    n = 32
     while n < n2
-        sleep(1)
-
         i = 1
         x = gen(n)
         output(n)
@@ -85,179 +191,49 @@ function performance_run(n1, n2, logstep, gen, funs, outfile)
         N = Int(round(n*logstep))
         N = 32*div(N, 32)
         n = max(N, n+32)
-
-        open(outfile, "w") do f
-            JSON.print(f, data)
-        end
-    end
-end
-
-function performance_plt(title, labels, outfile, pltfile)
-    data = JSON.parsefile(outfile)
-
-    p = plot(title=title,
-             xscale=:log10,
-             xlabel="Vector size",
-             ylabel="Time [ns/elem]")
-
-    for i in 1:length(labels)
-        plot!(Float64.(data[1]), Float64.(data[i+1]), label=labels[i])
     end
 
-    savefig(pltfile)
-    savefig(replace(pltfile, ".pdf"=>".svg"))
-end
-
-function ushift_run(gen, acc, outfile)
-    RUN_TESTS || return
-
-    sizes = [2^(3*i) for i in 2:6]
-    data = [[] for _ in 1:(1+length(sizes))]
-    for ushift in 0:4
-        i = 1
-        print(ushift, " ")
-        push!(data[i], ushift)
-
-        for n in sizes
-            i += 1
-            x = gen(n)
-
-            b = @benchmark accumulate($x, $acc, $(Val(:scalar)), $(Val(ushift)))
-            t = minimum(b.times) / n
-            output(t)
-            push!(data[i], t)
-        end
-        println()
-    end
-
-    open(outfile, "w") do f
+    open(filename*".json", "w") do f
         JSON.print(f, Dict(
-            "labels"=>sizes,
-            "data"=>data))
+            :type   => :performance,
+            :title  => title,
+            :labels => labels,
+            :data   => data))
     end
 end
 
-function ushift_plt(title, outfile, pltfile)
-    json = JSON.parsefile(outfile)
-    data   = json["data"]
-    labels = json["labels"]
 
-    p = plot(title=title,
-             xlabel="log2(U)",
-             ylabel="Time [ns/elem]")
-
-    for i in 1:length(labels)
-        plot!(Float64.(data[1]), Float64.(data[i+1]), label="2^$(Int(round(log2(labels[i])))) elems")
-    end
-
-    savefig(pltfile)
-    savefig(replace(pltfile, ".pdf"=>".svg"))
-end
-
-function run_tests()
-    BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
-
-    println("Running accuracy tests...")
-
-    if true
-        outfile = "sum_accuracy.json"
-        pltfile = "sum_accuracy.pdf"
-        function gen_sum(n, c)
-            (x, d, c) = generate_sum(n, c)
-            ((x,), d, c)
-        end
-        accuracy_run(100, 2., 1e45, 2,
-                     gen_sum,
-                     (sum, sum_naive, sum_oro, sum_kbn),
-                     outfile)
-        accuracy_plt("Error of summation algorithms",
-                     ("pairwise", "naive", "oro", "kbn"),
-                     outfile, pltfile)
-
-
-        outfile = "dot_accuracy.json"
-        pltfile = "dot_accuracy.pdf"
-        function gen_dot(n, c)
-            (x, y, d, c) = generate_dot(n, c)
-            ((x, y), d, c)
-        end
-        accuracy_run(100, 2., 1e45, 2,
-                     gen_dot,
-                     (dot, dot_naive, dot_oro),
-                     outfile)
-        accuracy_plt("Error of dot product algorithms",
-                     ("blas", "naive", "oro"),
-                     outfile, pltfile)
-    end
-
-
-    sleep(5)
-    println("Finding optimal ushift...")
-    if true
-        outfile = "sum_naive_ushift.json"
-        pltfile = "sum_naive_ushift.pdf"
-        ushift_run(n->(rand(n),),
-                   sumAcc,
-                   outfile)
-        ushift_plt("Performance of naive summation",
-                   outfile, pltfile)
-
-
-        outfile = "sum_oro_ushift.json"
-        pltfile = "sum_oro_ushift.pdf"
-        ushift_run(n->(rand(n),),
-                   compSumAcc(two_sum),
-                   outfile)
-        ushift_plt("Performance of compensated summation",
-                   outfile, pltfile)
-
-
-        outfile = "dot_naive_ushift.json"
-        pltfile = "dot_naive_ushift.pdf"
-        ushift_run(n->(rand(n), rand(n)),
-                   dotAcc,
-                   outfile)
-        ushift_plt("Performance of naive dot product",
-                   outfile, pltfile)
-
-
-        outfile = "dot_oro_ushift.json"
-        pltfile = "dot_oro_ushift.pdf"
-        ushift_run(n->(rand(n), rand(n)),
-                   compDotAcc,
-                   outfile)
-        ushift_plt("Performance of compensated dot product",
-                   outfile, pltfile)
-    end
-
-
-    sleep(5)
+function run_performance()
     println("Running performance tests...")
-    if true
-        logstep = FAST_TESTS ? 10. : 1.1
 
-        outfile = "sum_performance.json"
-        pltfile = "sum_performance.pdf"
-        performance_run(32, 1e8, logstep,
-                        n->(rand(n),),
-                        (sum, sum_naive, sum_oro, sum_kbn),
-                        outfile)
-        performance_plt("Performance of summation implementations",
-                        ("pairwise", "naive", "oro", "kbn"),
-                        outfile, pltfile)
+    run_performance(1e8, n->(rand(n),),
+                    (sum,        sum_naive, sum_oro, sum_kbn),
+                    ("pairwise", "naive",   "oro",   "kbn"),
+                    "Performance of summation implementations",
+                    "sum_performance")
+
+    BLAS.set_num_threads(1)
+    run_performance(3e7, n->(rand(n), rand(n)),
+                    (dot,    dot_naive, dot_oro),
+                    ("blas", "naive",   "oro"),
+                    "Performance of dot product implementations",
+                    "dot_performance")
+end
 
 
-        BLAS.set_num_threads(1)
-        outfile = "dot_performance.json"
-        pltfile = "dot_performance.pdf"
-        performance_run(32, 3e7, logstep,
-                        n->(rand(n), rand(n)),
-                        (dot, dot_naive, dot_oro),
-                        outfile)
-        performance_plt("Performance of dot product implementations",
-                        ("blas", "naive", "oro"),
-                        outfile, pltfile)
-    end
+
+# * All tests
 
+function run_tests(fast=false)
+    global FAST_TESTS = fast
+    print("Running tests")
+    FAST_TESTS && print(" in FAST mode")
+    println("...\n")
+
+    run_accuracy()
+    sleep(5)
+    run_ushift()
+    sleep(5)
+    run_performance()
     println("Normal end of the performance tests")
 end
