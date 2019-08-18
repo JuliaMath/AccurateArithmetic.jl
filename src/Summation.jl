@@ -19,10 +19,10 @@ include("accumulators/compDot.jl")
 # SIAM Journal on Scientific Computing, 6(26), 2005.
 # DOI: 10.1137/030601818
 @generated function accumulate(x::NTuple{A, AbstractArray{T}},
-                                 accType,
+                                 accType::F,
                                  rem_handling = Val(:scalar),
                                  ::Val{Ushift} = Val(2)
-                                 )  where {A, T <: Union{Float32,Float64}, Ushift}
+                                 )  where {F, A, T <: Union{Float32,Float64}, Ushift}
     @assert 0 ≤ Ushift < 6
     U = 1 << Ushift
 
@@ -33,6 +33,7 @@ include("accumulators/compDot.jl")
     V = Vec{W,T}
 
     quote
+        $(Expr(:meta,:inline))
         px = pointer.(x)
         N = length(first(x))
         Base.Cartesian.@nexprs $U u -> begin
