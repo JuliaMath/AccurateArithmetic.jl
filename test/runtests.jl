@@ -105,20 +105,23 @@ using BenchmarkTools
 acc = compSumAcc(two_sum)
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
-@btime sum_oro($(rand(10_000)))
-@btime sum_kbn($(rand(10_000)))
+println("\nsize 10_000")
+print("  sum_oro"); @btime sum_oro($(rand(10_000)))
+print("  sum_kbn"); @btime sum_kbn($(rand(10_000)))
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 10
-@btime sum_oro($(rand(1_000_000)))
-@btime sum_kbn($(rand(1_000_000)))
+println("\nsize 1_000_000")
+print("  sum_oro"); @btime sum_oro($(rand(1_000_000)))
+print("  sum_kbn"); @btime sum_kbn($(rand(1_000_000)))
 
+println("\nsize 100_000_000")
 x = rand(100_000_000)
-@btime sum_oro($x)
-@btime sum_naive($x)
-@btime sum($x)
+print("  sum_oro"); @btime sum_oro($x)
+print("  sum_kbn"); @btime sum_naive($x)
+print("  sum    "); @btime sum($x)
 
-
+println()
 y = rand(100_000_000)
-@btime dot_oro(x, y)
-@btime dot_naive(x, y)
-@btime dot(x, y)
+print("  dot_oro"); @btime dot_oro($x, $y)
+print("  dot_kbn"); @btime dot_naive($x, $y)
+print("  dot    "); @btime dot($x, $y)
