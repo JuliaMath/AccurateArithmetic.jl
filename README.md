@@ -74,10 +74,10 @@ correctly computed anymore), the error is capped there in order to avoid
 affecting the scale of the graph too much. What we see is that the pairwise
 summation algorithm (as implemented in Base.sum) starts losing accuracy as soon
 as the condition number increases, computing only noise when the condition
-number exceeds 1ϵ≃1016. In contrast, both compensated algorithms
+number exceeds 1/ϵ≃10¹⁶. In contrast, both compensated algorithms
 (Kahan-Babuska-Neumaier and Ogita-Rump-Oishi) still accurately compute the
 result at this point, and start losing accuracy there, computing meaningless
-results when the condition nuber reaches 1ϵ2≃1032. In effect these (simply)
+results when the condition nuber reaches 1/ϵ²≃10³². In effect these (simply)
 compensated algorithms produce the same results as if a naive summation had been
 performed with twice the working precision (128 bits in this case), and then
 rounded to 64-bit floats.
@@ -129,7 +129,7 @@ cache (around 30k elements, or 256kB on my machine) or the L3 cache (around 400k
 elements, or 3MB on y machine).
 
 The Ogita-Rump-Oishi algorithm, when implemented with a suitable unrolling level
-(ushift=2, i.e 22=4 unrolled iterations), is CPU-bound when vectors fit inside
+(ushift=2, i.e 2²=4 unrolled iterations), is CPU-bound when vectors fit inside
 the cache. However, when vectors are to large to fit into the L3 cache, the
 implementation becomes memory-bound again (on my system), which means we get the
 same performance as the standard summation.
