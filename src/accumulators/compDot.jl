@@ -5,7 +5,7 @@ end
 
 compDotAcc(T) = CompDotAcc{T}(vzero(T), vzero(T))
 
-function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
+@inline function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
     SIMDops.@explicit
 
     p, ep = two_prod(x, y)
@@ -13,14 +13,14 @@ function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
     acc.e += ep + es
 end
 
-function add!(acc::A, x::A) where {A<:CompDotAcc}
+@inline function add!(acc::A, x::A) where {A<:CompDotAcc}
     SIMDops.@explicit
 
     acc.s, e = two_sum(acc.s, x.s)
     acc.e += x.e + e
 end
 
-function Base.sum(acc::CompDotAcc{T}) where {T<:Vec}
+@inline function Base.sum(acc::CompDotAcc{T}) where {T<:Vec}
     acc_r = compDotAcc(fptype(T))
     acc_r.e = vsum(acc.e)
     for xi in acc.s
@@ -30,6 +30,6 @@ function Base.sum(acc::CompDotAcc{T}) where {T<:Vec}
     acc_r
 end
 
-function Base.sum(acc::CompDotAcc{T}) where {T<:Real}
+@inline function Base.sum(acc::CompDotAcc{T}) where {T<:Real}
     acc.s + acc.e
 end
