@@ -13,6 +13,7 @@ def plot_accuracy(filename, results):
         p.x.label = "Condition number"
         p.x.scale = Axis.logarithmic
         p.x.min = 0
+        p.x.ticks = [10*i for i in xrange(5)]
 
         p.y.label = "Relative error"
         p.y.label_rotate = 90
@@ -62,16 +63,30 @@ def plot_performance(filename, results):
 
         p.x.label = "Vector size"
         p.x.scale = Axis.logarithmic
+        p.x.ticks = range(2,8)
 
         p.y.label = "Time [ns/elem]"
         p.y.label_rotate = 90
-        p.y.label_shift = 1.5
+        p.y.label_shift = 2
+        p.y.min = 0
+        p.y.ticks = 0.2
+
 
         for i in xrange(len(labels)):
-            p.plot(zip(data[0], data[i+1]),
-                   title=labels[i].encode())
+            points = zip(data[0], data[i+1])
 
-        p.legend("north east")
+            smoothing = 3
+            for j in xrange(len(points)-smoothing):
+                if points[j][0] < 100:
+                    continue
+                for k in range(1,smoothing+1):
+                    if points[j][1] > points[j+k][1]:
+                        points[j] = (points[j][0], points[j+k][1])
+            if smoothing > 0:
+                points = points[:-smoothing]
+            p.plot(points, title=labels[i].encode())
+
+        p.legend("north")
 
 
 def plot_results(filename):
