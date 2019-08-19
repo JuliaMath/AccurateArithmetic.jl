@@ -1,6 +1,7 @@
 from plotz import *
 import json
 import os
+import math
 
 def plot_accuracy(filename, results):
     title = results["title"]
@@ -44,8 +45,11 @@ def plot_ushift(filename, results):
 
         p.x.label = "$\log_2(U)$"
         p.x.ticks = range(0,4+1)
+
         p.y.label = "Time [ns/elem]"
         p.y.label_rotate = 90
+        p.y.min = 0
+        p.y.ticks = 0.05
 
         for i in xrange(1, len(labels)):
             p.plot(zip(data[0], data[i+1]),
@@ -57,6 +61,9 @@ def plot_performance(filename, results):
     title  = results["title"]
     data   = results["data"]
     labels = results["labels"]
+
+    with open("cache.json", "r") as f:
+        cache = json.load(f)
 
     with Plot("%s" % filename) as p:
         p.title = title.encode()
@@ -86,7 +93,24 @@ def plot_performance(filename, results):
                 points = points[:-smoothing]
             p.plot(points, title=labels[i].encode())
 
-        p.legend("north")
+        p.style.thickness[7] = "thin"
+        p.style.color[7] = "000000"
+        p.style.pattern[7] = "dashed"
+        for lvl in cache:
+            elems = cache[lvl]*1024/results["elem_size"]
+            p.plot([(elems, 0), (elems, p.y.max)]).style({
+                "color": 7,
+                "thickness": 7,
+                "pattern": 7,
+            })
+            p.tikz += r"\draw(%f,%f)node[anchor=north east]{%s};" % (math.log10(elems),
+                                                                    p.y.max, lvl.encode())
+            p.tikz += "\n"
+
+        if results["elem_size"] == 16:
+            p.legend("south east")
+        else:
+            p.legend("north east")
 
 
 def plot_results(filename):
@@ -104,6 +128,8 @@ def plot_results(filename):
 def plot_all():
     print("Generating all plots...")
     for filename in os.listdir(os.getcwd()):
+        if filename == "cache.json":
+            continue
         if filename.endswith(".json"):
             plot_results(filename.replace(".json", ""))
 

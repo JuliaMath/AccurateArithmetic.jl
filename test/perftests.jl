@@ -195,10 +195,11 @@ function run_performance(n2, gen, funs, labels, title, filename)
 
     open(filename*".json", "w") do f
         JSON.print(f, Dict(
-            :type   => :performance,
-            :title  => title,
-            :labels => labels,
-            :data   => data))
+            :type      => :performance,
+            :title     => title,
+            :labels    => labels,
+            :elem_size => sizeof(gen(1)),
+            :data      => data))
     end
 end
 
