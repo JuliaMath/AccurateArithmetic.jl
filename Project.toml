@@ -25,4 +25,6 @@ test = ["BenchmarkTools", "Plots", "Printf", "Statistics", "Test"]
 JSON = "0"
 SIMDPirates = "0"
 VectorizationBase = "0"
+BenchmarkTools = "0"
+Plots = "0"
 julia = "1"
