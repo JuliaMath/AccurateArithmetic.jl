@@ -14,6 +14,6 @@ notifications:
 #script: # the default script is equivalent to the following
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 #  - julia -e 'Pkg.clone(pwd()); Pkg.build("AccurateArithmetic"); Pkg.test("AccurateArithmetic"; coverage=true)';
-after_success:
-  - julia -e 'cd(Pkg.dir("AccurateArithmetic")); ps=Pkg.PackageSpec(name="Documenter", version="0.19"); Pkg.add(ps); Pkg.pin(ps); using Documenter; include(joinpath("docs", "make.jl"))';
-  - julia -e 'cd(Pkg.dir("AccurateArithmetic")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
+# after_success:
+#  - julia -e 'cd(Pkg.dir("AccurateArithmetic")); ps=Pkg.PackageSpec(name="Documenter", version="0.24.4"); Pkg.add(ps); Pkg.pin(ps); using Documenter; include(joinpath("docs", "make.jl"))';
+#  - julia -e 'cd(Pkg.dir("AccurateArithmetic")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
