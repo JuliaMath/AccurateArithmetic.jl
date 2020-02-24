@@ -23,7 +23,7 @@ test = ["BenchmarkTools", "Plots", "Printf", "Statistics", "Test"]
 
 [compat]
 JSON = "0"
-SIMDPirates = "0.1,0.2,0.3"
+SIMDPirates = "0.1,0.2,0.3,0.5"
 VectorizationBase = "0"
 BenchmarkTools = "0"
 Plots = "0"
