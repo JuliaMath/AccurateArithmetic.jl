@@ -1,8 +1,15 @@
 # AccurateArithmetic.jl
 ## Floating point math with error-free, faithful, and compensated transforms. 
 
-![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
-[![Build Status](https://travis-ci.org/JuliaMath/AccurateArithmetic.jl.svg?branch=master)](https://travis-ci.org/JuliaMath/AccurateArithmetic.jl)
+[travis-img]: https://travis-ci.org/JuliaMath/AccurateArithmetic.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/JuliaMath/AccurateArithmetic.jl
+
+[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/A/AccurateArithmetic.svg
+[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
+
+![Lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
+[![Build Status][travis-img]][travis-url]
+[![PkgEval][pkgeval-img]][pkgeval-url]
 
 
 ### Error-free and faithful transforms
