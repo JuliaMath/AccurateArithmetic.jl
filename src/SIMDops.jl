@@ -1,15 +1,13 @@
 module SIMDops
 import MacroTools
 import SIMDPirates
-using  SIMDPirates: Vec, vload, vsum, vabs, vfma, vifelse, vless
+using  SIMDPirates: Vec, vload, vsum, vabs, vfma, vifelse, vless, vzero
+
 
 # * Generic operations on SIMD packs
 
 fma(x...) = Base.fma(x...)
 fma(x::T, y::T, z::T) where {T<:NTuple} = SIMDPirates.vfma(x, y, z)
-
-vzero(x) = zero(x)
-vzero(::Type{Vec{W, T}}) where {W, T} = SIMDPirates.vbroadcast(Vec{W, T}, 0)
 
 fptype(::Type{Vec{W, T}}) where {W, T} = T
 
