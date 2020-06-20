@@ -1,3 +1,6 @@
+import Pkg
+Pkg.activate(joinpath(@__DIR__, ".."))
+
 println("Loading required packages...")
 using LinearAlgebra, Random, Printf, Statistics
 using BenchmarkTools, JSON
@@ -237,4 +240,32 @@ function run_tests(fast=false)
     sleep(5)
     run_performance()
     println("Normal end of the performance tests")
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    date = open(readline, `git show --no-patch --pretty="%cd" --date="format:%Y-%m-%d.%H:%M:%S" HEAD`)
+    sha1 = open(readline, `git show --no-patch --pretty="%h" HEAD`) |> String
+    cpu  = open(read, `lscpu`) |> String
+    cpu  = match(r"Model name:\s*(.*)\s+CPU", cpu)[1]
+    cpu  = replace(cpu, r"\(\S+\)" => "")
+    cpu  = replace(strip(cpu), r"\s+" => ".")
+    jobname = "$(date)_$(sha1)_$(VERSION)_$(cpu)"
+    open("jobname", "w") do f
+        write(f, jobname)
+    end
+    open("info.json", "w") do f
+        JSON.print(f, Dict(
+            :job   => jobname,
+            :date  => date,
+            :sha1  => sha1,
+            :julia => string(VERSION),
+            :cpu   => cpu))
+    end
+
+    println("\nJob name: $jobname")
+    println("\nGit commit: $sha1 ($date)"); run(`git show --no-patch --oneline HEAD`)
+    println("\nJulia version: $VERSION");   println(Base.julia_cmd())
+    println("\nCPU: $cpu");                 run(`lscpu`)
+
+    run_tests("fast" in ARGS)
 end
