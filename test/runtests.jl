@@ -101,8 +101,7 @@ using LinearAlgebra
 end
 
 using BenchmarkTools
-
-acc = compSumAcc(two_sum)
+BLAS.set_num_threads(1)
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
 println("\nsize 10_000")
@@ -116,12 +115,13 @@ print("  sum_kbn"); @btime sum_kbn($(rand(1_000_000)))
 
 println("\nsize 100_000_000")
 x = rand(100_000_000)
-print("  sum_oro"); @btime sum_oro($x)
-print("  sum_kbn"); @btime sum_naive($x)
-print("  sum    "); @btime sum($x)
+print("  sum_kbn  "); @btime sum_kbn($x)
+print("  sum_oro  "); @btime sum_oro($x)
+print("  sum_naive"); @btime sum_naive($x)
+print("  sum      "); @btime sum($x)
 
 println()
 y = rand(100_000_000)
-print("  dot_oro"); @btime dot_oro($x, $y)
-print("  dot_kbn"); @btime dot_naive($x, $y)
-print("  dot    "); @btime dot($x, $y)
+print("  dot_oro  "); @btime dot_oro($x, $y)
+print("  dot_naive"); @btime dot_naive($x, $y)
+print("  dot      "); @btime dot($x, $y)

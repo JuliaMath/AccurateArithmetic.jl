@@ -1,4 +1,5 @@
 module SIMDops
+import MacroTools
 import SIMDPirates
 using  SIMDPirates: Vec, vload, vsum, vabs, vfma, vifelse, vless
 
@@ -16,12 +17,19 @@ emul(x::T, y::T) where {T<:NTuple} = SIMDPirates.evmul(x, y)
 fma(x...) = Base.fma(x...)
 fma(x::T, y::T, z::T) where {T<:NTuple} = SIMDPirates.vfma(x, y, z)
 
-macro explicit()
-    quote
-        $(esc(:+)) = eadd
-        $(esc(:-)) = esub
-        $(esc(:*)) = emul
-    end
+macro explicit(expr)
+    MacroTools.postwalk(expr) do x
+        x == :+   && return eadd
+        x == :-   && return esub
+        x == :*   && return emul
+        x == :fma && return fma
+
+        if MacroTools.@capture(x, a_ += b_)
+            return :($a = $eadd($a, $b))
+        end
+
+        return x
+    end |> esc
 end
 
 vzero(x) = zero(x)
