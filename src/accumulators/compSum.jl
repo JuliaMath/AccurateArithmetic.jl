@@ -8,12 +8,12 @@ end
 
 @inline function add!(acc::CompSumAcc{T, EFT}, x::T) where {T, EFT}
     acc.s, e = EFT(acc.s, x)
-    SIMDops.@explicit acc.e += e
+    SIMDops.@fusible acc.e += e
 end
 
 @inline function add!(acc::A, x::A) where {A<:CompSumAcc{T, EFT}} where {T, EFT}
     acc.s, e = EFT(acc.s, x.s)
-    SIMDops.@explicit acc.e += x.e + e
+    SIMDops.@fusible acc.e += x.e + e
 end
 
 @inline function Base.sum(acc::CompSumAcc{T, EFT}) where {T<:Vec, EFT}

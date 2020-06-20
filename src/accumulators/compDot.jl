@@ -9,13 +9,13 @@ compDotAcc(T) = CompDotAcc{T}(vzero(T), vzero(T))
     p, ep = two_prod(x, y)
     acc.s, es = two_sum(acc.s, p)
 
-    SIMDops.@explicit acc.e += ep + es
+    SIMDops.@fusible acc.e += ep + es
 end
 
 @inline function add!(acc::A, x::A) where {A<:CompDotAcc}
     acc.s, e = two_sum(acc.s, x.s)
 
-    SIMDops.@explicit acc.e += x.e + e
+    SIMDops.@fusible acc.e += x.e + e
 end
 
 @inline function Base.sum(acc::CompDotAcc{T}) where {T<:Vec}

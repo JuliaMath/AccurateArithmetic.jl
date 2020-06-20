@@ -8,12 +8,10 @@ This algorithm does not use any branch. See also `fast_two_sum` for an
 alternative algorithm which branches but does fewer arithmetic operations.
 """
 @inline function two_sum(a::T, b::T) where {T}
-    SIMDops.@explicit begin
-        hi = a + b
-        v  = hi - a
-        lo = (a - (hi - v)) + (b - v)
-        return hi, lo
-    end
+    SIMDops.@fusible  hi = a + b
+    SIMDops.@explicit v  = hi - a
+    SIMDops.@explicit lo = (a - (hi - v)) + (b - v)
+    return hi, lo
 end
 
 """
@@ -43,18 +41,16 @@ algorithm which performs more arithmetic operations, but does not branch.
 end
 
 @inline function fast_two_sum(a::T, b::T) where T <: NTuple
-    SIMDops.@explicit begin
-        x = a + b
+    SIMDops.@fusible x = a + b
 
-        t = vless(vabs(a), vabs(b))
-        a_ = vifelse(t, b, a)
-        b_ = vifelse(t, a, b)
+    t = vless(vabs(a), vabs(b))
+    a_ = vifelse(t, b, a)
+    b_ = vifelse(t, a, b)
 
-        z = x - a_
-        e = b_ - z
+    SIMDops.@explicit z = x - a_
+    SIMDops.@explicit e = b_ - z
 
-        x, e
-    end
+    x, e
 end
 
 
