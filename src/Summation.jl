@@ -6,6 +6,7 @@ import VectorizationBase
 
 import ..SIMDops
 using  ..SIMDops: Vec, vload, vsum, vzero, fptype
+using SIMDPirates
 
 using ..EFT: two_sum, fast_two_sum, two_prod
 
@@ -19,10 +20,11 @@ include("accumulators/compDot.jl")
 # SIAM Journal on Scientific Computing, 6(26), 2005.
 # DOI: 10.1137/030601818
 @generated function accumulate(x::NTuple{A, AbstractArray{T}},
-                                 accType::F,
-                                 rem_handling = Val(:scalar),
-                                 ::Val{Ushift} = Val(2)
-                                 )  where {F, A, T <: Union{Float32,Float64}, Ushift}
+                               accType::F,
+                               rem_handling = Val(:scalar),
+                               ::Val{Ushift} = Val(2),
+                               ::Val{Prefetch} = Val(0),
+                               )  where {F, A, T <: Union{Float32,Float64}, Ushift, Prefetch}
     @assert 0 ≤ Ushift < 6
     U = 1 << Ushift
 
@@ -43,6 +45,10 @@ include("accumulators/compDot.jl")
         Nshift = N >> $(shift + Ushift)
         offset = 0
         for n in 1:Nshift
+            if $Prefetch > 0
+                SIMDPirates.prefetch.(px.+offset.+$(Prefetch*WT), Val(3), Val(0))
+            end
+
             Base.Cartesian.@nexprs $U u -> begin
                 xi = vload.($V, px.+offset)
                 add!(acc_u, xi...)
@@ -85,11 +91,24 @@ include("accumulators/compDot.jl")
     end
 end
 
-sum_naive(x) = accumulate((x,), sumAcc,                   Val(:scalar), Val(3))
-sum_kbn(x)   = accumulate((x,), compSumAcc(fast_two_sum), Val(:scalar), Val(2))
-sum_oro(x)   = accumulate((x,), compSumAcc(two_sum),      Val(:scalar), Val(2))
+# Dispatch
+#   either default_ushift(x,    acc)
+#   or     default_ushift((x,), acc)
+default_ushift(x::NTuple, acc)        = default_ushift(first(x), acc)
+default_ushift(x::AbstractArray, acc) = default_ushift(acc(eltype(x)))
+# Default values for Ushift
+default_ushift(::SumAcc)     = Val(3)
+default_ushift(::CompSumAcc) = Val(2)
+default_ushift(::DotAcc)     = Val(3)
+default_ushift(::CompDotAcc) = Val(2)
 
-dot_naive(x, y) = accumulate((x,y), dotAcc,     Val(:scalar), Val(3))
-dot_oro(x, y)   = accumulate((x,y), compDotAcc, Val(:scalar), Val(2))
+_sum(x, acc) = accumulate((x,), acc, Val(:scalar), default_ushift(x, acc), Val(30))
+sum_naive(x) = _sum(x, sumAcc)
+sum_kbn(x)   = _sum(x, compSumAcc(fast_two_sum))
+sum_oro(x)   = _sum(x, compSumAcc(two_sum))
+
+_dot(x, y, acc) = accumulate((x,y), acc, Val(:scalar), default_ushift(x, acc), Val(30))
+dot_naive(x, y) = _dot(x, y, dotAcc)
+dot_oro(x, y)   = _dot(x, y, compDotAcc)
 
 end
