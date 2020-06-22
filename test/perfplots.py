@@ -107,13 +107,14 @@ def plot_performance(filename, results):
             points = zip(data[0], data[i+1])
 
             smoothing = 3
-            for j in xrange(len(points)-smoothing):
-                if points[j][0] < 100:
-                    continue
-                for k in range(1,smoothing+1):
-                    if points[j][1] > points[j+k][1]:
-                        points[j] = (points[j][0], points[j+k][1])
             if smoothing > 0:
+                for j in xrange(len(points)-smoothing):
+                    points[j] = (points[j][0], min(points[j][1], 1.2*points[-1][1]))
+                    if points[j][0] < 100:
+                        continue
+                    for k in range(1,smoothing+1):
+                        if points[j][1] > points[j+k][1]:
+                            points[j] = (points[j][0], points[j+k][1])
                 points = points[:-smoothing]
             p.plot(points, title=labels[i].encode())
 
@@ -131,10 +132,7 @@ def plot_performance(filename, results):
                                                                     p.y.max, lvl.encode())
             p.tikz += "\n"
 
-        if results["elem_size"] == 16:
-            p.legend("south east")
-        else:
-            p.legend("north east")
+        p.legend("south east")
 
 
 def plot_results(filename):

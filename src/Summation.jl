@@ -92,35 +92,48 @@ include("accumulators/compDot.jl")
 end
 
 # Default values for unrolling
-default_ushift(::SumAcc)     = Val(3)
-default_ushift(::CompSumAcc) = Val(2)
-default_ushift(::DotAcc)     = Val(3)
-default_ushift(::CompDotAcc) = Val(2)
+@inline default_ushift(::SumAcc)     = Val(3)
+@inline default_ushift(::CompSumAcc) = Val(2)
+@inline default_ushift(::DotAcc)     = Val(3)
+@inline default_ushift(::CompDotAcc) = Val(2)
 # dispatch
 #   either default_ushift(x,    acc)
 #   or     default_ushift((x,), acc)
-default_ushift(x::AbstractArray, acc) = default_ushift(acc(eltype(x)))
-default_ushift(x::NTuple, acc)        = default_ushift(first(x), acc)
+@inline default_ushift(x::AbstractArray, acc) = default_ushift(acc(eltype(x)))
+@inline default_ushift(x::NTuple, acc)        = default_ushift(first(x), acc)
 
 
 # Default values for cache prefetching
-default_prefetch(::SumAcc)     = Val(0)
-default_prefetch(::CompSumAcc) = Val(35)
-default_prefetch(::DotAcc)     = Val(0)
-default_prefetch(::CompDotAcc) = Val(20)
+@inline default_prefetch(::SumAcc)     = Val(0)
+@inline default_prefetch(::CompSumAcc) = Val(35)
+@inline default_prefetch(::DotAcc)     = Val(0)
+@inline default_prefetch(::CompDotAcc) = Val(20)
 # dispatch
 #   either default_prefetch(x,    acc)
 #   or     default_prefetch((x,), acc)
-default_prefetch(x::AbstractArray, acc) = length(x)<500 ? Val(0) : default_prefetch(acc(eltype(x)))
-default_prefetch(x::NTuple, acc)        = default_prefetch(first(x), acc)
+@inline default_prefetch(x::AbstractArray, acc) = default_prefetch(acc(eltype(x)))
+@inline default_prefetch(x::NTuple, acc)        = default_prefetch(first(x), acc)
 
 
-_sum(x, acc) = accumulate((x,), acc, Val(:scalar), default_ushift(x, acc), default_prefetch(x, acc))
+@inline _sum(x, acc) = if length(x) < 500
+    # no cache prefetching for small vectors
+    accumulate((x,), acc, Val(:scalar), default_ushift(x, acc), Val(0))
+else
+    accumulate((x,), acc, Val(:scalar), default_ushift(x, acc), default_prefetch(x, acc))
+end
+
 sum_naive(x) = _sum(x, sumAcc)
 sum_kbn(x)   = _sum(x, compSumAcc(fast_two_sum))
 sum_oro(x)   = _sum(x, compSumAcc(two_sum))
 
-_dot(x, y, acc) = accumulate((x,y), acc, Val(:scalar), default_ushift(x, acc), default_prefetch(x, acc))
+
+@inline _dot(x, y, acc) = if length(x) < 500
+    # no cache prefetching for small vectors
+    accumulate((x,y), acc, Val(:scalar), default_ushift(x, acc), Val(0))
+else
+    accumulate((x,y), acc, Val(:scalar), default_ushift(x, acc), default_prefetch(x, acc))
+end
+
 dot_naive(x, y) = _dot(x, y, dotAcc)
 dot_oro(x, y)   = _dot(x, y, compDotAcc)
 
