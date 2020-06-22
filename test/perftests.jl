@@ -322,7 +322,7 @@ function run_tests(fast=false)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    date = open(readline, `git show --no-patch --pretty="%cd" --date="format:%Y-%m-%d.%H:%M:%S" HEAD`)
+    date = open(readline, `git show --no-patch --pretty="%cd" --date="format:%Y-%m-%d.%H%M%S" HEAD`)
     sha1 = open(readline, `git show --no-patch --pretty="%h" HEAD`) |> String
     cpu  = open(read, `lscpu`) |> String
     cpu  = match(r"Model name:\s*(.*)\s+CPU", cpu)[1]

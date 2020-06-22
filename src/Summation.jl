@@ -91,23 +91,36 @@ include("accumulators/compDot.jl")
     end
 end
 
-# Dispatch
-#   either default_ushift(x,    acc)
-#   or     default_ushift((x,), acc)
-default_ushift(x::NTuple, acc)        = default_ushift(first(x), acc)
-default_ushift(x::AbstractArray, acc) = default_ushift(acc(eltype(x)))
-# Default values for Ushift
+# Default values for unrolling
 default_ushift(::SumAcc)     = Val(3)
 default_ushift(::CompSumAcc) = Val(2)
 default_ushift(::DotAcc)     = Val(3)
 default_ushift(::CompDotAcc) = Val(2)
+# dispatch
+#   either default_ushift(x,    acc)
+#   or     default_ushift((x,), acc)
+default_ushift(x::AbstractArray, acc) = default_ushift(acc(eltype(x)))
+default_ushift(x::NTuple, acc)        = default_ushift(first(x), acc)
 
-_sum(x, acc) = accumulate((x,), acc, Val(:scalar), default_ushift(x, acc), Val(30))
+
+# Default values for cache prefetching
+default_prefetch(::SumAcc)     = Val(0)
+default_prefetch(::CompSumAcc) = Val(35)
+default_prefetch(::DotAcc)     = Val(0)
+default_prefetch(::CompDotAcc) = Val(20)
+# dispatch
+#   either default_prefetch(x,    acc)
+#   or     default_prefetch((x,), acc)
+default_prefetch(x::AbstractArray, acc) = length(x)<500 ? Val(0) : default_prefetch(acc(eltype(x)))
+default_prefetch(x::NTuple, acc)        = default_prefetch(first(x), acc)
+
+
+_sum(x, acc) = accumulate((x,), acc, Val(:scalar), default_ushift(x, acc), default_prefetch(x, acc))
 sum_naive(x) = _sum(x, sumAcc)
 sum_kbn(x)   = _sum(x, compSumAcc(fast_two_sum))
 sum_oro(x)   = _sum(x, compSumAcc(two_sum))
 
-_dot(x, y, acc) = accumulate((x,y), acc, Val(:scalar), default_ushift(x, acc), Val(30))
+_dot(x, y, acc) = accumulate((x,y), acc, Val(:scalar), default_ushift(x, acc), default_prefetch(x, acc))
 dot_naive(x, y) = _dot(x, y, dotAcc)
 dot_oro(x, y)   = _dot(x, y, compDotAcc)
 
