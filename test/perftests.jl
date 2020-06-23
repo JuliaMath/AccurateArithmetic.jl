@@ -328,7 +328,8 @@ if abspath(PROGRAM_FILE) == @__FILE__
     cpu  = match(r"Model name:\s*(.*)\s+CPU", cpu)[1]
     cpu  = replace(cpu, r"\(\S+\)" => "")
     cpu  = replace(strip(cpu), r"\s+" => ".")
-    jobname = "$(date)_$(sha1)_$(VERSION)_$(cpu)"
+    blas = BLAS.vendor() |> String
+    jobname = "$(date)_$(sha1)_$(VERSION)_$(cpu)_$(blas)"
     open("jobname", "w") do f
         write(f, jobname)
     end
@@ -338,13 +339,15 @@ if abspath(PROGRAM_FILE) == @__FILE__
             :date  => date,
             :sha1  => sha1,
             :julia => string(VERSION),
-            :cpu   => cpu))
+            :cpu   => cpu,
+            :blas  => blas))
     end
 
     println("\nJob name: $jobname")
     println("\nGit commit: $sha1 ($date)"); run(`git show --no-patch --oneline HEAD`)
     println("\nJulia version: $VERSION");   println(Base.julia_cmd())
     println("\nCPU: $cpu");                 run(`lscpu`)
+    println("\nBLAS vendor: $blas")
 
     run_tests("fast" in ARGS)
 end
