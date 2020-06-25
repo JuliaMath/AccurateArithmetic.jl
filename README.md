@@ -56,7 +56,7 @@ julia> sum(big.(x))
 # But the standard summation algorithms computes this sum very inaccurately
 # (not even the sign is correct)
 julia> sum(x)
--136.0
+-8.0
 
 
 # Compensated summation algorithms should compute this more accurately
@@ -64,30 +64,39 @@ julia> using AccurateArithmetic
 
 # Algorithm by Ogita, Rump and Oishi
 julia> sum_oro(x)
-0.9999999999999716
+1.0000000000000084
 
 # Algorithm by Kahan, Babuska and Neumaier
 julia> sum_kbn(x)
-0.9999999999999716
+1.0000000000000084
 ```
 
 
-![](test/figs/qual.svg)
+![](test/figs/sum_accuracy.svg)
+![](test/figs/dot_accuracy.svg)
 
-In the graph above, we see the relative error vary as a function of the
+In the graphs above, we see the relative error vary as a function of the
 condition number, in a log-log scale. Errors lower than ϵ are arbitrarily set to
 ϵ; conversely, when the relative error is more than 100% (i.e no digit is
 correctly computed anymore), the error is capped there in order to avoid
-affecting the scale of the graph too much. What we see is that the pairwise
+affecting the scale of the graph too much. What we see on the left is that the pairwise
 summation algorithm (as implemented in Base.sum) starts losing accuracy as soon
 as the condition number increases, computing only noise when the condition
-number exceeds 1/ϵ≃10¹⁶. In contrast, both compensated algorithms
+number exceeds 1/ϵ≃10¹⁶. The same goes for the naive summation algorithm.
+In contrast, both compensated algorithms
 (Kahan-Babuska-Neumaier and Ogita-Rump-Oishi) still accurately compute the
 result at this point, and start losing accuracy there, computing meaningless
 results when the condition nuber reaches 1/ϵ²≃10³². In effect these (simply)
 compensated algorithms produce the same results as if a naive summation had been
 performed with twice the working precision (128 bits in this case), and then
 rounded to 64-bit floats.
+
+The same comments can be made for the dot product implementations shown on the
+right. Uncompensated algorithms, as implemented in
+`AccurateArithmetic.dot_naive` or  `Base.dot` (which internally calls BLAS in
+this case) exhibit typical loss of accuracy. In contrast, the implementation of
+Ogita, Rump & Oishi's compentated algorithm effectively doubles the working
+precision.
 
 <br/>
 
@@ -97,24 +106,31 @@ such as arbitrary precision (`BigFloat`) or rational arithmetic (`Rational`) :
 ```julia
 julia> using BenchmarkTools
 
+julia> length(x)
+10001
+
 julia> @btime sum($x)
-  1.305 μs (0 allocations: 0 bytes)
--136.0
+  1.320 μs (0 allocations: 0 bytes)
+-8.0
+
+julia> @btime sum_naive($x)
+  1.026 μs (0 allocations: 0 bytes)
+-1.121325337906356
 
 julia> @btime sum_oro($x)
-  3.421 μs (0 allocations: 0 bytes)
-0.9999999999999716
+  3.348 μs (0 allocations: 0 bytes)
+1.0000000000000084
 
 julia> @btime sum_kbn($x)
-  3.792 μs (0 allocations: 0 bytes)
-0.9999999999999716
+  3.870 μs (0 allocations: 0 bytes)
+1.0000000000000084
 
-julia> @btime sum(big.($x))
-  874.203 μs (20006 allocations: 1.14 MiB)
+julia> @btime sum($(big.(x)))
+  437.495 μs (2 allocations: 112 bytes)
 1.0
 
-julia> @btime sum(Rational{BigInt}.(x))
-  22.702 ms (582591 allocations: 10.87 MiB)
+julia> @btime sum($(Rational{BigInt}.(x)))
+  10.894 ms (259917 allocations: 4.76 MiB)
 1//1
 ```
 
@@ -124,32 +140,37 @@ than their naive floating-point counterparts. As such, they usually perform
 worse. However, leveraging the power of modern architectures via vectorization,
 the slow down can be kept to a small value.
 
-![](test/figs/perf.svg)
+![](test/figs/sum_performance.svg)
+![](test/figs/dot_performance.svg)
 
-In the graph above, the time spent in the summation (renormalized per element)
-is plotted against the vector size (the units in the y-axis label should be
-“ns/elem”). What we see with the standard summation is that, once vectors start
-having significant sizes (say, more than 1000 elements), the implementation is
-memory bound (as expected of a typical BLAS1 operation). Which is why we see
-significant decreases in the performance when the vector can’t fit into the L2
-cache (around 30k elements, or 256kB on my machine) or the L3 cache (around 400k
-elements, or 3MB on y machine).
+Benchmarks presented in the above graphs were obtained in an Intel® Xeon® Gold
+6128 CPU @ 3.40GHz. The time spent in the summation (renormalized per element)
+is plotted against the vector size. What we see with the standard summation is
+that, once vectors start having significant sizes (say, more than a few
+thousands of elements), the implementation is memory bound (as expected of a
+typical BLAS1 operation). Which is why we see significant decreases in the
+performance when the vector can’t fit into the L1, L2 or L3 cache.
 
-The Ogita-Rump-Oishi algorithm, when implemented with a suitable unrolling level
-(ushift=2, i.e 2²=4 unrolled iterations), is CPU-bound when vectors fit inside
-the cache. However, when vectors are to large to fit into the L3 cache, the
-implementation becomes memory-bound again (on my system), which means we get the
-same performance as the standard summation.
+On this AVX512-enabled system, the Kahan-Babuska-Neumaier implementation tends
+to be a little more efficient than the Ogita-Rump-Oishi algorithm (this would
+generally the opposite for AVX2 systems). When implemented with a suitable
+unrolling level and cache prefetching, these implementations are CPU-bound when
+vectors fit inside the L1 or L2 cache. However, when vectors are too large to
+fit into the L2 cache, the implementation becomes memory-bound again (on this
+system), which means we get the same performance as the standard
+summation. Again, the same could be said as well for dot product calculations
+(graph on the right), where the implementations from `AccurateArithmetic.jl`
+compete against MKL's dot product.
 
 In other words, the improved accuracy is free for sufficiently large
-vectors. For smaller vectors, the accuracy comes with a slow-down that can reach
-values slightly above 3 for vectors which fit in the L2 cache.
+vectors. For smaller vectors, the accuracy comes with a slow-down by a factor of
+approximately 3 in the L2 cache.
 
 
 ### Tests
 
 The graphs above can be reproduced using the `test/perftests.jl` script in this
-repository. Before running them, be aware that it takes around one hour to
+repository. Before running them, be aware that it takes around tow hours to
 generate the performance graph, during which the benchmark machine should be as
 low-loaded as possible in order to avoid perturbing performance measurements.
 
