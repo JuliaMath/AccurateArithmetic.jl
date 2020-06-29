@@ -6,18 +6,16 @@ end
 compDotAcc(T) = CompDotAcc{T}(vzero(T), vzero(T))
 
 @inline function add!(acc::CompDotAcc{T}, x::T, y::T) where {T}
-    SIMDops.@explicit
-
     p, ep = two_prod(x, y)
     acc.s, es = two_sum(acc.s, p)
-    acc.e += ep + es
+
+    SIMDops.@fusible acc.e += ep + es
 end
 
 @inline function add!(acc::A, x::A) where {A<:CompDotAcc}
-    SIMDops.@explicit
-
     acc.s, e = two_sum(acc.s, x.s)
-    acc.e += x.e + e
+
+    SIMDops.@fusible acc.e += x.e + e
 end
 
 @inline function Base.sum(acc::CompDotAcc{T}) where {T<:Vec}

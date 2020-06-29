@@ -57,13 +57,37 @@ def plot_ushift(filename, results):
 
         p.legend("north east")
 
+def plot_prefetch(filename, results):
+    title  = results["title"]
+    data   = results["data"]
+    labels = results["labels"]
+
+    with Plot(filename) as p:
+        p.title = title.encode()
+
+        p.x.label = "Cache prefetch"
+        #p.x.ticks = range(0,4+1)
+
+        p.y.label = "Time [ns/elem]"
+        p.y.label_rotate = 90
+        p.y.min = 0
+        p.y.ticks = 0.05
+
+        for i in xrange(1, len(labels)):
+            p.plot(zip(data[0], data[i+1]),
+                   title="%d elems" % labels[i])
+
+        p.legend("south east")
+
 def plot_performance(filename, results):
     title  = results["title"]
     data   = results["data"]
     labels = results["labels"]
 
-    with open("cache.json", "r") as f:
-        cache = json.load(f)
+    with open("info.json", "r") as f:
+        cpu = json.load(f)["cpu"]
+    with open("../../cache.json", "r") as f:
+        cache = json.load(f)[cpu]
 
     with Plot("%s" % filename) as p:
         p.title = title.encode()
@@ -83,13 +107,14 @@ def plot_performance(filename, results):
             points = zip(data[0], data[i+1])
 
             smoothing = 3
-            for j in xrange(len(points)-smoothing):
-                if points[j][0] < 100:
-                    continue
-                for k in range(1,smoothing+1):
-                    if points[j][1] > points[j+k][1]:
-                        points[j] = (points[j][0], points[j+k][1])
             if smoothing > 0:
+                for j in xrange(len(points)-smoothing):
+                    points[j] = (points[j][0], min(points[j][1], 1.2*points[-1][1]))
+                    if points[j][0] < 100:
+                        continue
+                    for k in range(1,smoothing+1):
+                        if points[j][1] > points[j+k][1]:
+                            points[j] = (points[j][0], points[j+k][1])
                 points = points[:-smoothing]
             p.plot(points, title=labels[i].encode())
 
@@ -107,10 +132,7 @@ def plot_performance(filename, results):
                                                                     p.y.max, lvl.encode())
             p.tikz += "\n"
 
-        if results["elem_size"] == 16:
-            p.legend("south east")
-        else:
-            p.legend("north east")
+        p.legend("south east")
 
 
 def plot_results(filename):
@@ -122,13 +144,15 @@ def plot_results(filename):
         plot_accuracy(filename, results)
     elif results["type"] == "ushift":
         plot_ushift(filename, results)
+    elif results["type"] == "prefetch":
+        plot_prefetch(filename, results)
     elif results["type"] == "performance":
         plot_performance(filename, results)
 
 def plot_all():
     print("Generating all plots...")
     for filename in os.listdir(os.getcwd()):
-        if filename == "cache.json":
+        if filename == "info.json":
             continue
         if filename.endswith(".json"):
             plot_results(filename.replace(".json", ""))
