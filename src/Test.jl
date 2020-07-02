@@ -18,7 +18,7 @@ Results:
   d    -- accurate dot product, rounded to nearest
   c    -- actual condition number of the dot product
 """
-function generate_dot(n, c::T) where {T}
+function generate_dot(n, c::T; rng=Random.GLOBAL_RNG) where {T}
     R = Rational{BigInt}
 
     # Initialization
@@ -30,12 +30,12 @@ function generate_dot(n, c::T) where {T}
     n2 = div(n, 2)
     b = log2(c)
 
-    e = rand(n2) .* b/2
+    e = rand(rng, n2) .* b/2
     e[1]  = b/2 + 1           # Make sure exponents b/2
     e[n2] = 0                 # and 0 actually occur
     for i in 1:n2
-        x[i] = (2*rand(T)-1) * 2^(e[i])
-        y[i] = (2*rand(T)-1) * 2^(e[i])
+        x[i] = (2*rand(rng, T)-1) * 2^(e[i])
+        y[i] = (2*rand(rng, T)-1) * 2^(e[i])
     end
 
 
@@ -45,17 +45,17 @@ function generate_dot(n, c::T) where {T}
     e = b/2:δe:0
     for i in eachindex(e)
         # Random x[i]
-        cx = (2*rand()-1) * 2^(e[i])
+        cx = (2*rand(rng)-1) * 2^(e[i])
         x[i+n2] = cx
 
         # y[i] chosen according to (*)
-        cy = (2*rand()-1) * 2^(e[i])
+        cy = (2*rand(rng)-1) * 2^(e[i])
         y[i+n2] = (cy - T(dot(R.(x), R.(y)))) / cx
     end
 
 
     # Random permutation of x and y
-    perm = randperm(n)
+    perm = randperm(rng, n)
     X = x[perm]
     Y = y[perm]
 
@@ -83,7 +83,7 @@ Results:
   s -- accurate sum, rounded to nearest
   c -- actual condition number of the sum
 """
-function generate_sum(n, c::T) where {T}
+function generate_sum(n, c::T; rng=Random.GLOBAL_RNG) where {T}
     R = Rational{BigInt}
 
     (x, y, _, _) = generate_dot(n÷2, c)
@@ -94,7 +94,7 @@ function generate_sum(n, c::T) where {T}
 
     # Complete if necessary
     if length(z) < n
-        push!(z, rand())
+        push!(z, rand(rng))
     end
 
     z = shuffle(z)
