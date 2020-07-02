@@ -5,14 +5,17 @@ using AccurateArithmetic.Summation: accumulate
 using AccurateArithmetic.Summation: sumAcc, compSumAcc, dotAcc, compDotAcc
 using AccurateArithmetic.Test: generate_sum, generate_dot
 using LinearAlgebra
+using StableRNGs
 
 
 @testset "AccurateArithmetic" begin
+    rng = StableRNG(42)
+
     @testset "Tests" begin
         @testset "generate_sum" begin
             @testset "vector length" begin
                 for n in 100:110
-                    let (x, s, c_) = generate_sum(n, 1e10)
+                    let (x, s, c_) = generate_sum(n, 1e10; rng=rng)
                         @test length(x) == n
                     end
                 end
@@ -20,7 +23,7 @@ using LinearAlgebra
 
             @testset "condition number" begin
                 for c in (1e10, 1e20)
-                    let (x, s, c_) = generate_sum(101, c)
+                    let (x, s, c_) = generate_sum(101, c; rng=rng)
                         @test c/100 < c_ < 1000c
                     end
                 end
@@ -30,7 +33,7 @@ using LinearAlgebra
         @testset "generate_dot" begin
             @testset "vector length" begin
                 for n in 100:110
-                    let (x, y, s, c_) = generate_dot(n, 1e10)
+                    let (x, y, s, c_) = generate_dot(n, 1e10; rng=rng)
                         @test length(x) == n
                         @test length(y) == n
                     end
@@ -39,7 +42,7 @@ using LinearAlgebra
 
             @testset "condition number" begin
                 for c in (1e10, 1e20)
-                    let (x, y, s, c_) = generate_dot(101, c)
+                    let (x, y, s, c_) = generate_dot(101, c; rng=rng)
                         @test c/100 < c_ < 1000c
                     end
                 end
@@ -50,7 +53,7 @@ using LinearAlgebra
     @testset "summation" begin
         @testset "naive" begin
             for N in 100:110
-                x = rand(N)
+                x = rand(rng, N)
                 ref = sum(x)
                 @test ref ≈ sum_naive(x)
 
@@ -62,7 +65,7 @@ using LinearAlgebra
 
         @testset "compensated" begin
             for N in 100:110
-                x, ref, _ = generate_sum(N, 1e10)
+                x, ref, _ = generate_sum(N, 1e10; rng=rng)
                 @test ref == sum_oro(x)
                 @test ref == sum_kbn(x)
 
@@ -76,8 +79,8 @@ using LinearAlgebra
     @testset "dot product" begin
         @testset "naive" begin
             for N in 100:110
-                x = rand(N)
-                y = rand(N)
+                x = rand(rng, N)
+                y = rand(rng, N)
                 ref = dot(x, y)
                 @test ref ≈ dot_naive(x, y)
 
@@ -89,7 +92,7 @@ using LinearAlgebra
 
         @testset "compensated" begin
             for N in 100:110
-                x, y, ref, _ = generate_dot(N, 1e10)
+                x, y, ref, _ = generate_dot(N, 1e10; rng=rng)
                 @test ref == dot_oro(x, y)
 
                 acc = compDotAcc
@@ -107,27 +110,39 @@ BenchmarkTools.DEFAULT_PARAMETERS.evals = 1000
 println("\nsize 32")
 x = rand(32)
 y = rand(32)
-print("  sum_kbn"); @btime sum_kbn($x)
-print("  sum_oro"); @btime sum_oro($x)
+print("  sum_kbn  "); @btime sum_kbn($x)
+print("  sum_oro  "); @btime sum_oro($x)
+print("  sum_naive"); @btime sum_naive($x)
+print("  sum      "); @btime sum($x)
 println()
-print("  dot_oro"); @btime dot_oro($x, $y)
+print("  dot_oro  "); @btime dot_oro($x, $y)
+print("  dot_naive"); @btime dot_naive($x, $y)
+print("  dot      "); @btime dot($x, $y)
 
 println("\nsize 10_000")
 x = rand(10_000)
 y = rand(10_000)
-print("  sum_kbn"); @btime sum_kbn($x)
-print("  sum_oro"); @btime sum_oro($x)
+print("  sum_kbn  "); @btime sum_kbn($x)
+print("  sum_oro  "); @btime sum_oro($x)
+print("  sum_naive"); @btime sum_naive($x)
+print("  sum      "); @btime sum($x)
 println()
-print("  dot_oro"); @btime dot_oro($x, $y)
+print("  dot_oro  "); @btime dot_oro($x, $y)
+print("  dot_naive"); @btime dot_naive($x, $y)
+print("  dot      "); @btime dot($x, $y)
 
 BenchmarkTools.DEFAULT_PARAMETERS.evals = 10
 println("\nsize 1_000_000")
 x = rand(1_000_000)
 y = rand(1_000_000)
-print("  sum_kbn"); @btime sum_kbn($x)
-print("  sum_oro"); @btime sum_oro($x)
+print("  sum_kbn  "); @btime sum_kbn($x)
+print("  sum_oro  "); @btime sum_oro($x)
+print("  sum_naive"); @btime sum_naive($x)
+print("  sum      "); @btime sum($x)
 println()
-print("  dot_oro"); @btime dot_oro($x, $y)
+print("  dot_oro  "); @btime dot_oro($x, $y)
+print("  dot_naive"); @btime dot_naive($x, $y)
+print("  dot      "); @btime dot($x, $y)
 
 println("\nsize 100_000_000")
 x = rand(100_000_000)
