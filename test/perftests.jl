@@ -15,20 +15,24 @@ output(x) = @printf "%.2e " x
 err(val::T, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
 
 FAST_TESTS = false
+FLOAT_TYPE = Float64
 
 
 
 # * Accuracy
 
+cond_max(::Type{Float64}) = 1e45
+cond_max(::Type{Float32}) = 1f21
+
 function run_accuracy(gen, funs, labels, title, filename)
     println("-> $title")
 
-    n = 100     # Vector size
-    c1 = 2.     # Condition number (min)
-    c2 = 1e45   # -                (max)
-    logstep = 2 # Step for condition number increase (log scale)
+    n = 100                   # Vector size
+    c1 = FLOAT_TYPE(2)        # Condition number (min)
+    c2 = cond_max(FLOAT_TYPE) # -                (max)
+    logstep = 2               # Step for condition number increase (log scale)
 
-    data = [Float64[] for _ in 1:(1+length(funs))]
+    data = [FLOAT_TYPE[] for _ in 1:(1+length(funs))]
 
     c = c1
     while c < c2
@@ -136,23 +140,28 @@ function run_ushift()
     BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
     println("Finding optimal ushift...")
 
-    run_ushift(n->(rand(n),), sumAcc,
+    gen_sum(n) = (rand(FLOAT_TYPE, n),)
+
+    run_ushift(gen_sum, sumAcc,
                "Performance of naive summation",
                "sum_naive_ushift")
 
-    run_ushift(n->(rand(n),), compSumAcc(two_sum),
+    run_ushift(gen_sum, compSumAcc(two_sum),
                "Performance of ORO summation",
                "sum_oro_ushift")
 
-    run_ushift(n->(rand(n),), compSumAcc(fast_two_sum),
+    run_ushift(gen_sum, compSumAcc(fast_two_sum),
                "Performance of KBN summation",
                "sum_kbn_ushift")
 
-    run_ushift(n->(rand(n), rand(n)), dotAcc,
+
+    gen_dot(n) = (rand(FLOAT_TYPE, n), rand(FLOAT_TYPE, n))
+
+    run_ushift(gen_dot, dotAcc,
                "Performance of naive dot product",
                "dot_naive_ushift")
 
-    run_ushift(n->(rand(n), rand(n)), compDotAcc,
+    run_ushift(gen_dot, compDotAcc,
                "Performance of compensated dot product",
                "dot_oro_ushift")
 end
@@ -212,23 +221,28 @@ function run_prefetch()
     BenchmarkTools.DEFAULT_PARAMETERS.evals = 2
     println("Finding optimal prefetch...")
 
-    run_prefetch(n->(rand(n),), sumAcc,
+    gen_sum(n) = (rand(FLOAT_TYPE, n),)
+
+    run_prefetch(gen_sum, sumAcc,
                  "Performance of naive summation",
                  "sum_naive_prefetch")
 
-    run_prefetch(n->(rand(n),), compSumAcc(two_sum),
+    run_prefetch(gen_sum, compSumAcc(two_sum),
                  "Performance of ORO summation",
                  "sum_oro_prefetch")
 
-    run_prefetch(n->(rand(n),), compSumAcc(fast_two_sum),
+    run_prefetch(gen_sum, compSumAcc(fast_two_sum),
                  "Performance of KBN summation",
                  "sum_kbn_prefetch")
 
-    run_prefetch(n->(rand(n), rand(n)), dotAcc,
+
+    gen_dot(n) = (rand(FLOAT_TYPE, n), rand(FLOAT_TYPE, n))
+
+    run_prefetch(gen_dot, dotAcc,
                  "Performance of naive dot product",
                  "dot_naive_prefetch")
 
-    run_prefetch(n->(rand(n), rand(n)), compDotAcc,
+    run_prefetch(gen_dot, compDotAcc,
                  "Performance of compensated dot product",
                  "dot_oro_prefetch")
 end
@@ -273,12 +287,14 @@ function run_performance(n2, gen, funs, labels, title, filename)
         n = max(N, n+32)
     end
 
+    elemsize = sizeof.(eltype.(gen(1))) |> sum
+
     open(filename*".json", "w") do f
         JSON.print(f, Dict(
             :type      => :performance,
             :title     => title,
             :labels    => labels,
-            :elem_size => sizeof(gen(1)),
+            :elem_size => elemsize,
             :data      => data))
     end
 end
@@ -287,14 +303,16 @@ end
 function run_performance()
     println("Running performance tests...")
 
-    run_performance(1e8, n->(rand(n),),
+    gen_sum(n) = (rand(FLOAT_TYPE, n),)
+    run_performance(1e8, gen_sum,
                     (sum,        sum_naive, sum_oro, sum_kbn),
                     ("pairwise", "naive",   "oro",   "kbn"),
                     "Performance of summation implementations",
                     "sum_performance")
 
     BLAS.set_num_threads(1)
-    run_performance(3e7, n->(rand(n), rand(n)),
+    gen_dot(n) = (rand(FLOAT_TYPE, n), rand(FLOAT_TYPE, n))
+    run_performance(3e7, gen_dot,
                     (dot,    dot_naive, dot_oro),
                     ("blas", "naive",   "oro"),
                     "Performance of dot product implementations",
@@ -305,8 +323,14 @@ end
 
 # * All tests
 
-function run_tests(fast=false)
+function run_tests(fast=false, precision=64)
     global FAST_TESTS = fast
+    global FLOAT_TYPE = if precision==64
+        Float64
+    else
+        Float32
+    end
+
     print("Running tests")
     FAST_TESTS && print(" in FAST mode")
     println("...\n")
@@ -322,6 +346,9 @@ function run_tests(fast=false)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
+    fast = get(ARGS, 1, "")=="fast"
+    prec = parse(Int, get(ARGS, 2, "64"))
+
     date = open(readline, `git show --no-patch --pretty="%cd" --date="format:%Y-%m-%d.%H%M%S" HEAD`)
     sha1 = open(readline, `git show --no-patch --pretty="%h" HEAD`) |> String
     cpu  = open(read, `lscpu`) |> String
@@ -329,7 +356,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     cpu  = replace(cpu, r"\(\S+\)" => "")
     cpu  = replace(strip(cpu), r"\s+" => ".")
     blas = BLAS.vendor() |> String
-    jobname = "$(date)_$(sha1)_$(VERSION)_$(cpu)_$(blas)"
+    jobname = "$(date)_$(sha1)_$(VERSION)_$(cpu)_$(blas)_F$(prec)"
     open("jobname", "w") do f
         write(f, jobname)
     end
@@ -340,7 +367,8 @@ if abspath(PROGRAM_FILE) == @__FILE__
             :sha1  => sha1,
             :julia => string(VERSION),
             :cpu   => cpu,
-            :blas  => blas))
+            :blas  => blas,
+            :prec  => prec))
     end
 
     println("\nJob name: $jobname")
@@ -348,6 +376,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     println("\nJulia version: $VERSION");   println(Base.julia_cmd())
     println("\nCPU: $cpu");                 run(`lscpu`)
     println("\nBLAS vendor: $blas")
+    println("\nFP precision: $prec bits")
 
-    run_tests("fast" in ARGS)
+    run_tests(fast, prec)
 end
