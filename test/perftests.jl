@@ -12,10 +12,19 @@ using AccurateArithmetic.Summation: default_ushift
 using AccurateArithmetic.Test
 
 output(x) = @printf "%.2e " x
-err(val::T, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
+err(val, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
 
 FAST_TESTS = false
 FLOAT_TYPE = Float64
+
+
+function sum_double(x)
+    acc = 0.0
+    @simd for xi in x
+        acc += xi
+    end
+    acc
+end
 
 
 
@@ -71,8 +80,8 @@ function run_accuracy()
         ((x,), d, c)
     end
     run_accuracy(gen_sum,
-                 (sum,        sum_naive, sum_oro, sum_kbn),
-                 ("pairwise", "naive",   "oro",   "kbn"),
+                 (sum,        sum_naive, sum_oro, sum_kbn, sum_double),
+                 ("pairwise", "naive",   "oro",   "kbn",   "double"),
                  "Error of summation algorithms",
                  "sum_accuracy")
 
@@ -305,8 +314,8 @@ function run_performance()
 
     gen_sum(n) = (rand(FLOAT_TYPE, n),)
     run_performance(1e8, gen_sum,
-                    (sum,        sum_naive, sum_oro, sum_kbn),
-                    ("pairwise", "naive",   "oro",   "kbn"),
+                    (sum,        sum_naive, sum_oro, sum_kbn, sum_double),
+                    ("pairwise", "naive",   "oro",   "kbn",   "double"),
                     "Performance of summation implementations",
                     "sum_performance")
 
