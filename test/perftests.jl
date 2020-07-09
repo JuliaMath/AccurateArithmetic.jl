@@ -7,7 +7,7 @@ using BenchmarkTools, JSON
 
 using AccurateArithmetic
 using AccurateArithmetic.Summation: accumulate, two_sum, fast_two_sum
-using AccurateArithmetic.Summation: sumAcc, dotAcc, compSumAcc, compDotAcc
+using AccurateArithmetic.Summation: sumAcc, dotAcc, compSumAcc, compDotAcc, mixedSumAcc
 using AccurateArithmetic.Summation: default_ushift
 using AccurateArithmetic.Test
 
@@ -16,15 +16,6 @@ err(val, ref::T) where {T} = min(1, max(eps(T), abs((val-ref)/ref)))
 
 FAST_TESTS = false
 FLOAT_TYPE = Float64
-
-
-function sum_double(x)
-    acc = 0.0
-    @simd for xi in x
-        acc += xi
-    end
-    acc
-end
 
 
 
@@ -79,9 +70,14 @@ function run_accuracy()
         (x, d, c) = generate_sum(n, c)
         ((x,), d, c)
     end
-    run_accuracy(gen_sum,
-                 (sum,        sum_naive, sum_oro, sum_kbn, sum_double),
-                 ("pairwise", "naive",   "oro",   "kbn",   "double"),
+
+    funs =   [sum,        sum_naive, sum_oro, sum_kbn]
+    labels = ["pairwise", "naive",   "oro",   "kbn"]
+    if FLOAT_TYPE === Float32
+        push!(funs,   sum_mixed)
+        push!(labels, "mixed")
+    end
+    run_accuracy(gen_sum, funs, labels,
                  "Error of summation algorithms",
                  "sum_accuracy")
 
@@ -162,6 +158,12 @@ function run_ushift()
     run_ushift(gen_sum, compSumAcc(fast_two_sum),
                "Performance of KBN summation",
                "sum_kbn_ushift")
+
+    if FLOAT_TYPE === Float32
+        run_ushift(gen_sum, mixedSumAcc,
+                   "Performance of mixed summation",
+                   "sum_mixed_ushift")
+    end
 
 
     gen_dot(n) = (rand(FLOAT_TYPE, n), rand(FLOAT_TYPE, n))
@@ -244,6 +246,12 @@ function run_prefetch()
                  "Performance of KBN summation",
                  "sum_kbn_prefetch")
 
+    if FLOAT_TYPE === Float32
+        run_prefetch(gen_sum, mixedSumAcc,
+                     "Performance of mixed summation",
+                     "sum_mixed_prefetch")
+    end
+
 
     gen_dot(n) = (rand(FLOAT_TYPE, n), rand(FLOAT_TYPE, n))
 
@@ -313,9 +321,13 @@ function run_performance()
     println("Running performance tests...")
 
     gen_sum(n) = (rand(FLOAT_TYPE, n),)
-    run_performance(1e8, gen_sum,
-                    (sum,        sum_naive, sum_oro, sum_kbn, sum_double),
-                    ("pairwise", "naive",   "oro",   "kbn",   "double"),
+    funs   = [sum,        sum_naive, sum_oro, sum_kbn]
+    labels = ["pairwise", "naive",   "oro",   "kbn"]
+    if FLOAT_TYPE === Float32
+        push!(funs,   sum_mixed)
+        push!(labels, "mixed")
+    end
+    run_performance(1e8, gen_sum, funs, labels,
                     "Performance of summation implementations",
                     "sum_performance")
 
