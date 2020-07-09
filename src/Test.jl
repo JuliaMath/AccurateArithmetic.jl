@@ -63,9 +63,13 @@ function generate_dot(n, c::T; rng=Random.GLOBAL_RNG) where {T}
     d = T(dot(R.(X), R.(Y)))
 
     # Actual condition number
-    c = 2 * dot(abs.(X), abs.(Y)) / abs(d)
+    c_ = 2 * dot(abs.(X), abs.(Y)) / abs(d)
 
-    (X,Y,d,c)
+    if c/10 < c_ < 10c
+        (X,Y,d,c_)
+    else
+        generate_dot(n, c; rng=rng)
+    end
 end
 
 
@@ -103,9 +107,13 @@ function generate_sum(n, c::T; rng=Random.GLOBAL_RNG) where {T}
     s = T(sum(R.(z)))
 
     # Actual condition number
-    c = sum(abs.(z)) / abs(s)
+    c_ = sum(abs.(z)) / abs(s)
 
-    (z, s, c)
+    if c/10 < c_ < 20c
+        (z, s, c_)
+    else
+        generate_sum(n, c; rng=rng)
+    end
 end
 
 end
