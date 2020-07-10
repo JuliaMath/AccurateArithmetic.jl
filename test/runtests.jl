@@ -41,7 +41,7 @@ using StableRNGs
                         let (x, s, c_) = generate_sum(101, c; rng=rng)
                             @test eltype(x) === Float64
                             @test s isa Float64
-                            @test c/10 < c_ < 20c
+                            @test c/3 < c_ < 3c
                         end
                     end
                 end
@@ -50,7 +50,7 @@ using StableRNGs
                         let (x, s, c_) = generate_sum(101, c; rng=rng)
                             @test eltype(x) === Float32
                             @test s isa Float32
-                            @test c/10 < c_ < 20c
+                            @test c/3 < c_ < 3c
                         end
                     end
                 end
@@ -86,7 +86,7 @@ using StableRNGs
                     for c in (1e10, 1e20)
                         let (x, y, s, c_) = generate_dot(101, c; rng=rng)
                             @test s isa Float64
-                            @test c/10 < c_ < 10c
+                            @test c/3 < c_ < 3c
                         end
                     end
                 end
@@ -94,7 +94,7 @@ using StableRNGs
                     for c in (1f5, 1f10)
                         let (x, y, s, c_) = generate_dot(101, c; rng=rng)
                             @test s isa Float32
-                            @test c/10 < c_ < 10c
+                            @test c/3 < c_ < 3c
                         end
                     end
                 end
@@ -145,7 +145,7 @@ using StableRNGs
             end
             @testset "F32" begin
                 for N in 100:110
-                    x, ref, _ = generate_sum(N, 1f4; rng=rng)
+                    x, ref, _ = generate_sum(N, 1f5; rng=rng)
                     @test ref isa Float32
                     @test ref == sum_oro(x)
                     @test ref == sum_kbn(x)
@@ -217,7 +217,7 @@ using StableRNGs
             end
             @testset "F32" begin
                 for N in 100:110
-                    x, y, ref, _ = generate_dot(N, 1f4; rng=rng)
+                    x, y, ref, _ = generate_dot(N, 1f5; rng=rng)
                     @test ref isa Float32
                     @test ref == dot_oro(x, y)
 
