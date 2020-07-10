@@ -1,6 +1,6 @@
 module Summation
 export sum_naive, sum_kbn, sum_oro, sum_mixed
-export dot_naive, dot_oro
+export dot_naive, dot_oro, dot_mixed
 
 import VectorizationBase
 
@@ -15,6 +15,7 @@ include("accumulators/dot.jl")
 include("accumulators/compSum.jl")
 include("accumulators/compDot.jl")
 include("accumulators/mixedSum.jl")
+include("accumulators/mixedDot.jl")
 
 
 # T. Ogita, S. Rump and S. Oishi, "Accurate sum and dot product",
@@ -95,9 +96,10 @@ end
 # Default values for unrolling
 @inline default_ushift(::SumAcc)      = Val(3)
 @inline default_ushift(::CompSumAcc)  = Val(2)
+@inline default_ushift(::MixedSumAcc) = Val(3)
 @inline default_ushift(::DotAcc)      = Val(3)
 @inline default_ushift(::CompDotAcc)  = Val(2)
-@inline default_ushift(::MixedSumAcc) = Val(2)
+@inline default_ushift(::MixedDotAcc) = Val(3)
 # dispatch
 #   either default_ushift(x,    acc)
 #   or     default_ushift((x,), acc)
@@ -108,9 +110,10 @@ end
 # Default values for cache prefetching
 @inline default_prefetch(::SumAcc)      = Val(0)
 @inline default_prefetch(::CompSumAcc)  = Val(35)
+@inline default_prefetch(::MixedSumAcc) = Val(0)
 @inline default_prefetch(::DotAcc)      = Val(0)
 @inline default_prefetch(::CompDotAcc)  = Val(20)
-@inline default_prefetch(::MixedSumAcc) = Val(0)
+@inline default_prefetch(::MixedDotAcc) = Val(0)
 # dispatch
 #   either default_prefetch(x,    acc)
 #   or     default_prefetch((x,), acc)
@@ -140,5 +143,6 @@ end
 
 dot_naive(x, y) = _dot(x, y, dotAcc)
 dot_oro(x, y)   = _dot(x, y, compDotAcc)
+dot_mixed(x, y) = _dot(x, y, mixedDotAcc)
 
 end

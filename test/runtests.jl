@@ -2,7 +2,8 @@ using AccurateArithmetic
 using Test
 
 using AccurateArithmetic.Summation: accumulate
-using AccurateArithmetic.Summation: sumAcc, compSumAcc, dotAcc, compDotAcc, mixedSumAcc
+using AccurateArithmetic.Summation: sumAcc, compSumAcc, mixedSumAcc
+using AccurateArithmetic.Summation: dotAcc, compDotAcc, mixedDotAcc
 using AccurateArithmetic.Test: generate_sum, generate_dot
 using LinearAlgebra
 using StableRNGs
@@ -224,6 +225,21 @@ using StableRNGs
                     @test ref == accumulate((x,y), acc, Val(:scalar), Val(2))
                     @test ref == accumulate((x,y), acc, Val(:mask),   Val(2))
                 end
+            end
+        end
+
+        @testset "mixed" begin
+            for N in 100:110
+                # Only test for approximate equality here, since dot_mixed
+                # returns a Float64 whereas the reference value is a Float32
+
+                x, y, ref, _ = generate_dot(N, 1f7; rng=rng)
+                @test ref isa Float32
+                @test ref ≈ dot_mixed(x, y)
+
+                acc = mixedDotAcc
+                @test ref ≈ accumulate((x,y), acc, Val(:scalar), Val(2))
+                @test ref ≈ accumulate((x,y), acc, Val(:mask),   Val(2))
             end
         end
     end
