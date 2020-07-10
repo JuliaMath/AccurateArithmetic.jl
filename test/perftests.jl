@@ -7,7 +7,8 @@ using BenchmarkTools, JSON
 
 using AccurateArithmetic
 using AccurateArithmetic.Summation: accumulate, two_sum, fast_two_sum
-using AccurateArithmetic.Summation: sumAcc, dotAcc, compSumAcc, compDotAcc, mixedSumAcc
+using AccurateArithmetic.Summation: sumAcc, compSumAcc, mixedSumAcc
+using AccurateArithmetic.Summation: dotAcc, compDotAcc, mixedDotAcc
 using AccurateArithmetic.Summation: default_ushift
 using AccurateArithmetic.Test
 
@@ -86,9 +87,14 @@ function run_accuracy()
         (x, y, d, c) = generate_dot(n, c)
         ((x, y), d, c)
     end
-    run_accuracy(gen_dot,
-                 (dot,    dot_naive, dot_oro),
-                 ("blas", "naive",   "oro"),
+
+    funs =   [dot,    dot_naive, dot_oro]
+    labels = ["blas", "naive",   "oro"]
+    if FLOAT_TYPE === Float32
+        push!(funs,   dot_mixed)
+        push!(labels, "mixed")
+    end
+    run_accuracy(gen_dot, funs, labels,
                  "Error of dot product algorithms",
                  "dot_accuracy")
 end
@@ -175,6 +181,12 @@ function run_ushift()
     run_ushift(gen_dot, compDotAcc,
                "Performance of compensated dot product",
                "dot_oro_ushift")
+
+    if FLOAT_TYPE === Float32
+        run_ushift(gen_dot, mixedDotAcc,
+                   "Performance of mixed dot product",
+                   "dot_mixed_ushift")
+    end
 end
 
 
@@ -262,6 +274,12 @@ function run_prefetch()
     run_prefetch(gen_dot, compDotAcc,
                  "Performance of compensated dot product",
                  "dot_oro_prefetch")
+
+    if FLOAT_TYPE === Float32
+        run_prefetch(gen_dot, mixedDotAcc,
+                     "Performance of mixed dot product",
+                     "dot_mixed_prefetch")
+    end
 end
 
 
@@ -333,9 +351,13 @@ function run_performance()
 
     BLAS.set_num_threads(1)
     gen_dot(n) = (rand(FLOAT_TYPE, n), rand(FLOAT_TYPE, n))
-    run_performance(3e7, gen_dot,
-                    (dot,    dot_naive, dot_oro),
-                    ("blas", "naive",   "oro"),
+    funs =   [dot,    dot_naive, dot_oro]
+    labels = ["blas", "naive",   "oro"]
+    if FLOAT_TYPE === Float32
+        push!(funs,   dot_mixed)
+        push!(labels, "mixed")
+    end
+    run_performance(3e7, gen_dot, funs, labels,
                     "Performance of dot product implementations",
                     "dot_performance")
 end
