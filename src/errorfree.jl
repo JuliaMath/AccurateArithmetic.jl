@@ -84,18 +84,22 @@ end
 
 """
     four_sum(a, b, c, d)
-
-Computes `hi = fl(a+b+c+d)` and `hm = err(a+b+c+d), ml = err(hm), lo = err(ml)`.
+    
+Computes `s1 = fl(a+b+c+d)` and `s2 = err(a+b+c+d),  s3 = err(himd), s4 = err(lomd)`.
+- Unchecked Precondition: !(isinf(a) | isinf(b) | isinf(c) | isinf(d))
 """
 function four_sum(a::T,b::T,c::T,d::T) where {T}
-    t0, t1 = two_sum(a ,  b)
-    t0, t2 = two_sum(t0,  c)
-    hi, t3 = two_sum(t0,  d)
-    t0, t1 = two_sum(t1, t2)
-    hm, t2 = two_sum(t0, t3) # here, t0 >= t3
-    ml, lo = two_sum(t1, t2)
+    t0, t1 = two_sum(a,  b)
+    t2, t3 = two_sum(c,  d)
+    hi, t4 = two_sum(t0, t2)
+    t5, lo = two_sum(t1, t3)
+    hm, ml = two_sum(t4, t5)
+    ml, lo = two_hilo_sum(ml, lo)
+    hm, ml = two_hilo_sum(hm, ml)
+    hi, hm = two_hilo_sum(hi,hm)
     return hi, hm, ml, lo
 end
+
 
 """
     three_sum(a, b, c, d)
