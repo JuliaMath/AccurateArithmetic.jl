@@ -167,11 +167,73 @@ vectors. For smaller vectors, the accuracy comes with a slow-down by a factor of
 approximately 3 in the L2 cache.
 
 
+### Mixed-precision algorithms
+
+When working with single-precision floating-point numbers (`Float32`), it is far
+more efficient to rely on the possibility to internally use double-precision
+numbers in places where more accuracy is needed. Such mixed-precision
+implementations are also provided in this package for convenience:
+
+```
+# Generate an ill-conditioned sum of 100 Float32 numbers
+# (requested condition number 1f10)
+julia> (x, _, _) = generate_sum(100, 1f10);
+
+# Reference result
+julia> sum(big.(x))
+-0.784491270104194171608469332568347454071044921875
+
+# Standard algorithm -> 100% error
+julia> sum(x)
+42.25f0
+
+# Mixed-precision implementation
+julia> sum_mixed(x)
+-0.7844913924050729
+```
+
+Mixed-precision summation implementations should perform approximately as well
+as naive ones:
+```
+julia> x = rand(Float32, 10_000);
+
+julia> @btime sum($x)
+  1.273 μs (0 allocations: 0 bytes)
+5022.952f0
+
+julia> using AccurateArithmetic
+julia> @btime sum_mixed($x)
+  1.109 μs (0 allocations: 0 bytes)
+5022.952363848686
+```
+
+Depending on the system, mixed-precision implementations of the dot product
+might not be as competitive (especially on AVX2 systems; this is much better on
+AVX512 CPUs), but are still faster than compensated algorithms:
+```
+julia> x = rand(Float32, 10_000);
+julia> y = rand(Float32, 10_000);
+
+julia> using LinearAlgebra
+julia> @btime dot($x, $y)
+  1.178 μs (0 allocations: 0 bytes)
+2521.3572f0
+
+julia> using AccurateArithmetic
+julia> @btime dot_mixed($x, $y)
+  2.027 μs (0 allocations: 0 bytes)
+2521.356998107087
+
+julia> @btime dot_oro($x, $y)
+  3.402 μs (0 allocations: 0 bytes)
+2521.357f0
+```
+
 ### Tests
 
 The graphs above can be reproduced using the `test/perftests.jl` script in this
-repository. Before running them, be aware that it takes around tow hours to
-generate the performance graph, during which the benchmark machine should be as
+repository. Before running them, be aware that it takes a few hours to generate
+the performance graphs, during which the benchmark machine should be as
 low-loaded as possible in order to avoid perturbing performance measurements.
 
 
