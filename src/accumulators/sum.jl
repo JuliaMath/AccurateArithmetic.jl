@@ -2,7 +2,7 @@ mutable struct SumAcc{T}
     s :: T
 end
 
-sumAcc(T) = SumAcc{T}(vzero(T))
+sumAcc(T) = SumAcc(vzero(T))
 
 function add!(acc::SumAcc, x)
     SIMDops.@fusible acc.s += x

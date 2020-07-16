@@ -10,6 +10,11 @@ fma(x::T, y::T, z::T) where {T<:NTuple} = SIMDPirates.vfma(x, y, z)
 
 fptype(::Type{Vec{W, T}}) where {W, T} = T
 
+# TODO: This probably belong to SIMDPirates
+@inline f64(x::Number)     = Float64(x)
+@inline f64(x::VecElement) = VecElement(f64(x.value))
+@inline f64(x::Vec)        = broadcast(f64, x)
+
 
 # * Macros rewriting mathematical operations
 

@@ -11,8 +11,8 @@ export two_sum, two_prod
 
 include("Summation.jl")
 using .Summation
-export sum_naive, sum_kbn, sum_oro
-export dot_naive, dot_oro
+export sum_naive, sum_kbn, sum_oro, sum_mixed
+export dot_naive, dot_oro, dot_mixed
 
 
 include("Test.jl")

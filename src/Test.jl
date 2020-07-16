@@ -10,8 +10,9 @@ using ..EFT: two_prod
 Generate two Float64 vectors whose dot product is ill-conditioned.
 
 Inputs:
-  n -- vectors size
-  c -- target condition number
+  n   -- vectors size
+  c   -- target condition number (must be >1)
+  rng -- (pseudo-)random number generator
 
 Results:
   x, y -- vectors of size n
@@ -19,6 +20,57 @@ Results:
   c    -- actual condition number of the dot product
 """
 function generate_dot(n, c::T; rng=Random.GLOBAL_RNG) where {T}
+    generate(c, 100, "dot product") do c1
+        generate_dot_(n, T(c1), rng)
+    end
+end
+
+
+"""
+    (x, s, c) = generate_sum(n, c)
+
+Generate a Float64 vectors whose sum is ill-conditioned.
+
+Inputs:
+  n   -- vectors size
+  c   -- target condition number (must be >1)
+  rng -- (pseudo-)random number generator
+
+Results:
+  x -- vector of size n
+  s -- accurate sum, rounded to nearest
+  c -- actual condition number of the sum
+"""
+function generate_sum(n, c::T; rng=Random.GLOBAL_RNG) where {T}
+    generate(c, 10, "sum") do c1
+        generate_sum_(n, T(c1), rng)
+    end
+end
+
+
+
+function generate(f, c, cmin, title)
+    c1 = c
+    c = max(c, cmin)
+    for i in 1:100
+        res = f(c1)
+        c_ = last(res)
+
+        # println("$i -> $c1 \t $c_")
+
+        if     c_ > 3*c
+            c1 = max(1.01, 0.8*c1)
+        elseif c_ < c/3
+            c1 *= 1.1
+        else
+            return res
+        end
+    end
+    @error "Could not generate $title with requested condition number"
+end
+
+
+function generate_dot_(n, c::T, rng) where {T}
     R = Rational{BigInt}
 
     # Initialization
@@ -63,30 +115,16 @@ function generate_dot(n, c::T; rng=Random.GLOBAL_RNG) where {T}
     d = T(dot(R.(X), R.(Y)))
 
     # Actual condition number
-    c = 2 * dot(abs.(X), abs.(Y)) / abs(d)
+    c_ = 2 * dot(abs.(X), abs.(Y)) / abs(d)
 
-    (X,Y,d,c)
+    (X,Y,d,c_)
 end
 
 
-"""
-    (x, s, c) = generate_sum(n, c)
-
-Generate a Float64 vectors whose sum is ill-conditioned.
-
-Inputs:
-  n -- vectors size
-  c -- target condition number
-
-Results:
-  x -- vectors of size n
-  s -- accurate sum, rounded to nearest
-  c -- actual condition number of the sum
-"""
-function generate_sum(n, c::T; rng=Random.GLOBAL_RNG) where {T}
+function generate_sum_(n, c::T, rng) where {T}
     R = Rational{BigInt}
 
-    (x, y, _, _) = generate_dot(n÷2, c)
+    (x, y, _, _) = generate_dot_(n÷2, c, rng)
 
     z = (two_prod.(x, y)
          |> Iterators.flatten
@@ -103,9 +141,9 @@ function generate_sum(n, c::T; rng=Random.GLOBAL_RNG) where {T}
     s = T(sum(R.(z)))
 
     # Actual condition number
-    c = sum(abs.(z)) / abs(s)
+    c_ = sum(abs.(z)) / abs(s)
 
-    (z, s, c)
+    (z, s, c_)
 end
 
 end
