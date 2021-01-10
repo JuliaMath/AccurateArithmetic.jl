@@ -9,22 +9,22 @@ compDotAcc(T) = CompDotAcc{T}(vzero(T), vzero(T))
     p, ep = two_prod(x, y)
     acc.s, es = two_sum(acc.s, p)
 
-    SIMDops.@fusible acc.e += ep + es
+    @fastmath acc.e += ep + es
 end
 
 @inline function add!(acc::A, x::A) where {A<:CompDotAcc}
     acc.s, e = two_sum(acc.s, x.s)
 
-    SIMDops.@fusible acc.e += x.e + e
+    @fastmath acc.e += x.e + e
 end
 
-@inline function Base.sum(acc::CompDotAcc{T}) where {T<:Vec}
+@inline function Base.sum(acc::CompDotAcc{T}) where {W, T<:Vec{W}}
     acc_r = compDotAcc(fptype(T))
     acc_r.e = vsum(acc.e)
-    for xi in acc.s
-        acc_r.s, ei = two_sum(acc_r.s, xi.value)
+    for w in 1:W
+        acc_r.s, ei = two_sum(acc_r.s, acc.s(w))
         acc_r.e += ei
-    end
+    end        
     acc_r
 end
 
