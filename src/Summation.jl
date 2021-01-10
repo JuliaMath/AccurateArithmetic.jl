@@ -52,7 +52,7 @@ include("accumulators/mixedDot.jl")
             end
 
             Base.Cartesian.@nexprs $U u -> begin
-                xi = vload.(px, tuple(tuple(MM{$W}(offset)))) # vload expects the index to be wrapped in a tuple, and broadcasting strips one layer
+                xi = vload.(px, tuple(tuple(offset))) # vload expects the index to be wrapped in a tuple, and broadcasting strips one layer
                 add!(acc_u, xi...)
                 offset += $W
             end
@@ -60,7 +60,7 @@ include("accumulators/mixedDot.jl")
 
         rem = N & $(WU-1)
         for n in 1:(rem >> $shift)
-            xi = vload.(px, tuple(tuple(MM{$W}(offset))))
+            xi = vload.(px, tuple(tuple(offset)))
             add!(acc_1, xi...)
             offset += $W
         end
@@ -69,7 +69,7 @@ include("accumulators/mixedDot.jl")
             rem &= $(W-1)
             if rem > 0
                 mask = VectorizationBase.mask(Val{$W}(), rem)
-                xi = vload.(px, tuple(tuple(MM{$W}(offset))), mask)
+                xi = vload.(px, tuple(tuple(offset)), mask)
                 add!(acc_1, xi...)
             end
         end
@@ -83,8 +83,11 @@ include("accumulators/mixedDot.jl")
         if $rem_handling <: Val{:scalar}
             _offset = offset.i
             while _offset < N
-                @inbounds xi = getindex.(x, (_offset += 1))
-                add!(acc, xi...)
+                _offset += 1
+                Base.Cartesian.@nexprs $A a -> begin
+                    @inbounds xi_a = getindex(x[a], _offset)
+                end
+                Base.Cartesian.@ncall $A add! acc xi
             end
         end
 
