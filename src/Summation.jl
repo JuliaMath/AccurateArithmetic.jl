@@ -4,7 +4,7 @@ export dot_naive, dot_oro, dot_mixed
 
 import VectorizationBase
 
-using VectorizationBase: Vec, vload, vsum, vzero, AbstractSIMD, MM
+using VectorizationBase: Vec, vload, vsum, vzero, AbstractSIMD, MM, VecUnroll
 fptype(::Type{V}) where {W, T, V <: AbstractSIMD{W, T}} = T
 @inline f64(x::Number)     = convert(Float64, x)
 

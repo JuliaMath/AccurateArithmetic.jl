@@ -13,5 +13,6 @@ function add!(acc::MixedDotAcc{T}, x::MixedDotAcc{T}) where {T}
     @fastmath acc.s += x.s
 end
 
-Base.sum(acc::MixedDotAcc{T}) where {T<:Vec}  = MixedDotAcc(vsum(acc.s))
-Base.sum(acc::MixedDotAcc{T}) where {T<:Real} = acc.s
+Base.sum(acc::MixedDotAcc{T}) where {T<:Vec}       = MixedDotAcc(vsum(acc.s))
+Base.sum(acc::MixedDotAcc{T}) where {T<:VecUnroll} = MixedDotAcc(vsum(acc.s))
+Base.sum(acc::MixedDotAcc{T}) where {T<:Real}      = acc.s
