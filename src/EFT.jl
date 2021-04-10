@@ -1,8 +1,7 @@
 module EFT
 export two_sum, fast_two_sum, two_prod
 
-import ..SIMDops
-using ..SIMDops: vabs, vfma, vifelse, vless
+using VectorizationBase: ifelse, AbstractSIMD
 
 include("errorfree.jl")
 

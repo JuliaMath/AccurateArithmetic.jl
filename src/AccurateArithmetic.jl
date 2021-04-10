@@ -1,9 +1,5 @@
 module AccurateArithmetic
 
-
-include("SIMDops.jl")
-
-
 include("EFT.jl")
 using .EFT
 export two_sum, two_prod

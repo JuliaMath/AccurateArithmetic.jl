@@ -4,9 +4,10 @@ export dot_naive, dot_oro, dot_mixed
 
 import VectorizationBase
 
-import ..SIMDops
-using  ..SIMDops: Vec, vload, vsum, vzero, fptype
-using SIMDPirates
+using VectorizationBase: Vec, vload, vsum, vzero, AbstractSIMD, MM
+fptype(::Type{V}) where {W, T, V <: AbstractSIMD{W, T}} = T
+@inline f64(x::Number)     = convert(Float64, x)
+
 
 using ..EFT: two_sum, fast_two_sum, two_prod
 
@@ -31,45 +32,44 @@ include("accumulators/mixedDot.jl")
     U = 1 << Ushift
 
     W, shift = VectorizationBase.pick_vector_width_shift(T)
-    sizeT = sizeof(T)
-    WT = W * sizeT
     WU = W * U
-    V = Vec{W,T}
+    V = Vec{Int(W),T}
 
     quote
         $(Expr(:meta,:inline))
-        px = pointer.(x)
+        px = VectorizationBase.zstridedpointer.(x)
         N = length(first(x))
         Base.Cartesian.@nexprs $U u -> begin
             acc_u = accType($V)
         end
 
         Nshift = N >> $(shift + Ushift)
-        offset = 0
+        offset = MM{$(Int(W))}(0)
         for n in 1:Nshift
             if $Prefetch > 0
-                SIMDPirates.prefetch.(px.+offset.+$(Prefetch*WT), Val(3), Val(0))
+                # VectorizationBase.prefetch.(px.+offset.+$(Prefetch*WT), Val(3), Val(0))
+                VectorizationBase.prefetch0.(px, offset + $(Prefetch*W))
             end
 
             Base.Cartesian.@nexprs $U u -> begin
-                xi = vload.($V, px.+offset)
+                xi = vload.(px, tuple(tuple(offset))) # vload expects the index to be wrapped in a tuple, and broadcasting strips one layer
                 add!(acc_u, xi...)
-                offset += $WT
+                offset += $W
             end
         end
 
         rem = N & $(WU-1)
         for n in 1:(rem >> $shift)
-            xi = vload.($V, px.+offset)
+            xi = vload.(px, tuple(tuple(offset)))
             add!(acc_1, xi...)
-            offset += $WT
+            offset += $W
         end
 
         if $rem_handling <: Val{:mask}
             rem &= $(W-1)
             if rem > 0
-                mask = VectorizationBase.mask(Val{$W}(), rem)
-                xi = vload.($V, px.+offset, mask)
+                mask = VectorizationBase.mask($W, rem)
+                xi = vload.(px, tuple(tuple(offset)), mask)
                 add!(acc_1, xi...)
             end
         end
@@ -81,11 +81,13 @@ include("accumulators/mixedDot.jl")
         acc = sum(acc_1)
 
         if $rem_handling <: Val{:scalar}
-            offset = div(offset, $sizeT) + 1
-            while offset <= N
-                @inbounds xi = getindex.(x, offset)
-                add!(acc, xi...)
-                offset += 1
+            _offset = VectorizationBase.data(offset)
+            while _offset < N
+                _offset += 1
+                Base.Cartesian.@nexprs $A a -> begin
+                    @inbounds xi_a = getindex(x[a], _offset)
+                end
+                Base.Cartesian.@ncall $A add! acc xi
             end
         end
 
