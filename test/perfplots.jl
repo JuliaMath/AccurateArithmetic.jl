@@ -30,7 +30,7 @@ function plot_results(::Val{:accuracy}, filename, results)
             xlabel="Condition number",
             ylabel="Relative error")
 
-    markers = Symbol[:circle, :+, :rect, :x]
+    markers = Symbol[:circle, :+, :rect, :x, :utriangle]
 
     for i in 1:length(labels)
         scatter!(Float64.(data[1]), Float64.(data[i+1]), label=labels[i], markershape=markers[i])
