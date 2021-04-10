@@ -33,7 +33,7 @@ include("accumulators/mixedDot.jl")
 
     W, shift = VectorizationBase.pick_vector_width_shift(T)
     WU = W * U
-    V = Vec{W,T}
+    V = Vec{Int(W),T}
 
     quote
         $(Expr(:meta,:inline))
@@ -44,7 +44,7 @@ include("accumulators/mixedDot.jl")
         end
 
         Nshift = N >> $(shift + Ushift)
-        offset = MM{$W}(0)
+        offset = MM{$(Int(W))}(0)
         for n in 1:Nshift
             if $Prefetch > 0
                 # VectorizationBase.prefetch.(px.+offset.+$(Prefetch*WT), Val(3), Val(0))
@@ -68,7 +68,7 @@ include("accumulators/mixedDot.jl")
         if $rem_handling <: Val{:mask}
             rem &= $(W-1)
             if rem > 0
-                mask = VectorizationBase.mask(Val{$W}(), rem)
+                mask = VectorizationBase.mask($W, rem)
                 xi = vload.(px, tuple(tuple(offset)), mask)
                 add!(acc_1, xi...)
             end
@@ -81,7 +81,7 @@ include("accumulators/mixedDot.jl")
         acc = sum(acc_1)
 
         if $rem_handling <: Val{:scalar}
-            _offset = offset.i
+            _offset = VectorizationBase.data(offset)
             while _offset < N
                 _offset += 1
                 Base.Cartesian.@nexprs $A a -> begin
