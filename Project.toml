@@ -2,7 +2,7 @@ name = "AccurateArithmetic"
 uuid = "22286c92-06ac-501d-9306-4abd417d9753"
 license = "MIT"
 repo = "https://github.com/JuliaMath/AccurateArithmetic.jl.git"
-version = "0.3.6"
+version = "0.3.7"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
