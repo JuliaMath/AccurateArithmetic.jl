@@ -84,7 +84,7 @@ summation algorithm (as implemented in Base.sum) starts losing accuracy as soon
 as the condition number increases, computing only noise when the condition
 number exceeds 1/ϵ≃10¹⁶. The same goes for the naive summation algorithm.
 In contrast, both compensated algorithms
-(Kahan-Babuska-Neumaier and Ogita-Rump-Oishi) still accurately compute the
+(Kahan–Babuska–Neumaier and Ogita–Rump–Oishi) still accurately compute the
 result at this point, and start losing accuracy there, computing meaningless
 results when the condition nuber reaches 1/ϵ²≃10³². In effect these (simply)
 compensated algorithms produce the same results as if a naive summation had been
@@ -151,8 +151,8 @@ thousands of elements), the implementation is memory bound (as expected of a
 typical BLAS1 operation). Which is why we see significant decreases in the
 performance when the vector can’t fit into the L1, L2 or L3 cache.
 
-On this AVX512-enabled system, the Kahan-Babuska-Neumaier implementation tends
-to be a little more efficient than the Ogita-Rump-Oishi algorithm (this would
+On this AVX512-enabled system, the Kahan–Babuska–Neumaier implementation tends
+to be a little more efficient than the Ogita–Rump–Oishi algorithm (this would
 generally the opposite for AVX2 systems). When implemented with a suitable
 unrolling level and cache prefetching, these implementations are CPU-bound when
 vectors fit inside the L1 or L2 cache. However, when vectors are too large to
