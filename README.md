@@ -18,7 +18,7 @@
 allow getting not only the rounded result of a floating-point computation, but
 also the accompanying rounding error:
 
-```julia
+```julia-repl
 julia> using AccurateArithmetic
 
 # WARNING: a is not really 1/10, as this value is not representable as a Float64
@@ -46,7 +46,7 @@ such as `three_sum`, `four_sum` or `three_prod`.
 EFTs can be leveraged to build "compensated algorithms", which compute a result
 as if the basic algorithm had been run using a higher precision.
 
-```julia
+```julia-repl
 
 # By construction, this vector sums to 1
 julia> x = 5000 |> N->randn(N) .* exp.(10 .* randn(N)) |> x->[x;-x;1.0] |> x->x[sortperm(rand(length(x)))];
@@ -103,7 +103,7 @@ precision.
 Performancewise, compensated algorithms perform a lot better than alternatives
 such as arbitrary precision (`BigFloat`) or rational arithmetic (`Rational`) :
 
-```julia
+```julia-repl
 julia> using BenchmarkTools
 
 julia> length(x)
@@ -174,7 +174,7 @@ more efficient to rely on the possibility to internally use double-precision
 numbers in places where more accuracy is needed. Such mixed-precision
 implementations are also provided in this package for convenience:
 
-```
+```julia-repl
 # Generate an ill-conditioned sum of 100 Float32 numbers
 # (requested condition number 1f10)
 julia> (x, _, _) = generate_sum(100, 1f10);
@@ -194,7 +194,7 @@ julia> sum_mixed(x)
 
 Mixed-precision summation implementations should perform approximately as well
 as naive ones:
-```
+```julia-repl
 julia> x = rand(Float32, 10_000);
 
 julia> @btime sum($x)
@@ -210,7 +210,7 @@ julia> @btime sum_mixed($x)
 Depending on the system, mixed-precision implementations of the dot product
 might not be as competitive (especially on AVX2 systems; this is much better on
 AVX512 CPUs), but are still faster than compensated algorithms:
-```
+```julia-repl
 julia> x = rand(Float32, 10_000);
 julia> y = rand(Float32, 10_000);
 
