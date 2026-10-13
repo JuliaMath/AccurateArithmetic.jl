@@ -8,7 +8,7 @@ This algorithm does not use any branch. See also `fast_two_sum` for an
 alternative algorithm which branches but does fewer arithmetic operations.
 """
 @inline function two_sum(a::T, b::T) where {T}
-    @fastmath  hi = a + b
+    hi = a + b
     v  = hi - a
     lo = (a - (hi - v)) + (b - v)
     return hi, lo
